@@ -9,6 +9,6 @@ public class PlayerInput
 
     public PlayerInput(NoteType inputType) {
         this.inputType = inputType;
-        inputLifeTime = 0.167;
+        inputLifeTime = 0.166;
     }
 }
