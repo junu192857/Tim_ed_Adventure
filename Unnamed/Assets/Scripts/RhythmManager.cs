@@ -24,7 +24,7 @@ public class RhythmManager : MonoBehaviour
     private const double p = 0.042;
     private const double q = 0.075;
     private const double n = 0.1;
-    private const double l = 0.167;
+    private const double l = 0.166;
 
     //게임 진행 시간. -3초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
     private double gameTime;
@@ -32,7 +32,7 @@ public class RhythmManager : MonoBehaviour
     //노트 프리팹.
     [SerializeField] private List<GameObject> notePrefabs;
 
-    
+    //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
     private Queue<NoteSpawnInfo> noteList;
 
     //게임오브젝트가 활성화된 노트들.
@@ -41,9 +41,10 @@ public class RhythmManager : MonoBehaviour
     //0.166초간 저장될 입력들. 만약 spawnedNotes의 첫 번째 노트를 처리할 입력이 inputs에 존재한다면 노트가 처리된다.
     private List<PlayerInput> inputs;
 
-    private bool properInput;
 
+    //어떤 판정이 몇 개씩 나왔는지를 다 저장해두는 곳.
     private int[] judgementList = new int[5]; // 0부터 pure perfect, perfect, great, nice, least, miss
+
     // 게임에 활용되는 리듬게임적 요소를 다룬다.
     // 조작은 다양해도 판정은 같으므로 판정에 해당하는 공통적인 요소를 여기서 다루면 된다.
 
@@ -95,7 +96,7 @@ public class RhythmManager : MonoBehaviour
         var list = inputs.Where(input => input.inputType == spawnedNotes.Peek().GetComponent<Note>().noteType).ToList();
         while (list.Count > 0) {
 
-            // TODO: 판정을 처리한다.
+            // TODO: 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
 
             // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
             inputs.Remove(list[0]);
@@ -112,23 +113,13 @@ public class RhythmManager : MonoBehaviour
             
         }
 
-        // 정확한 타이밍에서 0.167초가 넘어가도록 처리가 안 된 노트는 제거하면서 spawnedNotes에서 없애 준다.
-        while (spawnedNotes.Peek().GetComponent<Note>().lifetime < -0.167) {
+        // 정확한 타이밍에서 0.166초가 넘어가도록 처리가 안 된 노트는 제거하면서 spawnedNotes에서 없애 준다.
+        while (spawnedNotes.Peek().GetComponent<Note>().lifetime < -0.166) {
             Destroy(spawnedNotes.Dequeue());
+            //TODO: Miss 판정을 하나 추가한다.
         }
     }
 
-    private bool CheckProperInput()
-    {
-        var list = inputs.Where(input => input.inputType == spawnedNotes.Peek().GetComponent<Note>().noteType).ToList();
-
-        if (list.Count > 0)
-        {
-            
-            return true;
-        }
-        else return false;
-    }
 
     
 

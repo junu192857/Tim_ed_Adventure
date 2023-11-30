@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     public float volume; // 소리 크기를 의미한다.
 
     public string filepath; // 레벨의 맵 파일 위치를 의미한다.
+    // 맵 하나 추가할 때마다 업데이트는 불가능 --> filepath도 외부에 있어야 한다.
+    // 프로세카 같은 경우 곡 하나 추가되면 인게임에 반영
 
     public void Awake()
     {
