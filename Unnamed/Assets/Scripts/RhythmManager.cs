@@ -118,6 +118,8 @@ public class RhythmManager : MonoBehaviour
             Destroy(spawnedNotes.Dequeue());
             //TODO: Miss 판정을 하나 추가한다.
         }
+
+        //TODO: 현재 점수를 표시한다.
     }
 
 
