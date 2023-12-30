@@ -19,7 +19,6 @@ public class LevelReader
         accTime = 0;
         latestBPMChange = 1;
 
-
         Queue<NoteSpawnInfo> list = new Queue<NoteSpawnInfo>();
 
         string line;

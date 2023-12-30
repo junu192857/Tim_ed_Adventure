@@ -68,13 +68,14 @@ public class RhythmManager : MonoBehaviour
         gameTime = -3;
     }
 
-    // Update is called once per frame
+    // TODO: 판정 처리 부분을 Update와 분리하기
     void Update()
     {
         if (state != RhythmState.Ingame) return;
 
         gameTime += Time.deltaTime;
         
+        //TODO: Input Package 이용해서 다시 쓰기.
         if (gameTime >= noteList.Peek().spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
             //노트를 소환하고 spawnedNotes에 소환된 노트의 게임오브젝트를 넣는다.
             //노트의 위치는 사용자가 설정한 노트의 속도에 따라 달라야만 한다. 일단은 Vector3.zero로 두었다.
