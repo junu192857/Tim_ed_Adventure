@@ -43,7 +43,7 @@ public class RhythmManager : MonoBehaviour
 
 
     //어떤 판정이 몇 개씩 나왔는지를 다 저장해두는 곳.
-    private int[] judgementList = new int[5]; // 0부터 pure perfect, perfect, great, nice, least, miss
+    private int[] judgementList = new int[6]; // 0부터 pure perfect, perfect, great, nice, least, miss
 
     // 게임에 활용되는 리듬게임적 요소를 다룬다.
     // 조작은 다양해도 판정은 같으므로 판정에 해당하는 공통적인 요소를 여기서 다루면 된다.
@@ -94,14 +94,32 @@ public class RhythmManager : MonoBehaviour
 
 
         var list = inputs.Where(input => input.inputType == spawnedNotes.Peek().GetComponent<Note>().noteType).ToList();
-        while (list.Count > 0) {
+        while (list.Count > 0)
+        {
+            // 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
+            JudgementType judgement;
+            double timingOffset = spawnedNotes.Peek().GetComponent<Note>().lifetime - list[0].inputLifeTime + 0.166;
 
-            // TODO: 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
-
+            judgement = timingOffset switch
+            {
+                >= -pp and <= pp => JudgementType.PurePerfect,
+                >= -p and <= p => JudgementType.Perfect,
+                >= -q and <= q => JudgementType.Great,
+                >= -n and <= n => JudgementType.Nice,
+                >= -l and <= l => JudgementType.Least,
+                // > l => JudgementType.Invalid,
+                _ => JudgementType.Miss,
+            };
+            
+            // if (judgement != JudgementType.Invalid) {
+            AddJudgement(judgement);
+            
             // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
             inputs.Remove(list[0]);
             Destroy(spawnedNotes.Dequeue());
+            // }
             
+            // Comment from Vexatone: Early Miss 안 쓸 거면 코드처럼 생겨먹은 주석들 체크 해제하셈
         }
 
         
@@ -116,11 +134,35 @@ public class RhythmManager : MonoBehaviour
         // 정확한 타이밍에서 0.166초가 넘어가도록 처리가 안 된 노트는 제거하면서 spawnedNotes에서 없애 준다.
         while (spawnedNotes.Peek().GetComponent<Note>().lifetime < -0.166) {
             Destroy(spawnedNotes.Dequeue());
-            //TODO: Miss 판정을 하나 추가한다.
+            AddJudgement(JudgementType.Miss);
         }
     }
 
+    // Judgement Function.
+    private void AddJudgement(JudgementType type)
+    {
+        int judgementIndex = type switch
+        {
+            JudgementType.PurePerfect => 0,
+            JudgementType.Perfect     => 1,
+            JudgementType.Great       => 2,
+            JudgementType.Nice        => 3,
+            JudgementType.Least       => 4,
+            JudgementType.Miss        => 5,
+            _                         => 5,
+        };
 
-    
+        judgementList[judgementIndex] += 1;
+    }
+}
 
+public enum JudgementType
+{
+    PurePerfect,
+    Perfect,
+    Great,
+    Nice,
+    Least,
+    Miss,
+    Invalid,
 }
