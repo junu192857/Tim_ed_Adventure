@@ -29,6 +29,9 @@ public class RhythmManager : MonoBehaviour
     //게임 진행 시간. -3초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
     private double gameTime;
 
+    public int score;
+    public int combo;
+
     //노트 프리팹.
     [SerializeField] private List<GameObject> notePrefabs;
 
@@ -64,11 +67,14 @@ public class RhythmManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //초기 세팅
         noteList = lr.ParseFile(levelFilePath);
         gameTime = -3;
+        score = 0;
+        combo = 0;
     }
 
-    // Update is called once per frame
+    // TODO: 입력을 Update와 분리하고, 또 다른 루프에서 입력을 받아와서 판정 처리
     void Update()
     {
         if (state != RhythmState.Ingame) return;
@@ -90,7 +96,8 @@ public class RhythmManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)) {
             inputs.Add(new PlayerInput(NoteType.Jump));
         }
-        // TODO: 공격과 방어 버튼
+        // TODO: 또 다른 기믹(여유되면 넣기)
+        // TODO: 입력할 때마다 스코어와 콤보 업데이트하고 UI 조작하기(캐릭터, 카메라, 플랫폼 등)
 
 
         var list = inputs.Where(input => input.inputType == spawnedNotes.Peek().GetComponent<Note>().noteType).ToList();
