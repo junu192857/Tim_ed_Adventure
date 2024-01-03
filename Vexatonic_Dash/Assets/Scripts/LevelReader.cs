@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System;
+using System.Linq;
 
 public class LevelReader
 {
@@ -36,32 +38,27 @@ public class LevelReader
                 latestBPMChange = int.Parse(myList[1]);
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
             }
-            else { 
-                switch (myList[0]) {
-                    case "A":
-                        list.Enqueue(new NoteSpawnInfo(accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * int.Parse(myList[3])), NoteType.Normal));
-                        break;
-                    case "B":
-                        list.Enqueue(new NoteSpawnInfo(accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * int.Parse(myList[3])), NoteType.Dash));
-                        break;
-                    case "C":
-                        list.Enqueue(new NoteSpawnInfo(accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * int.Parse(myList[3])), NoteType.Jump));
-                        break;
-                    case "D":
-                        list.Enqueue(new NoteSpawnInfo(accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * int.Parse(myList[3])), NoteType.Attack));
-                        break;
-                    case "E":
-                        list.Enqueue(new NoteSpawnInfo(accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * int.Parse(myList[3])), NoteType.Defend));
-                        break;
-                    default:
-                        Debug.Log("Error from LevelReader: UnExpected start " + myList[0]);
-                        break;
+            else if (line.StartsWith("END")) {
+                Debug.Log("Parse End");
+                return list;
+            }
+            else {
+                if (myList[0].Length != 1) {
+                    Debug.LogError("Parse Error: Length of Note type letter is not 1");
+                    return null;
+                }
+                char type = char.Parse(myList[0]);
+                if ('A' <= type && type <= 'E')
+                {
+                    list.Enqueue(new NoteSpawnInfo(accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * int.Parse(myList[3])), (NoteType)(int)type));
+                }
+                else {
+                    Debug.LogError("Parse Error: Note type letter invalid");
+                    return null;
                 }
             }
-           
         }
-        
-
-        return list;
+        Debug.LogError("This level does not have an END");
+        return null;
     }
 }
