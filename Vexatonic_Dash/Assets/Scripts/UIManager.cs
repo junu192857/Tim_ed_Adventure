@@ -10,14 +10,12 @@ public class UIManager : MonoBehaviour
 
     [Header ("In-Game UI")]
     [SerializeField] private Text scoreText;
-    [SerializeField] private Text comboText;    // Discuss: is it necessary?
     [SerializeField] private Text progressText;
 
     [Header("Result UI")]
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private Text resultRankText;
     [SerializeField] private Text resultScoreText;
-    [SerializeField] private Text resultMaxComboText;
     [SerializeField] private Text resultSongNameText;
     [SerializeField] private Text resultComposerNameText;
     
@@ -54,14 +52,12 @@ public class UIManager : MonoBehaviour
     private void InitializeUI()
     {
         scoreText.text = "0";
-        // comboText.text = "";
         progressText.text = "0 %";
     }
 
     public void UpdateInGameUI()
     {
         scoreText.text = Score.ToString();
-        // comboText.text = Combo.ToString();
         progressText.text = Progress + " %";
     }
 
@@ -77,7 +73,6 @@ public class UIManager : MonoBehaviour
         }
         
         resultScoreText.text = Score.ToString();
-        resultMaxComboText.text = Combo.ToString(); // TODO: This is not a max combo, fix it later or remove combo system
         resultSongNameText.text = songName;
         resultComposerNameText.text = composerName;
         
