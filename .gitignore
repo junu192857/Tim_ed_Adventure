@@ -61,3 +61,6 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
+
+# JetBrains IDE
+.idea

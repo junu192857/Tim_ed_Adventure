@@ -31,6 +31,7 @@ public class RhythmManager : MonoBehaviour
 
     public int score;
     public int combo;
+    public JudgementType lastJudge;
 
     //노트 프리팹.
     [SerializeField] private List<GameObject> notePrefabs;
@@ -161,6 +162,8 @@ public class RhythmManager : MonoBehaviour
         };
 
         judgementList[judgementIndex] += 1;
+        
+        lastJudge = type;
     }
 }
 

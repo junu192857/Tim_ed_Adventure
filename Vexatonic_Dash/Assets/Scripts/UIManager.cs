@@ -1,11 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    private RhythmManager rm;
+    private const float JudgeDisplayTime = 0.5f;
+    
+    private static RhythmManager Rm => GameManager.myManager.rm;
 
     public Text score;
     public Text combo;
@@ -15,9 +16,11 @@ public class UIManager : MonoBehaviour
     public string songName;
     public string composerName;
 
+    [SerializeField] private GameObject judgeTextParent;
+    [SerializeField] private GameObject judgeTextPrefab;
+
     public void Start()
     {
-        rm = GameManager.myManager.rm;
         InitiateUI();
     }
     public void InitiateUI() {
@@ -28,7 +31,20 @@ public class UIManager : MonoBehaviour
     }
 
     public void UpdateUI() {
-        score.text = rm.score.ToString();
-        combo.text = rm.combo.ToString();
+        score.text = Rm.score.ToString();
+        combo.text = Rm.combo.ToString();
+        StartCoroutine(DisplayJudge());
+    }
+
+    // Displays judge when note is hit or missed
+    public IEnumerator DisplayJudge()
+    {
+        var instance = Instantiate(judgeTextPrefab, judgeTextParent.transform);
+        
+        instance.GetComponent<Text>().text = Rm.lastJudge.ToString();
+
+        yield return new WaitForSeconds(JudgeDisplayTime);
+        
+        Destroy(instance);
     }
 }
