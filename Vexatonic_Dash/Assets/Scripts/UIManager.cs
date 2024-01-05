@@ -7,19 +7,24 @@ public class UIManager : MonoBehaviour
 {
     private RhythmManager rm;
 
-    public Text SongInfo;
     public Text score;
     public Text combo;
+    public Text songNameText;
+    public Text composerNameText;
+
+    public string songName;
+    public string composerName;
 
     public void Start()
     {
         rm = GameManager.myManager.rm;
+        InitiateUI();
     }
     public void InitiateUI() {
-        SongInfo.text = ""; // 맵 파일에서 곡 정보 저장해야 한다.
         score.text = "0";
         combo.text = "";
-
+        songNameText.text = songName;
+        composerNameText.text = composerName;
     }
 
     public void UpdateUI() {

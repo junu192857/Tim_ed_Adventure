@@ -63,12 +63,13 @@ public class RhythmManager : MonoBehaviour
     private void Awake()
     {
         lr = new LevelReader();
+        noteList = lr.ParseFile(levelFilePath);
     }
     // Start is called before the first frame update
     void Start()
     {
         //초기 세팅
-        noteList = lr.ParseFile(levelFilePath);
+        
         gameTime = -3;
         score = 0;
         combo = 0;
