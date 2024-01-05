@@ -20,11 +20,10 @@ public class RhythmManager : MonoBehaviour
     private LevelReader lr;
 
     // 판정 범위
-    private const double pp = 0.025;
-    private const double p = 0.042;
-    private const double q = 0.075;
-    private const double n = 0.1;
-    private const double l = 0.166;
+    private const double pp = 0.042;
+    private const double p = 0.075;
+    private const double gr = 0.100;
+    private const double g = 0.166;
 
     //게임 진행 시간. -3초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
     private double gameTime;
@@ -46,7 +45,7 @@ public class RhythmManager : MonoBehaviour
 
 
     //어떤 판정이 몇 개씩 나왔는지를 다 저장해두는 곳.
-    private int[] judgementList = new int[6]; // 0부터 pure perfect, perfect, great, nice, least, miss
+    private int[] judgementList = new int[5]; // 0부터 pure perfect, perfect, great, good, miss
 
     // 게임에 활용되는 리듬게임적 요소를 다룬다.
     // 조작은 다양해도 판정은 같으므로 판정에 해당하는 공통적인 요소를 여기서 다루면 된다.
@@ -68,8 +67,8 @@ public class RhythmManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //초기 세팅
-        
+        GenerateMap(noteList);
+
         gameTime = -3;
         score = 0;
         combo = 0;
@@ -112,9 +111,8 @@ public class RhythmManager : MonoBehaviour
             {
                 >= -pp and <= pp => JudgementType.PurePerfect,
                 >= -p and <= p => JudgementType.Perfect,
-                >= -q and <= q => JudgementType.Great,
-                >= -n and <= n => JudgementType.Nice,
-                >= -l and <= l => JudgementType.Least,
+                >= -gr and <= gr => JudgementType.Great,
+                >= -g and <= g => JudgementType.Good,
                 // > l => JudgementType.Invalid,
                 _ => JudgementType.Miss,
             };
@@ -154,13 +152,19 @@ public class RhythmManager : MonoBehaviour
             JudgementType.PurePerfect => 0,
             JudgementType.Perfect     => 1,
             JudgementType.Great       => 2,
-            JudgementType.Nice        => 3,
-            JudgementType.Least       => 4,
-            JudgementType.Miss        => 5,
-            _                         => 5,
+            JudgementType.Good        => 3,
+            JudgementType.Miss        => 4,
+            _                         => 4,
         };
 
         judgementList[judgementIndex] += 1;
+    }
+
+    // generate platforms from parsed note list
+    private void GenerateMap(Queue<NoteSpawnInfo> list) {
+        //스크롤 속도를 플레이어가 설정할 수 있게 바꿀 예정.
+        float scrollSpeed = GameManager.myManager.scrollSpeed;
+
     }
 }
 
@@ -169,8 +173,7 @@ public enum JudgementType
     PurePerfect,
     Perfect,
     Great,
-    Nice,
-    Least,
+    Good,
     Miss,
     Invalid,
 }
