@@ -32,6 +32,12 @@ public class LevelReader
             line = sr.ReadLine();
 
             var myList = line.Split(' ');
+            if (line.StartsWith("SONG")) {
+                GameManager.myManager.um.songName = myList[1];
+            }
+            if (line.StartsWith("COMPOSER")) { 
+                GameManager.myManager.um.composerName = myList[1];
+            }
             if (line.StartsWith("BPM")) // Ex) BPM 1 180: 1번째 마디부터 180 BPM.
             {
                 accTime += _1bitTime * (int.Parse(myList[1]) - latestBPMChange);
