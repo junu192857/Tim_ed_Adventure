@@ -30,10 +30,20 @@ public class UIManager : MonoBehaviour
         composerNameText.text = composerName;
     }
 
-    public void UpdateUI() {
+    public void UpdateIngameUI() {
         score.text = Rm.score.ToString();
         combo.text = Rm.combo.ToString();
         StartCoroutine(DisplayJudge());
+    }
+
+    public void UpdateResultUI()
+    {
+        // TODO
+    }
+    
+    public void UpdateGameOverUI()
+    {
+        // TODO
     }
 
     // Displays judge when note is hit or missed
