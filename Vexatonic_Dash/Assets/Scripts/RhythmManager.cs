@@ -87,6 +87,7 @@ public class RhythmManager : MonoBehaviour
             //노트를 소환하고 spawnedNotes에 소환된 노트의 게임오브젝트를 넣는다.
             //노트의 위치는 사용자가 설정한 노트의 속도에 따라 달라야만 한다. 일단은 Vector3.zero로 두었다.
             GameObject myNote = Instantiate(notePrefabs[(int)noteList[0].noteType], noteList[0].spawnPosition, Quaternion.identity);
+            myNote.transform.localScale = new Vector3(noteList[0].platformScale, 1, 1);
             noteList.Remove(noteList[0]);
             spawnedNotes.Enqueue(myNote);
         }
@@ -152,7 +153,7 @@ public class RhythmManager : MonoBehaviour
 
         if (spawnedNotes.TryPeek(out temp))
         {
-            while (temp.GetComponent<Note>().lifetime < -0.166)
+            if (temp.GetComponent<Note>().lifetime < -0.166)
             {
                 Destroy(spawnedNotes.Dequeue());
                 AddJudgement(JudgementType.Miss);
