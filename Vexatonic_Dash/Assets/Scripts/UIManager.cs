@@ -106,11 +106,11 @@ public class UIManager : MonoBehaviour
         instance.GetComponent<Text>().text = LastJudge switch
         {
             JudgementType.PurePerfect => "Perfect",
-            JudgementType.Perfect => "Perfect",
-            JudgementType.Great => "Great",
-            JudgementType.Good => "Good",
-            JudgementType.Miss => "Miss",
-            JudgementType.Invalid => "Invalid",
+            JudgementType.Perfect     => "Perfect",
+            JudgementType.Great       => "Great",
+            JudgementType.Good        => "Good",
+            JudgementType.Miss        => "Miss",
+            JudgementType.Invalid     => "Invalid",
             _ => throw new System.ArgumentException()
         };
     }
