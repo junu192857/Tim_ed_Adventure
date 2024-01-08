@@ -80,17 +80,17 @@ public class UIManager : MonoBehaviour
         resultPanel.SetActive(true);    // TODO: Add show animation
     }
     
-    public void ShowGameOverUI()
+    public void ShowGameOverUI(bool isNewRecord)
     {
-        if (true) // TODO: Detect whether it is a new record or not
-        {
-            gameOverTitleDefault.SetActive(true);
-            gameOverTitleNewRecord.SetActive(false);
-        }
-        else      // New Record
+        if (isNewRecord)
         {
             gameOverTitleDefault.SetActive(false);
             gameOverTitleNewRecord.SetActive(true);
+        }
+        else
+        {
+            gameOverTitleDefault.SetActive(true);
+            gameOverTitleNewRecord.SetActive(false);
         }
         
         gameOverProgress.text = Progress + " %";
