@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager myManager;
 
+    public float scrollSpeed; // 카메라 이동 속도를 의미한다.
     public float noteSpeed; // 노트의 속력을 의미한다.
     public float notePosition; // 판정선의 위치를 의미한다.
     public float volume; // 소리 크기를 의미한다.
