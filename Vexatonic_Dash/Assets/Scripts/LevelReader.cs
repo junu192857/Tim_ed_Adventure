@@ -50,6 +50,7 @@ public class LevelReader
 
                 list.Peek().platformScale = 1f;
                 List<NoteSpawnInfo> returnList = list.ToList();
+                returnList.Reverse();
                 return returnList;
             }
             else {
