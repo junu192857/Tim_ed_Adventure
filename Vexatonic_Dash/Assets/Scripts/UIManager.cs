@@ -1,13 +1,8 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    private const float JudgeDisplayTime = 0.5f;
-    
-    private static RhythmManager Rm => GameManager.myManager.rm;
-
     [Header ("In-Game UI")]
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
@@ -39,9 +34,10 @@ public class UIManager : MonoBehaviour
     public string songName;
     public string composerName;
 
-    private static int Score => Rm.score;
-    private static int Progress => Rm.progress;
-    private static int[] JudgementList => Rm.judgementList;
+    private static int Score => GameManager.myManager.rm.score;
+    private static int Progress => GameManager.myManager.rm.progress;
+    private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
+    private static int[] JudgementList => GameManager.myManager.rm.judgementList;
     
     private void Start()
     {
@@ -106,5 +102,16 @@ public class UIManager : MonoBehaviour
     public void DisplayJudge()
     {
         var instance = Instantiate(judgeTextPrefab, judgeTextParent.transform);
+
+        instance.GetComponent<Text>().text = LastJudge switch
+        {
+            JudgementType.PurePerfect => "Perfect",
+            JudgementType.Perfect => "Perfect",
+            JudgementType.Great => "Great",
+            JudgementType.Good => "Good",
+            JudgementType.Miss => "Miss",
+            JudgementType.Invalid => "Invalid",
+            _ => throw new System.ArgumentException()
+        };
     }
 }
