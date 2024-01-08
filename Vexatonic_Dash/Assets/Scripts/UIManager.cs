@@ -40,7 +40,6 @@ public class UIManager : MonoBehaviour
     public string composerName;
 
     private static int Score => Rm.score;
-    private static int Combo => Rm.combo;
     private static int Progress => Rm.progress;
     private static int[] JudgementList => Rm.judgementList;
     
