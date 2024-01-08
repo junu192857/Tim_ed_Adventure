@@ -29,6 +29,5 @@ public class UIManager : MonoBehaviour
 
     public void UpdateUI() {
         score.text = rm.score.ToString();
-        combo.text = rm.combo.ToString();
     }
 }
