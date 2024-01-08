@@ -29,8 +29,7 @@ GREAT 이상의 판정이 나와야 콤보가 이어진다.
 - PURE PERFECT: 1.01
 - PERFECT: 1.00
 - GREAT: 0.90
-- NICE: 0.50
-- LEAST: 0.10
+- GOOD: 0.50
 - MISS: 0
 
 * 전부 PURE PERFECT(이론치)인 경우 PURE PLAY

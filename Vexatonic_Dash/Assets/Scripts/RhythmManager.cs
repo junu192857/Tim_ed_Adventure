@@ -29,19 +29,19 @@ public class RhythmManager : MonoBehaviour
     private double gameTime;
 
     public int score;
-    public int combo;
 
     //노트 프리팹.
     [SerializeField] private List<GameObject> notePrefabs;
 
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
-    private Queue<NoteSpawnInfo> noteList;
+    private List<NoteSpawnInfo> noteList;
 
     //게임오브젝트가 활성화된 노트들.
-    private Queue<GameObject> spawnedNotes;
+    private Queue<GameObject> spawnedNotes = new Queue<GameObject>();
+    GameObject temp = null;
 
     //0.166초간 저장될 입력들. 만약 spawnedNotes의 첫 번째 노트를 처리할 입력이 inputs에 존재한다면 노트가 처리된다.
-    private List<PlayerInput> inputs;
+    private List<PlayerInput> inputs = new List<PlayerInput>();
 
 
     //어떤 판정이 몇 개씩 나왔는지를 다 저장해두는 곳.
@@ -67,11 +67,11 @@ public class RhythmManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GenerateMap(noteList);
+        GenerateMap();
 
+        state = RhythmState.Ingame;
         gameTime = -3;
         score = 0;
-        combo = 0;
     }
 
     // TODO: 입력을 Update와 분리하고, 또 다른 루프에서 입력을 받아와서 판정 처리
@@ -81,66 +81,80 @@ public class RhythmManager : MonoBehaviour
 
         gameTime += Time.deltaTime;
         
-        if (gameTime >= noteList.Peek().spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
+        if (noteList.Any() && gameTime >= noteList[0].spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
             //노트를 소환하고 spawnedNotes에 소환된 노트의 게임오브젝트를 넣는다.
             //노트의 위치는 사용자가 설정한 노트의 속도에 따라 달라야만 한다. 일단은 Vector3.zero로 두었다.
-            GameObject myNote = Instantiate(notePrefabs[(int)noteList.Dequeue().noteType], Vector3.zero, Quaternion.identity);
+            GameObject myNote = Instantiate(notePrefabs[(int)noteList[0].noteType], noteList[0].spawnPosition, Quaternion.identity);
+            noteList.Remove(noteList[0]);
             spawnedNotes.Enqueue(myNote);
         }
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J)) {
-            inputs.Add(new PlayerInput(NoteType.Normal));
-        }
-        if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.U)) {
-            inputs.Add(new PlayerInput(NoteType.Dash));
-        }
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            inputs.Add(new PlayerInput(NoteType.Jump));
+
+        if (gameTime >= 0)
+        {
+            if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J))
+            {
+                inputs.Add(new PlayerInput(NoteType.Normal));
+            }
+            if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.U))
+            {
+                inputs.Add(new PlayerInput(NoteType.Dash));
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                inputs.Add(new PlayerInput(NoteType.Jump));
+            }
         }
         // TODO: 또 다른 기믹(여유되면 넣기)
-        // TODO: 입력할 때마다 스코어와 콤보 업데이트하고 UI 조작하기(캐릭터, 카메라, 플랫폼 등)
-
-
-        var list = inputs.Where(input => input.inputType == spawnedNotes.Peek().GetComponent<Note>().noteType).ToList();
-        while (list.Count > 0)
-        {
-            // 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
-            JudgementType judgement;
-            double timingOffset = spawnedNotes.Peek().GetComponent<Note>().lifetime - list[0].inputLifeTime + 0.166;
-
-            judgement = timingOffset switch
-            {
-                >= -pp and <= pp => JudgementType.PurePerfect,
-                >= -p and <= p => JudgementType.Perfect,
-                >= -gr and <= gr => JudgementType.Great,
-                >= -g and <= g => JudgementType.Good,
-                // > l => JudgementType.Invalid,
-                _ => JudgementType.Miss,
-            };
-            
-            // if (judgement != JudgementType.Invalid) {
-            AddJudgement(judgement);
-            
-            // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
-            inputs.Remove(list[0]);
-            Destroy(spawnedNotes.Dequeue());
-            // }
-            
-            // Comment from Vexatone: Early Miss 안 쓸 거면 코드처럼 생겨먹은 주석들 체크 해제하셈
-        }
 
         
+        if (inputs.Any() && spawnedNotes.TryPeek(out temp))
+        {
+            var list = inputs.Where(input => input.inputType == temp.GetComponent<Note>().noteType).ToList();
 
+            while (list.Count > 0)
+            {
+                // 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
+                JudgementType judgement;
+                double timingOffset = spawnedNotes.Peek().GetComponent<Note>().lifetime - list[0].inputLifeTime + 0.166;
+
+                judgement = timingOffset switch
+                {
+                    >= -pp and <= pp => JudgementType.PurePerfect,
+                    >= -p and <= p => JudgementType.Perfect,
+                    >= -gr and <= gr => JudgementType.Great,
+                    >= -g and <= g => JudgementType.Good,
+                    // > l => JudgementType.Invalid,
+                    _ => JudgementType.Miss,
+                };
+
+                // if (judgement != JudgementType.Invalid) {
+                AddJudgement(judgement);
+
+                // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
+                inputs.Remove(list[0]);
+                Destroy(spawnedNotes.Dequeue());
+                // }
+
+                // Comment from Vexatone: Early Miss 안 쓸 거면 코드처럼 생겨먹은 주석들 체크 해제하셈
+            } 
+        }
         // 모든 입력의 생존시간을 Time.deltaTime만큼 줄인 뒤 시간이 다 된 input은 제거한다.
-        foreach (PlayerInput input in inputs) {
+        foreach (PlayerInput input in inputs)
+        {
             input.inputLifeTime -= Time.deltaTime;
             if (input.inputLifeTime < 0) inputs.Remove(input);
-            
+
         }
 
         // 정확한 타이밍에서 0.166초가 넘어가도록 처리가 안 된 노트는 제거하면서 spawnedNotes에서 없애 준다.
-        while (spawnedNotes.Peek().GetComponent<Note>().lifetime < -0.166) {
-            Destroy(spawnedNotes.Dequeue());
-            AddJudgement(JudgementType.Miss);
+
+        if (spawnedNotes.TryPeek(out temp))
+        {
+            while (temp.GetComponent<Note>().lifetime < -0.166)
+            {
+                Destroy(spawnedNotes.Dequeue());
+                AddJudgement(JudgementType.Miss);
+            }
         }
     }
 
@@ -160,11 +174,42 @@ public class RhythmManager : MonoBehaviour
         judgementList[judgementIndex] += 1;
     }
 
-    // generate platforms from parsed note list
-    private void GenerateMap(Queue<NoteSpawnInfo> list) {
+    // 모든 플랫폼을 미리 스폰한다. 
+    private void GenerateMap() {
+        Debug.Log("Trying Map Generate..");
         //스크롤 속도를 플레이어가 설정할 수 있게 바꿀 예정.
-        float scrollSpeed = GameManager.myManager.scrollSpeed;
+        //float scrollSpeed = GameManager.myManager.scrollSpeed;
 
+        Vector3 AnchorPosition = Vector3.zero;
+
+        foreach (var note in noteList) {
+            switch (note.noteType) {
+                case NoteType.Normal:
+                    GameObject platform = Instantiate(notePrefabs[0], AnchorPosition, Quaternion.identity);
+                    //TODO: 사용자 지정 노트 속도 (GameManager.noteSpeed)에 따라 spawnPosition의 위치 변화
+                    note.spawnPosition = AnchorPosition + 3 * Vector3.down;
+
+
+                    Color c = platform.GetComponentInChildren<SpriteRenderer>().color;
+                    c.a = 0.5f;
+                    platform.GetComponentInChildren<SpriteRenderer>().color = c;
+
+                    Debug.Log($"Platform scale: {note.platformScale}");
+                    //플랫폼의 너비를 바꾸는 부분. 임시로만 작업했고 플랫폼 디자인이 완료되면 바꿔야 한다
+                    platform.transform.localScale = new Vector3(note.platformScale, 1, 1);
+
+                    AnchorPosition += new Vector3(note.platformScale, 0, 0);
+                    break;
+                    
+                case NoteType.Dash:
+                case NoteType.Jump:
+                    break;
+            }
+        }
+        // Spawn Platform Object
+        // 다른 플랫폼들이 많지만, 우선 기본 이동 플랫폼만.
+        // 120bpm 4bit(0.5초) = 1칸 너비로 하자
+        Debug.Log("Thanks!");
     }
 }
 
