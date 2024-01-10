@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    private const float LevelInfoShowDuration = 3f;
+    private static readonly int AnimShowHash = Animator.StringToHash("Show");
+    private static readonly int AnimHideHash = Animator.StringToHash("Hide");
     
     [Header ("In-Game UI")]
     [SerializeField] private Text scoreText;
@@ -15,6 +16,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject levelInfo;
     [SerializeField] private Text levelInfoSongNameText;
     [SerializeField] private Text levelInfoComposerNameText;
+    [SerializeField] private Animator levelInfoSongNameAnim;
+    [SerializeField] private Animator levelInfoComposerNameAnim;
     
     [Header ("Countdown UI")]
     [SerializeField] private GameObject countdown;
@@ -66,10 +69,20 @@ public class UIManager : MonoBehaviour
     private IEnumerator LevelInfoUICoroutine()
     {
         levelInfo.SetActive(true);
-        // TODO: Add show animation
-        yield return new WaitForSeconds(LevelInfoShowDuration);
-        // TODO: Add hide animation
+        
+        // Show animation
+        levelInfoSongNameAnim.SetTrigger(AnimShowHash);
+        yield return new WaitForSeconds(0.2f);
+        levelInfoComposerNameAnim.SetTrigger(AnimShowHash);
+        yield return new WaitForSeconds(1.8f);
+        
+        // Hide animation
+        levelInfoComposerNameAnim.SetTrigger(AnimHideHash);
+        levelInfoSongNameAnim.SetTrigger(AnimHideHash);
+        yield return new WaitForSeconds(1f);
+        
         levelInfo.SetActive(false);
+        ShowCountdownUI();
     }
 
     private IEnumerator CountdownUICoroutine()
@@ -78,7 +91,7 @@ public class UIManager : MonoBehaviour
         
         while (GameTime < 0)
         {
-            countdownText.text = ((int)(-GameTime * 10) / 10).ToString();
+            countdownText.text = $"{-GameTime:0.0}";
             yield return null;
         }
 
@@ -100,7 +113,7 @@ public class UIManager : MonoBehaviour
 
     public void ShowCountdownUI()
     {
-        countdownText.text = ((int)(-GameTime * 10) / 10).ToString();
+        countdownText.text = $"{-GameTime:0.0}";
         StartCoroutine(CountdownUICoroutine());
     }
 
