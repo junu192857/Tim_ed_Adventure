@@ -46,9 +46,9 @@ public class GameManager : MonoBehaviour
         1010000                  => RankType.SSS,
         >= 1005000 and < 1010000 => RankType.SS,
         >= 1000000 and < 1005000 => RankType.S,
-        >= 950000 and < 1000000  => RankType.A,
-        >= 900000 and < 950000   => RankType.B,
-        >= 0 and < 900000        => RankType.C,
+        >= 950000  and < 1000000 => RankType.A,
+        >= 900000  and < 950000  => RankType.B,
+        >= 0       and < 900000  => RankType.C,
         _ => throw new ArgumentOutOfRangeException()
     };
 }
