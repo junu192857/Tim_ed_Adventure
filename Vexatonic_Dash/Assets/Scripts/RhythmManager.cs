@@ -28,6 +28,10 @@ public class RhythmManager : MonoBehaviour
     //게임 진행 시간. -5초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
     private double gameTime;
 
+    public double GameTime {
+        get => gameTime;
+    }
+
     private float notePositiondelta = 3;
 
     public int score;
@@ -73,7 +77,7 @@ public class RhythmManager : MonoBehaviour
     {
         GenerateMap();
 
-        state = RhythmState.Ingame;
+        state = RhythmState.BeforeGameStart;
         gameTime = -5;
         score = 0;
     }
@@ -81,9 +85,8 @@ public class RhythmManager : MonoBehaviour
     // TODO: 입력을 Update와 분리하고, 또 다른 루프에서 입력을 받아와서 판정 처리
     void Update()
     {
-        if (state != RhythmState.Ingame) return;
-
         gameTime += Time.deltaTime;
+        if (gameTime > 0) state = RhythmState.Ingame;
         
         if (noteList.Any() && gameTime >= noteList[0].spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
             //노트를 소환하고 spawnedNotes에 소환된 노트의 게임오브젝트를 넣는다.
@@ -98,6 +101,8 @@ public class RhythmManager : MonoBehaviour
             noteList.Remove(noteList[0]);
             spawnedNotes.Enqueue(myNote);
         }
+
+        if (state != RhythmState.Ingame) return;
 
         if (gameTime >= 0)
         {
