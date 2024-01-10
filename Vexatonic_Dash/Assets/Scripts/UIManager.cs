@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -58,13 +59,34 @@ public class UIManager : MonoBehaviour
 
     public void ShowResultUI()
     {
-        switch (Score)  // Set rank text
+        switch (GameManager.GetRank(Score))  // Set rank text
         {
-            // TODO: Add conditions for each rank
-            default:
+            case RankType.SSS:
                 resultRankText.text = "SSS";
                 resultRankText.color = new Color(1f, 0.75f, 0f);
                 break;
+            case RankType.SS:
+                resultRankText.text = "SS";
+                resultRankText.color = new Color(1f, 0.75f, 0f);
+                break;
+            case RankType.S:
+                resultRankText.text = "S";
+                resultRankText.color = new Color(1f, 0.75f, 0f);
+                break;
+            case RankType.A:
+                resultRankText.text = "A";
+                resultRankText.color = new Color(0.75f, 1f, 0.25f);
+                break;
+            case RankType.B:
+                resultRankText.text = "B";
+                resultRankText.color = new Color(0.5f, 0.75f, 0.5f);
+                break;
+            case RankType.C:
+                resultRankText.text = "C";
+                resultRankText.color = new Color(0.25f, 0.5f, 0.75f);
+                break;
+            default:
+                throw new ArgumentException();
         }
         
         resultScoreText.text = Score.ToString();
@@ -111,7 +133,7 @@ public class UIManager : MonoBehaviour
             JudgementType.Good        => "Good",
             JudgementType.Miss        => "Miss",
             JudgementType.Invalid     => "Invalid",
-            _ => throw new System.ArgumentException()
+            _ => throw new ArgumentException()
         };
     }
 }
