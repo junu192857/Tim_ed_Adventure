@@ -2238,7 +2238,7 @@ MonoBehaviour:
   noteSpeed: 0
   notePosition: 0
   volume: 0
-  filepath: C:\Users\USER\Desktop\UPnL\Vexatonic_Dash\Vexatonic_Dash\Vexatonic_Dash\Assets\Levels\Tutorial.txt
+  filepath: 
   rm: {fileID: 1818378586}
   um: {fileID: 0}
 --- !u!4 &1504029264
