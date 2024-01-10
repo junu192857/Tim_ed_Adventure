@@ -240,7 +240,7 @@ MonoBehaviour:
   noteSpeed: 0
   notePosition: 0
   volume: 0
-  filepath: C:\Users\USER\Desktop\UPnL\Vexatonic_Dash\Vexatonic_Dash\Vexatonic_Dash\Assets\Levels\Tutorial.txt
+  filepath: 
   rm: {fileID: 1818378586}
   um: {fileID: 0}
 --- !u!4 &1504029264
@@ -289,9 +289,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelFilePath: C:\Users\USER\Desktop\UPnL\Vexatonic_Dash\Vexatonic_Dash\Vexatonic_Dash\Assets\Levels\Tutorial.txt
   score: 0
-  combo: 0
+  progress: 0
+  lastJudge: 0
   notePrefabs:
   - {fileID: 4543083347653757647, guid: 9b3e4c384536c7f40832da4a900aa0fd, type: 3}
+  judgementList: 0000000000000000000000000000000000000000
 --- !u!4 &1818378587
 Transform:
   m_ObjectHideFlags: 0
