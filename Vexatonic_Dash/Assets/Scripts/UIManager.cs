@@ -59,7 +59,7 @@ public class UIManager : MonoBehaviour
 
     public void ShowResultUI()
     {
-        switch (GameManager.GetRank(Score))  // Set rank text
+        switch (GameManager.GetRank(Score))  // Set rank text, TODO: Set color or image of rank
         {
             case RankType.SSS:
                 resultRankText.text = "SSS";
@@ -124,16 +124,36 @@ public class UIManager : MonoBehaviour
     public void DisplayJudge()
     {
         var instance = Instantiate(judgeTextPrefab, judgeTextParent.transform);
+        var text = instance.GetComponent<Text>();
 
-        instance.GetComponent<Text>().text = LastJudge switch
+        switch (LastJudge)
         {
-            JudgementType.PurePerfect => "Perfect",
-            JudgementType.Perfect     => "Perfect",
-            JudgementType.Great       => "Great",
-            JudgementType.Good        => "Good",
-            JudgementType.Miss        => "Miss",
-            JudgementType.Invalid     => "Invalid",
-            _ => throw new ArgumentException()
-        };
+            case JudgementType.PurePerfect:
+                text.text = "Perfect";
+                text.color = new Color(1f, 0.75f, 0f);
+                break;
+            case JudgementType.Perfect:
+                text.text = "Perfect";
+                text.color = new Color(0.75f, 0.5f, 0.75f);
+                break;
+            case JudgementType.Great:
+                text.text = "Great";
+                text.color = new Color(0.75f, 1f, 0.25f);
+                break;
+            case JudgementType.Good:
+                text.text = "Good";
+                text.color = new Color(0.5f, 0.75f, 0.75f);
+                break;
+            case JudgementType.Miss:
+                text.text = "Miss";
+                text.color = new Color(0.75f, 0.25f, 0.25f);
+                break;
+            case JudgementType.Invalid:
+                text.text = "Invalid";
+                text.color = new Color(1f, 1f, 1f);
+                break;
+            default:
+                throw new ArgumentException();
+        }
     }
 }

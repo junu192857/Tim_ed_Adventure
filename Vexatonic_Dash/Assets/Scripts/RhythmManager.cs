@@ -30,7 +30,7 @@ public class RhythmManager : MonoBehaviour
 
     public int score;
     public int progress;    // TODO: Update progress every frame
-    public JudgementType lastJudge; // TODO: Update lastJudge when judgement is added
+    public JudgementType lastJudge;
 
     //노트 프리팹.
     [SerializeField] private List<GameObject> notePrefabs;

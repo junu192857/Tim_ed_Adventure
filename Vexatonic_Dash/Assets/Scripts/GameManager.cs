@@ -49,6 +49,6 @@ public class GameManager : MonoBehaviour
         >= 950000 and < 1000000  => RankType.A,
         >= 900000 and < 950000   => RankType.B,
         >= 0 and < 900000        => RankType.C,
-        _ => throw new ArgumentOutOfRangeException(nameof(score), score, null)
+        _ => throw new ArgumentOutOfRangeException()
     };
 }
