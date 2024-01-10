@@ -25,7 +25,7 @@ public class RhythmManager : MonoBehaviour
     private const double gr = 0.100;
     private const double g = 0.166;
 
-    //게임 진행 시간. -3초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
+    //게임 진행 시간. -5초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
     private double gameTime;
 
     private float notePositiondelta = 3;
@@ -74,7 +74,7 @@ public class RhythmManager : MonoBehaviour
         GenerateMap();
 
         state = RhythmState.Ingame;
-        gameTime = -3;
+        gameTime = -5;
         score = 0;
     }
 
