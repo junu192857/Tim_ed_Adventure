@@ -8,7 +8,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
 
-    [Header("Result UI")]
+    [Header ("Level Info UI")]
+    [SerializeField] private GameObject levelInfoPanel;
+    [SerializeField] private Text levelInfoSongNameText;
+    [SerializeField] private Text levelInfoComposerNameText;
+    
+    [Header ("Result UI")]
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private Text resultRankText;
     [SerializeField] private Text resultScoreText;
@@ -23,9 +28,8 @@ public class UIManager : MonoBehaviour
     
     [Header ("Game Over UI")]
     [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private GameObject gameOverTitleDefault;
-    [SerializeField] private GameObject gameOverTitleNewRecord;
-    [SerializeField] private Text gameOverProgress;
+    [SerializeField] private Text gameOverTitleText;
+    [SerializeField] private Text gameOverProgressText;
     
     [Header ("Judge Text")]
     [SerializeField] private GameObject judgeTextParent;
@@ -106,16 +110,16 @@ public class UIManager : MonoBehaviour
     {
         if (isNewRecord)
         {
-            gameOverTitleDefault.SetActive(false);
-            gameOverTitleNewRecord.SetActive(true);
+            gameOverTitleText.text = "NEW RECORD!";
+            gameOverTitleText.color = new Color(1f, 1f, 0.5f);
         }
         else
         {
-            gameOverTitleDefault.SetActive(true);
-            gameOverTitleNewRecord.SetActive(false);
+            gameOverTitleText.text = "GAME OVER";
+            gameOverTitleText.color = new Color(1f, 0.5f, 0.5f);
         }
         
-        gameOverProgress.text = Progress + " %";
+        gameOverProgressText.text = Progress + " %";
         
         gameOverPanel.SetActive(true);    // TODO: Add show animation
     }
