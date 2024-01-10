@@ -1,20 +1,27 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    private const float LevelInfoShowDuration = 3f;
+    
     [Header ("In-Game UI")]
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
 
     [Header ("Level Info UI")]
-    [SerializeField] private GameObject levelInfoPanel;
+    [SerializeField] private GameObject levelInfo;
     [SerializeField] private Text levelInfoSongNameText;
     [SerializeField] private Text levelInfoComposerNameText;
     
+    [Header ("Countdown UI")]
+    [SerializeField] private GameObject countdown;
+    [SerializeField] private Text countdownText;
+    
     [Header ("Result UI")]
-    [SerializeField] private GameObject resultPanel;
+    [SerializeField] private GameObject result;
     [SerializeField] private Text resultRankText;
     [SerializeField] private Text resultScoreText;
     [SerializeField] private Text resultSongNameText;
@@ -27,7 +34,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultGoodText;
     
     [Header ("Game Over UI")]
-    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private GameObject gameOver;
     [SerializeField] private Text gameOverTitleText;
     [SerializeField] private Text gameOverProgressText;
     
@@ -41,8 +48,9 @@ public class UIManager : MonoBehaviour
 
     private static int Score => GameManager.myManager.rm.score;
     private static int Progress => GameManager.myManager.rm.progress;
-    private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
     private static int[] JudgementList => GameManager.myManager.rm.judgementList;
+    private static double GameTime => GameManager.myManager.rm.GameTime;
+    private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
     
     private void Start()
     {
@@ -55,10 +63,45 @@ public class UIManager : MonoBehaviour
         progressText.text = "0 %";
     }
 
+    private IEnumerator LevelInfoUICoroutine()
+    {
+        levelInfo.SetActive(true);
+        // TODO: Add show animation
+        yield return new WaitForSeconds(LevelInfoShowDuration);
+        // TODO: Add hide animation
+        levelInfo.SetActive(false);
+    }
+
+    private IEnumerator CountdownUICoroutine()
+    {
+        countdown.SetActive(true);
+        
+        while (GameTime < 0)
+        {
+            countdownText.text = ((int)(-GameTime * 10) / 10).ToString();
+            yield return null;
+        }
+
+        countdown.SetActive(false);
+    }
+
     public void UpdateInGameUI()
     {
         scoreText.text = Score.ToString();
         progressText.text = Progress + " %";
+    }
+
+    public void ShowLevelInfoUI()
+    {
+        levelInfoSongNameText.text = songName;
+        levelInfoComposerNameText.text = composerName;
+        StartCoroutine(LevelInfoUICoroutine());
+    }
+
+    public void ShowCountdownUI()
+    {
+        countdownText.text = ((int)(-GameTime * 10) / 10).ToString();
+        StartCoroutine(CountdownUICoroutine());
     }
 
     public void ShowResultUI()
@@ -103,7 +146,7 @@ public class UIManager : MonoBehaviour
         resultGreatText.text = JudgementList[2].ToString();
         resultGoodText.text = JudgementList[3].ToString();
 
-        resultPanel.SetActive(true);    // TODO: Add show animation
+        result.SetActive(true);    // TODO: Add show animation
     }
     
     public void ShowGameOverUI(bool isNewRecord)
@@ -121,7 +164,7 @@ public class UIManager : MonoBehaviour
         
         gameOverProgressText.text = Progress + " %";
         
-        gameOverPanel.SetActive(true);    // TODO: Add show animation
+        gameOver.SetActive(true);    // TODO: Add show animation
     }
 
     // Displays judge when note is hit or missed
