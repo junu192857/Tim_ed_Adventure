@@ -202,7 +202,9 @@ public class RhythmManager : MonoBehaviour
         foreach (var note in noteList) {
             switch (note.noteType) {
                 case NoteType.Normal:
+                    Debug.Log($"Anchor Position: {AnchorPosition}");
                     GameObject platform = Instantiate(notePrefabs[0], AnchorPosition, Quaternion.identity);
+                    platform.GetComponent<Note>().permanent = true;
                     //TODO: 사용자 지정 노트 속도 (GameManager.noteSpeed)에 따라 spawnPosition의 위치 변화
                     note.spawnPosition = AnchorPosition + notePositiondelta * Vector3.down;
 
@@ -216,7 +218,7 @@ public class RhythmManager : MonoBehaviour
                     platform.transform.localScale = new Vector3(note.platformScale, 1, 1);
                     
                     AnchorPosition += new Vector3(note.platformScale, 0, 0);
-                    Debug.Log($"Anchor Position: {AnchorPosition}");
+                    
                     break;
                     
                 case NoteType.Dash:
