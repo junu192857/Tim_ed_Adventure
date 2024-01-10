@@ -1,6 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+public enum RankType
+{
+    SSS,
+    SS,
+    S,
+    A,
+    B,
+    C
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -29,4 +40,15 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public static RankType GetRank(int score) => score switch
+    {
+        1010000                  => RankType.SSS,
+        >= 1005000 and < 1010000 => RankType.SS,
+        >= 1000000 and < 1005000 => RankType.S,
+        >= 950000  and < 1000000 => RankType.A,
+        >= 900000  and < 950000  => RankType.B,
+        >= 0       and < 900000  => RankType.C,
+        _ => throw new ArgumentOutOfRangeException()
+    };
 }
