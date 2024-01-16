@@ -91,8 +91,6 @@ public class RhythmManager : MonoBehaviour
 
     void Update()
     {
-        if (state != RhythmState.Ingame) return;
-        
         gameTime += Time.deltaTime;
         if (gameTime > 0) state = RhythmState.Ingame;
         
@@ -109,6 +107,8 @@ public class RhythmManager : MonoBehaviour
             noteList.Remove(noteList[0]);
             spawnedNotes.Enqueue(myNote);
         }
+        
+        if (state != RhythmState.Ingame) return;
 
         // if (gameTime >= 0)
         // {
