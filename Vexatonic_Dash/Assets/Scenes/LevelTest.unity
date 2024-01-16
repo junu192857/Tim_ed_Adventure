@@ -3219,7 +3219,8 @@ MonoBehaviour:
   progress: 0
   lastJudge: 0
   notePrefabs:
-  - {fileID: 4543083347653757647, guid: 9b3e4c384536c7f40832da4a900aa0fd, type: 3}
+  - {fileID: 583682281927100959, guid: 912cc5a44e0bf4e49ab659bc50ec4a64, type: 3}
+  - {fileID: 583682281927100959, guid: fea87d035e31def4ebbd90a22b5aba95, type: 3}
   judgementList: 0000000000000000000000000000000000000000
 --- !u!4 &1818378587
 Transform:

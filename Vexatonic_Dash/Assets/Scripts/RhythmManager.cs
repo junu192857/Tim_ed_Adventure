@@ -93,7 +93,8 @@ public class RhythmManager : MonoBehaviour
             //노트의 위치는 사용자가 설정한 노트의 속도에 따라 달라야만 한다. 일단은 Vector3.zero로 두었다.
             Vector3 spawnPos = noteList[0].spawnPosition;
             GameObject myNote = Instantiate(notePrefabs[(int)noteList[0].noteType], spawnPos, Quaternion.identity);
-            myNote.transform.localScale = new Vector3(noteList[0].platformScale, 1, 1);
+            //myNote.transform.localScale = new Vector3(noteList[0].platformScale, 1, 1);
+            myNote.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * noteList[0].platformScale, 2.5f);
             Note note = myNote.GetComponent<Note>();
             note.spawnPos = spawnPos;
             note.destPos = spawnPos + new Vector3(0, notePositiondelta, 0);
@@ -215,7 +216,7 @@ public class RhythmManager : MonoBehaviour
 
                     Debug.Log($"Platform scale: {note.platformScale}");
                     //플랫폼의 너비를 바꾸는 부분. 임시로만 작업했고 플랫폼 디자인이 완료되면 바꿔야 한다
-                    platform.transform.localScale = new Vector3(note.platformScale, 1, 1);
+                    platform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * note.platformScale, 2.5f);
                     
                     AnchorPosition += new Vector3(note.platformScale, 0, 0);
                     
