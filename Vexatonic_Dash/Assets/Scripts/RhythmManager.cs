@@ -91,6 +91,8 @@ public class RhythmManager : MonoBehaviour
 
     void Update()
     {
+        if (state != RhythmState.Ingame) return;
+        
         gameTime += Time.deltaTime;
         if (gameTime > 0) state = RhythmState.Ingame;
         
@@ -222,7 +224,7 @@ public class RhythmManager : MonoBehaviour
                     Debug.Log($"Platform scale: {note.platformScale}");
                     //플랫폼의 너비를 바꾸는 부분. 임시로만 작업했고 플랫폼 디자인이 완료되면 바꿔야 한다
                     platform.transform.localScale = new Vector3(note.platformScale, 1, 1);
-                    
+
                     AnchorPosition += new Vector3(note.platformScale, 0, 0);
                     
                     break;
