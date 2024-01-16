@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     public RhythmManager rm;
     public UIManager um;
+    public InputManager im;
 
     public void Awake()
     {
