@@ -80,9 +80,15 @@ public class RhythmManager : MonoBehaviour
         state = RhythmState.BeforeGameStart;
         gameTime = -5;
         score = 0;
+
+        // InputManager 세팅
+        GameManager.myManager.im.StartLoop(
+            new List<KeyCode> { KeyCode.F, KeyCode.J, KeyCode.R, KeyCode.U, KeyCode.Space },
+            new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
+        );
+        StartCoroutine(nameof(StartReceivingInput));
     }
 
-    // TODO: 입력을 Update와 분리하고, 또 다른 루프에서 입력을 받아와서 판정 처리
     void Update()
     {
         gameTime += Time.deltaTime;
@@ -102,27 +108,36 @@ public class RhythmManager : MonoBehaviour
             noteList.Remove(noteList[0]);
             spawnedNotes.Enqueue(myNote);
         }
-
+        
         if (state != RhythmState.Ingame) return;
 
-        if (gameTime >= 0)
-        {
-            if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J))
-            {
-                inputs.Add(new PlayerInput(NoteType.Normal));
-            }
-            if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.U))
-            {
-                inputs.Add(new PlayerInput(NoteType.Dash));
-            }
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                inputs.Add(new PlayerInput(NoteType.Jump));
-            }
-        }
+        // if (gameTime >= 0)
+        // {
+        //     if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J))
+        //     {
+        //         inputs.Add(new PlayerInput(NoteType.Normal));
+        //     }
+        //     if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.U))
+        //     {
+        //         inputs.Add(new PlayerInput(NoteType.Dash));
+        //     }
+        //     if (Input.GetKeyDown(KeyCode.Space))
+        //     {
+        //         inputs.Add(new PlayerInput(NoteType.Jump));
+        //     }
+        // }
+
         // TODO: 또 다른 기믹(여유되면 넣기)
 
-        //TODO: inputType과 NoteType 분리하기
+        // 모든 입력의 생존시간을 Time.deltaTime만큼 줄인 뒤 시간이 다 된 input은 제거한다.
+        foreach (PlayerInput input in inputs)
+        {
+            input.inputLifeTime -= Time.deltaTime;
+            if (input.inputLifeTime < 0) inputs.Remove(input);
+
+        }
+        // Comment: 입력시간의 정밀성 확보를 위한 방법상 이 부분을 앞으로 당김
+        
         if (inputs.Any() && spawnedNotes.TryPeek(out temp))
         {
             var list = inputs.Where(input => input.inputType == temp.GetComponent<Note>().noteType).ToList();
@@ -153,13 +168,6 @@ public class RhythmManager : MonoBehaviour
 
                 // Comment from Vexatone: Early Miss 안 쓸 거면 코드처럼 생겨먹은 주석들 체크 해제하셈
             } 
-        }
-        // 모든 입력의 생존시간을 Time.deltaTime만큼 줄인 뒤 시간이 다 된 input은 제거한다.
-        foreach (PlayerInput input in inputs)
-        {
-            input.inputLifeTime -= Time.deltaTime;
-            if (input.inputLifeTime < 0) inputs.Remove(input);
-
         }
 
         // 정확한 타이밍에서 0.166초가 넘어가도록 처리가 안 된 노트는 제거하면서 spawnedNotes에서 없애 준다.
@@ -217,7 +225,6 @@ public class RhythmManager : MonoBehaviour
                     Debug.Log($"Platform scale: {note.platformScale}");
                     //플랫폼의 너비를 바꾸는 부분. 임시로만 작업했고 플랫폼 디자인이 완료되면 바꿔야 한다
                     platform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * note.platformScale, 2.5f);
-                    
                     AnchorPosition += new Vector3(note.platformScale, 0, 0);
                     
                     break;
@@ -231,6 +238,20 @@ public class RhythmManager : MonoBehaviour
         // 다른 플랫폼들이 많지만, 우선 기본 이동 플랫폼만.
         // 120bpm 4bit(0.5초) = 1칸 너비로 하자
         Debug.Log("Thanks!");
+    }
+
+    // Input 저장
+    public void AddInput(PlayerInput input)
+    {
+        inputs.Add(input);
+    }
+
+    // Input 루프 타이밍 맞춰? 켜기
+    // 이슈 발생 시 연락 요망
+    private IEnumerator StartReceivingInput()
+    {
+        if (gameTime >= 0) GameManager.myManager.im.Activate();
+        else yield return new WaitForEndOfFrame();
     }
 }
 
