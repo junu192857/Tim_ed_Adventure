@@ -4,14 +4,46 @@ using UnityEngine;
 
 public class MainManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("Main")]
+    [SerializeField] private GameObject mainParent;
+    
+    [Header("Settings")]
+    [SerializeField] private GameObject settingsParent;
+
+    [Header("Play")]
+    [SerializeField] private GameObject playParent;
+
+    private void Start()
+    {
+        mainParent.SetActive(true);
+    }
+
+    private void EnterMain()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void ExitMain()
+    {
+        
+    }
+
+    private void EnterSettings()
+    {
+        
+    }
+
+    private void ExitSettings()
+    {
+        
+    }
+
+    private void EnterPlay()
+    {
+        
+    }
+
+    private void ExitPlay()
     {
         
     }
