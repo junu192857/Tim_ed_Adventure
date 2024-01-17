@@ -92,7 +92,7 @@ public class RhythmManager : MonoBehaviour
     void Update()
     {
         gameTime += Time.deltaTime;
-        if (gameTime > 0) state = RhythmState.Ingame;
+        if (state == RhythmState.BeforeGameStart && gameTime > 0) state = RhythmState.Ingame;
         
         if (noteList.Any() && gameTime >= noteList[0].spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
             //노트를 소환하고 spawnedNotes에 소환된 노트의 게임오브젝트를 넣는다.
@@ -198,6 +198,16 @@ public class RhythmManager : MonoBehaviour
         judgementList[judgementIndex] += 1;
         
         lastJudge = type;
+
+        if (type == JudgementType.Miss) GameOver();
+    }
+
+    private void GameOver() {
+        state = RhythmState.GameOver;
+        Time.timeScale = 0f;
+
+        //TODO: 프로그래스 저장, 계산하기
+        GameManager.myManager.um.ShowGameOverUI(false);
     }
 
     // 모든 플랫폼을 미리 스폰한다. 

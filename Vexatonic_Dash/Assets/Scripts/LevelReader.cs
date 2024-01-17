@@ -16,10 +16,13 @@ public class LevelReader
     private double accTime; // 기본적으로 0이고, BPM이 바뀔 때마다 바뀌기 전까지 곡의 진행 시간이 저장된다.
     private int latestBPMChange; // 가장 최근에 BPM이 바뀐 마디수
 
+    public static int noteCount; // 채보의 전체 노트수
+
     //맵 파일을 읽어 노트 정보에 관한 Queue로 반환하는 함수.
     public List<NoteSpawnInfo> ParseFile(string filepath) {
         accTime = 0;
         latestBPMChange = 1;
+        noteCount = 0;
 
 
         Stack<NoteSpawnInfo> list = new Stack<NoteSpawnInfo>();
@@ -61,6 +64,7 @@ public class LevelReader
                 char type = char.Parse(myList[0]);
                 if ('A' <= type && type <= 'E')
                 {
+                    noteCount++;
                     double spawnTime = accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
                     NoteSpawnInfo cur = new NoteSpawnInfo(spawnTime, (NoteType)((int)type - 65));
                     Debug.Log(spawnTime);
