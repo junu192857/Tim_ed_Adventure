@@ -7,9 +7,6 @@ public class MainManager : MonoBehaviour
     [Header("Main")]
     [SerializeField] private GameObject mainParent;
     
-    [Header("Play")]
-    [SerializeField] private GameObject playParent;
-    
     [Header("Settings")]
     [SerializeField] private GameObject settingsParent;
 
@@ -29,13 +26,18 @@ public class MainManager : MonoBehaviour
     private void Start()
     {
         mainParent.SetActive(true);
+        settingsParent.SetActive(false);
+        videoSettingsParent.SetActive(false);
+        audioSettingsParent.SetActive(false);
+        inputSettingsParent.SetActive(false);
+        playSettingsParent.SetActive(false);
         // TODO: Add animations
     }
 
     public void OnClickMainPlayButton()
     {
         mainParent.SetActive(false);
-        playParent.SetActive(true);
+        // TODO: Move to Select scene
         // TODO: Add animations
     }
     
@@ -53,13 +55,6 @@ public class MainManager : MonoBehaviour
 #else
         Application.Quit();
 #endif
-    }
-
-    public void OnClickPlayBackButton()
-    {
-        playParent.SetActive(false);
-        mainParent.SetActive(true);
-        // TODO: Add animations
     }
 
     public void OnClickSettingsVideoButton()
