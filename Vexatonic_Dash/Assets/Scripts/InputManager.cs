@@ -56,6 +56,7 @@ public class InputManager : MonoBehaviour
     /// <param name="noteTypes">A list of NoteTypes corresponding to keys given.</param>
     private void InputLoop(List<KeyCode> keys, List<NoteType> noteTypes)
     {
+        
         List<bool> keyActiveState = new() { false, false, false, false, false };
         List<int> keysAsSystem = keys.ConvertAll(key => KeyMapping.UnityToSystem(key));
 
@@ -73,7 +74,6 @@ public class InputManager : MonoBehaviour
                 {
                     PlayerInput input = new PlayerInput(noteTypes[i]);
                     input.inputLifeTime += timeDifference;
-
                     GameManager.myManager.rm.AddInput(input);
                 }
                 keyActiveState[i] = keyPressed;
@@ -107,5 +107,10 @@ public class InputManager : MonoBehaviour
     public void Deactivate()
     {
         _isActive = false;
+    }
+
+    private void OnApplicationQuit()
+    {
+        StopLoop();
     }
 }
