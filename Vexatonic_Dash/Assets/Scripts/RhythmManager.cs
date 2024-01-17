@@ -97,7 +97,7 @@ public class RhythmManager : MonoBehaviour
     void Update()
     {
         gameTime += Time.deltaTime;
-        if (state == RhythmState.BeforeGameStart && gameTime > 0) state = RhythmState.Ingame;
+        if (state == RhythmState.BeforeGameStart && gameTime > -1f) state = RhythmState.Ingame;
         
         if (noteList.Any() && gameTime >= noteList[0].spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
             //노트를 소환하고 spawnedNotes에 소환된 노트의 게임오브젝트를 넣는다.
@@ -113,7 +113,8 @@ public class RhythmManager : MonoBehaviour
             noteList.Remove(noteList[0]);
             spawnedNotes.Enqueue(myNote);
         }
-        
+
+
         if (state != RhythmState.Ingame) return;
 
         // if (gameTime >= 0)
@@ -135,11 +136,14 @@ public class RhythmManager : MonoBehaviour
         // TODO: 또 다른 기믹(여유되면 넣기)
 
         // 모든 입력의 생존시간을 Time.deltaTime만큼 줄인 뒤 시간이 다 된 input은 제거한다.
-        foreach (PlayerInput input in inputs)
+        if (inputs.Any())
         {
-            input.inputLifeTime -= Time.deltaTime;
-            if (input.inputLifeTime < 0) inputs.Remove(input);
+            foreach (PlayerInput input in inputs)
+            {
+                input.inputLifeTime -= Time.deltaTime;
+                if (input.inputLifeTime < 0) inputs.Remove(input);
 
+            }
         }
         // Comment: 입력시간의 정밀성 확보를 위한 방법상 이 부분을 앞으로 당김
         
@@ -151,7 +155,7 @@ public class RhythmManager : MonoBehaviour
             {
                 // 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
                 JudgementType judgement;
-                double timingOffset = spawnedNotes.Peek().GetComponent<Note>().lifetime - list[0].inputLifeTime + 0.166;
+                double timingOffset = temp.GetComponent<Note>().lifetime - list[0].inputLifeTime + 0.166;
 
                 judgement = timingOffset switch
                 {
@@ -165,9 +169,10 @@ public class RhythmManager : MonoBehaviour
 
                 // if (judgement != JudgementType.Invalid) {
                 AddJudgement(judgement);
-
+                Debug.Log(judgement);
                 // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
                 inputs.Remove(list[0]);
+                list.RemoveAt(0);
                 Destroy(spawnedNotes.Dequeue());
                 // }
 
@@ -186,6 +191,7 @@ public class RhythmManager : MonoBehaviour
             }
         }
     }
+
 
     // Judgement Function.
     private void AddJudgement(JudgementType type)
@@ -268,8 +274,8 @@ public class RhythmManager : MonoBehaviour
     // 이슈 발생 시 연락 요망
     private IEnumerator StartReceivingInput()
     {
-        if (gameTime >= 0) GameManager.myManager.im.Activate();
-        else yield return new WaitForEndOfFrame();
+        while (gameTime < -1f) yield return new WaitForEndOfFrame();
+        GameManager.myManager.im.Activate();
     }
 
     // 스코어 업데이트
