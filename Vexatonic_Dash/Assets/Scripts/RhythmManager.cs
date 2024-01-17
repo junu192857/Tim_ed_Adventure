@@ -34,8 +34,11 @@ public class RhythmManager : MonoBehaviour
 
     private float notePositiondelta = 3;
 
-    public int score;
-    public int progress;    // TODO: Update progress every frame
+    public int score;   // 반올림된 스코어
+    private double realScore;   // 실제 스코어
+    private double scorePerNotes;    // 노트당 만점
+    public float progress;    // TODO: Update progress every frame
+    private int playedNotes;
     public JudgementType lastJudge;
 
     //노트 프리팹.
@@ -80,6 +83,8 @@ public class RhythmManager : MonoBehaviour
         state = RhythmState.BeforeGameStart;
         gameTime = -5;
         score = 0;
+        realScore = 0;
+        progress = 0;
 
         // InputManager 세팅
         GameManager.myManager.im.StartLoop(
@@ -200,6 +205,9 @@ public class RhythmManager : MonoBehaviour
         lastJudge = type;
 
         if (type == JudgementType.Miss) GameOver();
+
+        UpdateScore(type);
+        UpdatePercentage();
     }
 
     private void GameOver() {
@@ -262,6 +270,30 @@ public class RhythmManager : MonoBehaviour
     {
         if (gameTime >= 0) GameManager.myManager.im.Activate();
         else yield return new WaitForEndOfFrame();
+    }
+
+    // 스코어 업데이트
+    private void UpdateScore(JudgementType judgement)
+    {
+        double rate = judgement switch
+        {
+            JudgementType.PurePerfect => 1.01,
+            JudgementType.Perfect => 1,
+            JudgementType.Great => 0.9,
+            JudgementType.Good => 0.5,
+            JudgementType.Miss => 0,
+            _ => 0
+        };
+
+        realScore += rate * scorePerNotes;
+        score = (int) (realScore + 0.5);
+    }
+
+    // 퍼센트 업데이트
+    private void UpdatePercentage()
+    {
+        playedNotes += 1;
+        progress = playedNotes / LevelReader.noteCount;
     }
 }
 

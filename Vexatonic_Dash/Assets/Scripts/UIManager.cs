@@ -50,7 +50,7 @@ public class UIManager : MonoBehaviour
     public string composerName;
 
     private static int Score => GameManager.myManager.rm.score;
-    private static int Progress => GameManager.myManager.rm.progress;
+    private static int Progress => (int) GameManager.myManager.rm.progress;
     private static int[] JudgementList => GameManager.myManager.rm.judgementList;
     private static double GameTime => GameManager.myManager.rm.GameTime;
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
