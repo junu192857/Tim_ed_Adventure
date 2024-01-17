@@ -84,6 +84,7 @@ public class RhythmManager : MonoBehaviour
         gameTime = -5;
         score = 0;
         realScore = 0;
+        progress = 0;
 
         // InputManager 세팅
         GameManager.myManager.im.StartLoop(
