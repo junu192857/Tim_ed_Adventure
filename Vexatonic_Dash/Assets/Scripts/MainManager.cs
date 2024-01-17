@@ -18,33 +18,60 @@ public class MainManager : MonoBehaviour
         mainParent.SetActive(true);
     }
 
-    private void EnterMain()
+    public void OnClickMainPlayButton()
+    {
+        mainParent.SetActive(false);
+        playParent.SetActive(true);
+        // TODO: Add animations
+    }
+    
+    public void OnClickMainSettingsButton()
+    {
+        mainParent.SetActive(false);
+        settingsParent.SetActive(true);
+        // TODO: Add animations
+    }
+    
+    public void OnClickMainQuitButton()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    public void OnClickSettingsVideoButton()
+    {
+        
+    }
+    
+    public void OnClickSettingsAudioButton()
     {
         
     }
 
-    private void ExitMain()
+    public void OnClickSettingsInputButton()
     {
         
     }
 
-    private void EnterSettings()
+    public void OnClickSettingsPlayButton()
     {
         
     }
 
-    private void ExitSettings()
+    public void OnClickSettingsBackButton()
     {
-        
+        settingsParent.SetActive(false);
+        mainParent.SetActive(true);
+        // TODO: Add animations
     }
 
-    private void EnterPlay()
+    public void OnClickPlayBackButton()
     {
-        
-    }
-
-    private void ExitPlay()
-    {
-        
+        playParent.SetActive(false);
+        mainParent.SetActive(true);
+        // TODO: Add animations
     }
 }
