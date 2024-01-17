@@ -5,12 +5,12 @@ using UnityEngine;
 
 public enum RankType
 {
-    SSS,
-    SS,
+    V,
     S,
     A,
     B,
-    C
+    C,
+    D,
 }
 
 public class GameManager : MonoBehaviour
@@ -44,12 +44,12 @@ public class GameManager : MonoBehaviour
 
     public static RankType GetRank(int score) => score switch
     {
-        1010000                  => RankType.SSS,
-        >= 1005000 and < 1010000 => RankType.SS,
-        >= 1000000 and < 1005000 => RankType.S,
-        >= 950000  and < 1000000 => RankType.A,
-        >= 900000  and < 950000  => RankType.B,
-        >= 0       and < 900000  => RankType.C,
+        1010000                  => RankType.V,
+        >= 1000000 and < 1010000 => RankType.S,
+        >= 950000 and < 1000000 => RankType.A,
+        >= 900000  and < 950000 => RankType.B,
+        >= 800000  and < 900000  => RankType.C,
+        >= 0       and < 800000  => RankType.D,
         _ => throw new ArgumentOutOfRangeException()
     };
 }
