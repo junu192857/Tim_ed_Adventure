@@ -45,11 +45,11 @@ public class GameManager : MonoBehaviour
     public static RankType GetRank(int score) => score switch
     {
         1010000                  => RankType.V,
-        >= 1005000 and < 1010000 => RankType.S,
-        >= 1000000 and < 1005000 => RankType.A,
-        >= 950000  and < 1000000 => RankType.B,
-        >= 900000  and < 950000  => RankType.C,
-        >= 0       and < 900000  => RankType.D,
+        >= 1000000 and < 1010000 => RankType.S,
+        >= 950000 and < 1000000 => RankType.A,
+        >= 900000  and < 950000 => RankType.B,
+        >= 800000  and < 900000  => RankType.C,
+        >= 0       and < 800000  => RankType.D,
         _ => throw new ArgumentOutOfRangeException()
     };
 }
