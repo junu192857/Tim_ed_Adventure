@@ -121,12 +121,8 @@ public class UIManager : MonoBehaviour
     {
         switch (GameManager.GetRank(Score))  // Set rank text, TODO: Set color or image of rank
         {
-            case RankType.SSS:
-                resultRankText.text = "SSS";
-                resultRankText.color = new Color(1f, 0.75f, 0f);
-                break;
-            case RankType.SS:
-                resultRankText.text = "SS";
+            case RankType.V:
+                resultRankText.text = "V";
                 resultRankText.color = new Color(1f, 0.75f, 0f);
                 break;
             case RankType.S:
@@ -135,14 +131,18 @@ public class UIManager : MonoBehaviour
                 break;
             case RankType.A:
                 resultRankText.text = "A";
-                resultRankText.color = new Color(0.75f, 1f, 0.25f);
+                resultRankText.color = new Color(1f, 0.75f, 0f);
                 break;
             case RankType.B:
                 resultRankText.text = "B";
-                resultRankText.color = new Color(0.5f, 0.75f, 0.5f);
+                resultRankText.color = new Color(0.75f, 1f, 0.25f);
                 break;
             case RankType.C:
                 resultRankText.text = "C";
+                resultRankText.color = new Color(0.5f, 0.75f, 0.5f);
+                break;
+            case RankType.D:
+                resultRankText.text = "D";
                 resultRankText.color = new Color(0.25f, 0.5f, 0.75f);
                 break;
             default:
