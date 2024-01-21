@@ -37,10 +37,10 @@ public class LevelReader
 
             var myList = line.Split(' ');
             if (line.StartsWith("NAME")) {
-                //GameManager.myManager.um.songName = myList[1];
+                GameManager.myManager.um.songName = myList[1];
             }
             else if (line.StartsWith("COMPOSER")) { 
-                //GameManager.myManager.um.composerName = myList[1];
+                GameManager.myManager.um.composerName = myList[1];
             }
             else if (line.StartsWith("BPM")) // Ex) BPM 1 180: 1번째 마디부터 180 BPM.
             {

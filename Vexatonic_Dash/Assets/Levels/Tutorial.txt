@@ -1,6 +1,6 @@
 NAME Tutorial
 COMPOSER None
-BPM 1 60
+BPM 1 240
 A 1 1 1
 A 2 1 1
 A 3 1 1
