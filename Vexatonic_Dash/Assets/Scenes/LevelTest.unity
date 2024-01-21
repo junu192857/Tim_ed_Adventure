@@ -3263,6 +3263,7 @@ MonoBehaviour:
   score: 0
   progress: 0
   lastJudge: 0
+  player: {fileID: 657871927803377089, guid: 61855e68254911f468c7cba30cfbaa7c, type: 3}
   notePrefabs:
   - {fileID: 583682281927100959, guid: 912cc5a44e0bf4e49ab659bc50ec4a64, type: 3}
   - {fileID: 583682281927100959, guid: fea87d035e31def4ebbd90a22b5aba95, type: 3}

@@ -7,7 +7,8 @@ using System;
 public enum RhythmState { 
     BeforeGameStart,
     Ingame,
-    GameOver
+    GameOver,
+    GameClear
 }
 
 public class RhythmManager : MonoBehaviour
@@ -39,17 +40,27 @@ public class RhythmManager : MonoBehaviour
     private double scorePerNotes;    // 노트당 만점
     public float progress;    // TODO: Update progress every frame
     private int playedNotes;
+    private int noteCount => LevelReader.noteCount;
     public JudgementType lastJudge;
 
     //노트 프리팹.
+    [Header("Prefabs")]
+    [SerializeField] private GameObject player;
     [SerializeField] private List<GameObject> notePrefabs;
 
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
     private List<NoteSpawnInfo> noteList;
 
+    private Queue<GameObject> preSpawnedNotes = new Queue<GameObject>();
     //게임오브젝트가 활성화된 노트들.
     private Queue<GameObject> spawnedNotes = new Queue<GameObject>();
     GameObject temp = null;
+
+    //캐릭터 게임오브젝트
+    private GameObject myPlayer;
+    private Vector3 playerArrive;
+    private Vector3 playerDest;
+    private bool playerCoroutineRunning;
 
     //0.166초간 저장될 입력들. 만약 spawnedNotes의 첫 번째 노트를 처리할 입력이 inputs에 존재한다면 노트가 처리된다.
     private List<PlayerInput> inputs = new List<PlayerInput>();
@@ -74,17 +85,24 @@ public class RhythmManager : MonoBehaviour
     {
         lr = new LevelReader();
         noteList = lr.ParseFile(Application.dataPath + "\\Levels\\Tutorial.txt");
+        scorePerNotes = (double)1000000 / noteCount;
     }
     // Start is called before the first frame update
     void Start()
     {
         GenerateMap();
+        Time.timeScale = 1f;
+        GameManager.myManager.um.ShowLevelInfoUI();
 
         state = RhythmState.BeforeGameStart;
         gameTime = -5;
         score = 0;
         realScore = 0;
         progress = 0;
+
+        myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity);
+        playerCoroutineRunning = false;
+
 
         // InputManager 세팅
         GameManager.myManager.im.StartLoop(
@@ -100,18 +118,13 @@ public class RhythmManager : MonoBehaviour
         if (state == RhythmState.BeforeGameStart && gameTime > -1f) state = RhythmState.Ingame;
         
         if (noteList.Any() && gameTime >= noteList[0].spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
-            //노트를 소환하고 spawnedNotes에 소환된 노트의 게임오브젝트를 넣는다.
-            //노트의 위치는 사용자가 설정한 노트의 속도에 따라 달라야만 한다. 일단은 Vector3.zero로 두었다.
-            Vector3 spawnPos = noteList[0].spawnPosition;
-            GameObject myNote = Instantiate(notePrefabs[(int)noteList[0].noteType], spawnPos, Quaternion.identity);
-            //myNote.transform.localScale = new Vector3(noteList[0].platformScale, 1, 1);
-            myNote.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * noteList[0].platformScale, 2.5f);
-            Note note = myNote.GetComponent<Note>();
-            note.spawnPos = spawnPos;
-            note.destPos = spawnPos + new Vector3(0, notePositiondelta, 0);
+            GameObject nextNote = preSpawnedNotes.Dequeue();
+            Note note = nextNote.GetComponent<Note>();
+            note.Activate();
+            note.SetLifetime(gameTime, noteList[0].spawnTime);
 
             noteList.Remove(noteList[0]);
-            spawnedNotes.Enqueue(myNote);
+            spawnedNotes.Enqueue(nextNote);
         }
 
 
@@ -169,11 +182,15 @@ public class RhythmManager : MonoBehaviour
 
                 // if (judgement != JudgementType.Invalid) {
                 AddJudgement(judgement);
-                Debug.Log(judgement);
+                
                 // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
                 inputs.Remove(list[0]);
                 list.RemoveAt(0);
+                //playerArrive = temp.transform.position;
+                //playerDest = temp.transform.GetChild(0).transform.position; // 플레이어가 이동할 플랫폼의 반대쪽 끝.
                 Destroy(spawnedNotes.Dequeue());
+                //if (playerCoroutineRunning) StopCoroutine(CharacterMovementCoroutine());
+                //StartCoroutine(CharacterMovementCoroutine());
                 // }
 
                 // Comment from Vexatone: Early Miss 안 쓸 거면 코드처럼 생겨먹은 주석들 체크 해제하셈
@@ -210,10 +227,16 @@ public class RhythmManager : MonoBehaviour
         
         lastJudge = type;
 
-        if (type == JudgementType.Miss) GameOver();
+        if (type == JudgementType.Miss) { 
+            GameOver();
+            return;
+        }
 
         UpdateScore(type);
         UpdatePercentage();
+        GameManager.myManager.um.UpdateInGameUI();
+
+        if (playedNotes == noteCount && state == RhythmState.Ingame) GameClear();
     }
 
     private void GameOver() {
@@ -224,6 +247,13 @@ public class RhythmManager : MonoBehaviour
         GameManager.myManager.um.ShowGameOverUI(false);
     }
 
+    private void GameClear() {
+        state = RhythmState.GameClear;
+        Time.timeScale = 0f;
+
+        GameManager.myManager.um.ShowResultUI();
+    }
+
     // 모든 플랫폼을 미리 스폰한다. 
     private void GenerateMap() {
         Debug.Log("Trying Map Generate..");
@@ -231,10 +261,13 @@ public class RhythmManager : MonoBehaviour
         //float scrollSpeed = GameManager.myManager.scrollSpeed;
 
         Vector3 AnchorPosition = Vector3.zero;
+        
 
         foreach (var note in noteList) {
+            float platformScale = note.platformScale;
             switch (note.noteType) {
                 case NoteType.Normal:
+                    //
                     Debug.Log($"Anchor Position: {AnchorPosition}");
                     GameObject platform = Instantiate(notePrefabs[0], AnchorPosition, Quaternion.identity);
                     platform.GetComponent<Note>().permanent = true;
@@ -246,11 +279,20 @@ public class RhythmManager : MonoBehaviour
                     c.a = 0.5f;
                     platform.GetComponentInChildren<SpriteRenderer>().color = c;
 
-                    Debug.Log($"Platform scale: {note.platformScale}");
-                    //플랫폼의 너비를 바꾸는 부분. 임시로만 작업했고 플랫폼 디자인이 완료되면 바꿔야 한다
-                    platform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * note.platformScale, 2.5f);
-                    AnchorPosition += new Vector3(note.platformScale, 0, 0);
-                    
+                    platform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * platformScale, 2.5f);
+
+                    GameObject movingPlatform = Instantiate(notePrefabs[0], 100 * Vector3.down, Quaternion.identity);
+                    movingPlatform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * platformScale, 2.5f);
+
+                    Note movingNote = movingPlatform.GetComponent<Note>();
+                    movingNote.spawnPos = note.spawnPosition;
+                    movingNote.destPos = AnchorPosition;
+                    movingNote.GetInformationForPlayer(platformScale, note.spawnPosition);
+                    movingNote.Deactivate();
+                    preSpawnedNotes.Enqueue(movingPlatform);
+
+                    // TODO: 일반 노트가 기울어져 있다면 AnchorPosition을 다르게 바꾸기.
+                    AnchorPosition += new Vector3(platformScale, 0, 0);
                     break;
                     
                 case NoteType.Dash:
@@ -258,6 +300,7 @@ public class RhythmManager : MonoBehaviour
                     break;
             }
         }
+        
         // Spawn Platform Object
         // 다른 플랫폼들이 많지만, 우선 기본 이동 플랫폼만.
         // 120bpm 4bit(0.5초) = 1칸 너비로 하자
@@ -291,6 +334,7 @@ public class RhythmManager : MonoBehaviour
             _ => 0
         };
 
+        Debug.Log("Updating Score..");
         realScore += rate * scorePerNotes;
         score = (int) (realScore + 0.5);
     }
@@ -299,8 +343,13 @@ public class RhythmManager : MonoBehaviour
     private void UpdatePercentage()
     {
         playedNotes += 1;
-        progress = playedNotes / LevelReader.noteCount;
+        progress = 100 * playedNotes / noteCount;
     }
+
+    /*private IEnumerator CharacterMovementCoroutine() {
+        myPlayer.transform.position = 
+        yield return null;
+    }*/
 }
 
 public enum JudgementType
