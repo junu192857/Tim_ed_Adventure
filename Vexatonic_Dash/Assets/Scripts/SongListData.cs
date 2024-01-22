@@ -28,7 +28,7 @@ public struct SongData
     public readonly string[] FilePath;
 }
 
-public class SongListData
+public static class SongListData
 {
     public static readonly SongData[] SongList =
     {
