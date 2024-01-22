@@ -57,7 +57,7 @@ public class RhythmManager : MonoBehaviour
     GameObject temp = null;
 
     //캐릭터 게임오브젝트
-    private GameObject myPlayer;
+    private CharacterControl myPlayer;
     private Vector3 playerArrive;
     private Vector3 playerDest;
     private bool playerCoroutineRunning;
@@ -100,7 +100,7 @@ public class RhythmManager : MonoBehaviour
         realScore = 0;
         progress = 0;
 
-        myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity);
+        myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity).GetComponent<CharacterControl>();
         playerCoroutineRunning = false;
 
 
@@ -162,13 +162,14 @@ public class RhythmManager : MonoBehaviour
         
         if (inputs.Any() && spawnedNotes.TryPeek(out temp))
         {
-            var list = inputs.Where(input => input.inputType == temp.GetComponent<Note>().noteType).ToList();
+            Note note = temp.GetComponent<Note>();
+            var list = inputs.Where(input => input.inputType == note.noteType).ToList();
 
             while (list.Count > 0)
             {
                 // 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
                 JudgementType judgement;
-                double timingOffset = temp.GetComponent<Note>().lifetime - list[0].inputLifeTime + 0.166;
+                double timingOffset = note.lifetime - list[0].inputLifeTime + 0.166;
 
                 judgement = timingOffset switch
                 {
@@ -186,11 +187,10 @@ public class RhythmManager : MonoBehaviour
                 // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
                 inputs.Remove(list[0]);
                 list.RemoveAt(0);
-                //playerArrive = temp.transform.position;
-                //playerDest = temp.transform.GetChild(0).transform.position; // 플레이어가 이동할 플랫폼의 반대쪽 끝.
+
+                myPlayer.MoveCharacter(note, gameTime);
                 Destroy(spawnedNotes.Dequeue());
-                //if (playerCoroutineRunning) StopCoroutine(CharacterMovementCoroutine());
-                //StartCoroutine(CharacterMovementCoroutine());
+                
                 // }
 
                 // Comment from Vexatone: Early Miss 안 쓸 거면 코드처럼 생겨먹은 주석들 체크 해제하셈
@@ -256,7 +256,6 @@ public class RhythmManager : MonoBehaviour
 
     // 모든 플랫폼을 미리 스폰한다. 
     private void GenerateMap() {
-        Debug.Log("Trying Map Generate..");
         //스크롤 속도를 플레이어가 설정할 수 있게 바꿀 예정.
         //float scrollSpeed = GameManager.myManager.scrollSpeed;
 
@@ -285,9 +284,10 @@ public class RhythmManager : MonoBehaviour
                     movingPlatform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * platformScale, 2.5f);
 
                     Note movingNote = movingPlatform.GetComponent<Note>();
+                    movingNote.noteEndTime = note.spawnTime + platformScale / 2;
                     movingNote.spawnPos = note.spawnPosition;
                     movingNote.destPos = AnchorPosition;
-                    movingNote.GetInformationForPlayer(platformScale, note.spawnPosition);
+                    movingNote.GetInformationForPlayer(platformScale, note.spawnPosition + notePositiondelta * Vector3.up);
                     movingNote.Deactivate();
                     preSpawnedNotes.Enqueue(movingPlatform);
 
