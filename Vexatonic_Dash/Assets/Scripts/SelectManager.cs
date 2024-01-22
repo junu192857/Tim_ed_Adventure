@@ -10,12 +10,15 @@ public class SelectManager : MonoBehaviour
     
     [SerializeField] private Transform songsParentTransform;
     [SerializeField] private GameObject songPrefab;
-    // [SerializeField] private Something with current song
+
+    [SerializeField] private Text currentSongNameText;
+    [SerializeField] private Text currentSongComposerText;
 
     [Space(10)]
     [SerializeField] private Sprite[] rankImages;   // TODO: Add rank images
     [SerializeField] private Image rankImage;
-    [SerializeField] private Text highScoreText;
+    [SerializeField] private Text highScoreDescriptionText;
+    [SerializeField] private Text highScoreValueText;
     [SerializeField] private Text patternTypeText;
 
     private readonly List<SongData> _songList = new();
@@ -85,12 +88,14 @@ public class SelectManager : MonoBehaviour
 
     private void SetCurrentSongUI()
     {
-        // TODO: Set current song UI
+        currentSongNameText.text = _songList[_currentIndex].SongName;
+        currentSongComposerText.text = _songList[_currentIndex].ComposerName;
     }
 
     private void SetCurrentPatternUI()
     {
-        var score = 1010000;    // TODO: Get score
+        var progress = Random.Range(98, 101);                               // TODO: Get progress
+        var score = (progress == 100) ? Random.Range(1000000, 1010001) : 0; // TODO: Get score
         
         _currentPatternDifficulty = _songList[_currentIndex].Difficulty[(int)_currentPatternType];
         
@@ -107,7 +112,17 @@ public class SelectManager : MonoBehaviour
         patternTypeText.text = patternText;
         
         rankImage.sprite = rankImages[(int)GameManager.GetRank(score)];
-        highScoreText.text = score.ToString();
+        
+        if (score == 0)
+        {
+            highScoreDescriptionText.text = "Progress";
+            highScoreValueText.text = $"{progress} %";
+        }
+        else
+        {
+            highScoreDescriptionText.text = "Score";
+            highScoreValueText.text = $"{score}";
+        }
     }
 
     private void MoveUp()
