@@ -1,19 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SelectManager : MonoBehaviour
 {
-    private const float SongListSpace = 240f;
+    private const float SongListSpace = 180f;
     private const float SongScrollTime = 0.1f;
+
+    [Space(10)]
+    [SerializeField] private Text highlightedSongNameText;
+    [SerializeField] private Text highlightedSongComposerText;
+
+    [Space(10)]
+    [SerializeField] private RectTransform currentSongRect;
+    [SerializeField] private RectTransform prevSong1Rect;
+    [SerializeField] private RectTransform prevSong2Rect;
+    [SerializeField] private RectTransform nextSong1Rect;
+    [SerializeField] private RectTransform nextSong2Rect;
+    [SerializeField] private Text currentSongText;
+    [SerializeField] private Text prevSong1Text;
+    [SerializeField] private Text prevSong2Text;
+    [SerializeField] private Text nextSong1Text;
+    [SerializeField] private Text nextSong2Text;
     
-    [SerializeField] private Transform songsParentTransform;
-    [SerializeField] private GameObject songPrefab;
-
-    [SerializeField] private Text currentSongNameText;
-    [SerializeField] private Text currentSongComposerText;
-
     [Space(10)]
     [SerializeField] private Sprite[] rankImages;   // TODO: Add rank images
     [SerializeField] private Image rankImage;
@@ -42,23 +53,8 @@ public class SelectManager : MonoBehaviour
         {
             _songList.Add(song);
         }
-
-        // Song list UI initialization
-        foreach (Transform t in songsParentTransform)
-        {
-            Destroy(t.gameObject);
-        }
-
-        for (int i = 0; i < _songList.Count; i++)
-        {
-            var song = _songList[i];
-            var instance = Instantiate(songPrefab, songsParentTransform);
-            var position = instance.transform.localPosition;
-            position.y = -i * SongListSpace;
-            instance.transform.localPosition = position;
-            instance.transform.GetChild(0).GetComponent<Text>().text = song.SongName;
-        }
         
+        SetSongListText();
         SetCurrentSongUI();
         SetCurrentPatternUI();
     }
@@ -86,10 +82,19 @@ public class SelectManager : MonoBehaviour
         }
     }
 
+    private void SetSongListText()
+    {
+        currentSongText.text = _songList[_currentIndex].SongName;
+        prevSong1Text.text = (_currentIndex >= 1) ? _songList[_currentIndex - 1].SongName : "";
+        prevSong2Text.text = (_currentIndex >= 2) ? _songList[_currentIndex - 2].SongName : "";
+        nextSong1Text.text = (_currentIndex <= _songList.Count - 2) ? _songList[_currentIndex + 1].SongName : "";
+        nextSong2Text.text = (_currentIndex <= _songList.Count - 3) ? _songList[_currentIndex + 2].SongName : "";
+    }
+
     private void SetCurrentSongUI()
     {
-        currentSongNameText.text = _songList[_currentIndex].SongName;
-        currentSongComposerText.text = _songList[_currentIndex].ComposerName;
+        highlightedSongNameText.text = _songList[_currentIndex].SongName;
+        highlightedSongComposerText.text = _songList[_currentIndex].ComposerName;
     }
 
     private void SetCurrentPatternUI()
@@ -144,16 +149,27 @@ public class SelectManager : MonoBehaviour
         _songMoving = true;
         var elapsedTime = 0f;
         
-        var targetPosition = songsParentTransform.position + new Vector3(0f, up ? -SongListSpace : SongListSpace);
         while (elapsedTime < SongScrollTime)
         {
-            songsParentTransform.position = Vector3.Lerp(songsParentTransform.position, targetPosition, elapsedTime / SongScrollTime);
+            var deltaPosition = Mathf.Lerp(0, up ? -SongListSpace : SongListSpace, elapsedTime / SongScrollTime);
+            
+            currentSongRect.anchoredPosition = new Vector2(0f, deltaPosition);
+            prevSong1Rect.anchoredPosition = new Vector2(0f, 180f + deltaPosition);
+            prevSong2Rect.anchoredPosition = new Vector2(0f, 360f + deltaPosition);
+            nextSong1Rect.anchoredPosition = new Vector2(0f, -180f + deltaPosition);
+            nextSong2Rect.anchoredPosition = new Vector2(0f, -360f + deltaPosition);
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+            
+        currentSongRect.anchoredPosition = new Vector2(0f, 0f);
+        prevSong1Rect.anchoredPosition = new Vector2(0f, 180f);
+        prevSong2Rect.anchoredPosition = new Vector2(0f, 360f);
+        nextSong1Rect.anchoredPosition = new Vector2(0f, -180f);
+        nextSong2Rect.anchoredPosition = new Vector2(0f, -360f);
         
-        songsParentTransform.position = targetPosition;
-        
+        SetSongListText();
         SetCurrentSongUI();
         SetCurrentPatternUI();
         _songMoving = false;
@@ -179,6 +195,6 @@ public class SelectManager : MonoBehaviour
 
     public void OnClickSelectBackButton()
     {
-        // TODO: Back to Main Scene
+        SceneManager.LoadScene("Scenes/Main");
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainManager : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class MainManager : MonoBehaviour
     public void OnClickMainPlayButton()
     {
         mainParent.SetActive(false);
-        // TODO: Move to Select scene
+        SceneManager.LoadScene("Scenes/Select");
         // TODO: Add animations
     }
     
