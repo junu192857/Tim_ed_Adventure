@@ -84,7 +84,7 @@ public class RhythmManager : MonoBehaviour
     private void Awake()
     {
         lr = new LevelReader();
-        noteList = lr.ParseFile(Application.dataPath + "\\Levels\\Tutorial.txt");
+        noteList = lr.ParseFile(Application.dataPath + "\\Levels\\Test.txt");
         scorePerNotes = (double)1000000 / noteCount;
     }
     // Start is called before the first frame update
@@ -101,7 +101,6 @@ public class RhythmManager : MonoBehaviour
         progress = 0;
 
         myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity).GetComponent<CharacterControl>();
-        playerCoroutineRunning = false;
 
 
         // InputManager 세팅
@@ -165,6 +164,9 @@ public class RhythmManager : MonoBehaviour
             Note note = temp.GetComponent<Note>();
             var list = inputs.Where(input => input.inputType == note.noteType).ToList();
 
+            myPlayer.MoveCharacter(note, gameTime);
+
+
             while (list.Count > 0)
             {
                 // 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
@@ -188,8 +190,10 @@ public class RhythmManager : MonoBehaviour
                 inputs.Remove(list[0]);
                 list.RemoveAt(0);
 
-                myPlayer.MoveCharacter(note, gameTime);
-                Destroy(spawnedNotes.Dequeue());
+
+                spawnedNotes.Dequeue();
+                note.FixNote();
+                Debug.Log("Time after destroying note:" + Time.time);
                 
                 // }
 

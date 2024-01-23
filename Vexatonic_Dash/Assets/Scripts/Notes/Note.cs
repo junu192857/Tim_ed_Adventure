@@ -30,6 +30,10 @@ public class Note : MonoBehaviour
         lifetime = spawnTime - gameTime;
     }
 
+    public void FixNote() {
+        permanent = true;
+        transform.position = destPos;
+    }
 
     // Update is called once per frame
     void Update()
