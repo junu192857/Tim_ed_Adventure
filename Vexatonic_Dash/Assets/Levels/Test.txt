@@ -1,0 +1,8 @@
+NAME 240bpm_Metronome
+COMPOSER None
+BPM 1 60
+A 1 4 1
+A 1 4 2
+A 1 4 3
+A 1 4 4
+END
