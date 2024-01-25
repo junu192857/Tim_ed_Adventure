@@ -18,10 +18,11 @@ public class NoteSpawnInfo
     public NoteType noteType;
     public float platformScale;
     public Vector3 spawnPosition;
-    public NoteSpawnInfo(double spawnTime, NoteType noteType)
+    public NoteSpawnInfo(double spawnTime, NoteType noteType, float platformScale)
     {
         this.spawnTime = spawnTime;
         this.noteType = noteType;
+        this.platformScale = platformScale;
         spawnPosition = Vector3.zero;
     }
 }

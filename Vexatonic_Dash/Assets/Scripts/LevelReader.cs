@@ -24,6 +24,8 @@ public class LevelReader
         latestBPMChange = 1;
         noteCount = 0;
 
+        double dashCoeff = 1;
+
 
         Stack<NoteSpawnInfo> list = new Stack<NoteSpawnInfo>();
 
@@ -62,18 +64,28 @@ public class LevelReader
                     return null;
                 }
                 char type = char.Parse(myList[0]);
-                if ('A' <= type && type <= 'E')
-                {
-                    noteCount++;
-                    double spawnTime = accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
-                    NoteSpawnInfo cur = new NoteSpawnInfo(spawnTime, (NoteType)((int)type - 65));
-                    Debug.Log(spawnTime);
-                    if (list.TryPeek(out NoteSpawnInfo prev)) prev.platformScale = (float)(2 * (cur.spawnTime - prev.spawnTime));
-                    list.Push(cur);
-                }
-                else {
-                    Debug.LogError("Parse Error: Note type letter invalid");
-                    return null;
+                switch (type) {
+                    case 'A':
+                        // A (마디수) (n비트) (m번째)
+                        noteCount++;
+                        double spawnTime = accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
+                        NoteSpawnInfo cur = new NoteSpawnInfo(spawnTime, (NoteType)((int)type - 65), 1f);
+                        Debug.Log(spawnTime);
+                        if (list.TryPeek(out NoteSpawnInfo prev)) prev.platformScale = (float)(2 * (cur.spawnTime - prev.spawnTime));
+                        list.Push(cur);
+                        break;
+                    case 'B':
+                        // B (마디수) (n비트) (m번째) (대쉬 계수)
+                        noteCount++;
+                        spawnTime = accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
+                        cur = new NoteSpawnInfo(spawnTime, (NoteType)((int)type - 65), float.Parse(myList[4]));
+                        Debug.Log(spawnTime);
+                        if (list.TryPeek(out prev)) prev.platformScale *= (float)(2 * (cur.spawnTime - prev.spawnTime));
+                        list.Push(cur);
+                        break;
+                    default:
+                        Debug.LogError("Parse Error: Note type letter invalid");
+                        return null;
                 }
             }
         }
