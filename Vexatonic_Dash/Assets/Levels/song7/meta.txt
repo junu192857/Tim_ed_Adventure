@@ -1,0 +1,7 @@
+SONG Song 7
+COMPOSER Various Artist 7
+LEVEL 3 6 8
+AUDIO audio.mp3
+EASY easy.txt
+HARD hard.txt
+VEX vex.txt

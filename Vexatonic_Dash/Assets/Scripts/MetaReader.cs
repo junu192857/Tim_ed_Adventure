@@ -32,7 +32,7 @@ public struct SongData
 
 public static class MetaReader
 {
-    private const string SongsDirectory = @"\Assets\Levels\";
+    private const string SongsDirectory = "/Levels/";
     private const string MetaFileName = "meta.txt";
     
     /// <summary>
@@ -51,15 +51,17 @@ public static class MetaReader
         foreach (var dir in Directory.GetDirectories(Application.dataPath + SongsDirectory))
         {
             Debug.Log($"Searching directory {dir}");
+            
+            var metaDir = dir + '/' + MetaFileName;
 
-            if (!File.Exists(dir + MetaFileName))
+            if (!File.Exists(metaDir))
             {
                 Debug.LogError($"Meta file not found in {dir}");
                 continue;
             }
             
             var currentSongData = new SongData();
-            var fileStream = new FileStream(dir + MetaFileName, FileMode.Open);
+            var fileStream = new FileStream(metaDir, FileMode.Open);
             var streamReader = new StreamReader(fileStream);
             
             currentSongData.PatternFilePath = new[] { "", "", "" };

@@ -1792,7 +1792,7 @@ MonoBehaviour:
   rankImage: {fileID: 22589212}
   highScoreDescriptionText: {fileID: 540653653}
   highScoreValueText: {fileID: 5117308}
-  patternTypeText: {fileID: 753522045}
+  patternInfoText: {fileID: 753522045}
 --- !u!4 &1411372490
 Transform:
   m_ObjectHideFlags: 0
