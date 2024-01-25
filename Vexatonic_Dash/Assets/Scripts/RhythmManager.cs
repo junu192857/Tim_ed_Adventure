@@ -264,29 +264,40 @@ public class RhythmManager : MonoBehaviour
         //float scrollSpeed = GameManager.myManager.scrollSpeed;
 
         Vector3 AnchorPosition = Vector3.zero;
+
+        float platformScale; // 일반, 대쉬 플랫폼에서 사용할 플랫폼 길이 변수
+        GameObject platform;
+        Color c;
+        GameObject movingPlatform;
+        Note movingNote;
+
+        SpriteRenderer sr;
         
 
         foreach (var note in noteList) {
-            float platformScale = note.platformScale;
             switch (note.noteType) {
                 case NoteType.Normal:
                     Debug.Log($"Anchor Position: {AnchorPosition}");
-                    GameObject platform = Instantiate(notePrefabs[0], AnchorPosition, Quaternion.identity);
+                    
+                    platform = Instantiate(notePrefabs[0], AnchorPosition, Quaternion.identity);
                     platform.GetComponent<Note>().permanent = true;
                     //TODO: 사용자 지정 노트 속도 (GameManager.noteSpeed)에 따라 spawnPosition의 위치 변화
                     note.spawnPosition = AnchorPosition + notePositiondelta * Vector3.down;
 
-
-                    Color c = platform.GetComponentInChildren<SpriteRenderer>().color;
+                    sr = platform.GetComponentInChildren<SpriteRenderer>();
+                    c = sr.color;
                     c.a = 0.5f;
-                    platform.GetComponentInChildren<SpriteRenderer>().color = c;
+                    sr.color = c;
 
-                    platform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * platformScale, 2.5f);
+                    platformScale = 2 * (float)note.noteLastingTime;
+                    sr.size = new Vector2(10 * platformScale, 2.5f);
 
-                    GameObject movingPlatform = Instantiate(notePrefabs[0], 100 * Vector3.down, Quaternion.identity);
-                    movingPlatform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * platformScale, 2.5f);
+                    movingPlatform = Instantiate(notePrefabs[0], 100 * Vector3.down, Quaternion.identity);
+                    sr = movingPlatform.GetComponentInChildren<SpriteRenderer>();
 
-                    Note movingNote = movingPlatform.GetComponent<Note>();
+                    sr.size = new Vector2(10 * platformScale, 2.5f);
+
+                    movingNote = movingPlatform.GetComponent<Note>();
                     movingNote.noteEndTime = noteList.IndexOf(note) == noteList.Count - 1 ? note.spawnTime + 1 : noteList[noteList.IndexOf(note) + 1].spawnTime;
                     Debug.Log($"noteEndTime: {movingNote.noteEndTime}");
                     movingNote.spawnPos = note.spawnPosition;
@@ -310,6 +321,7 @@ public class RhythmManager : MonoBehaviour
                     c.a = 0.5f;
                     platform.GetComponentInChildren<SpriteRenderer>().color = c;
 
+                    platformScale = 2 * (float)note.noteLastingTime * note.dashSpeedCoeff;
                     platform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * platformScale, 2.5f);
 
                     movingPlatform = Instantiate(notePrefabs[1], 100 * Vector3.down, Quaternion.identity);

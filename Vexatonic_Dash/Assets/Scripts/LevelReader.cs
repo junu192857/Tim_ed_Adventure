@@ -24,8 +24,6 @@ public class LevelReader
         latestBPMChange = 1;
         noteCount = 0;
 
-        double dashCoeff = 1;
-
 
         Stack<NoteSpawnInfo> list = new Stack<NoteSpawnInfo>();
 
@@ -53,7 +51,7 @@ public class LevelReader
             else if (line.StartsWith("END")) {
                 Debug.Log("Parse End");
 
-                list.Peek().platformScale = 1f;
+                list.Peek().noteLastingTime = 1f;
                 List<NoteSpawnInfo> returnList = list.ToList();
                 returnList.Reverse();
                 return returnList;
@@ -69,9 +67,9 @@ public class LevelReader
                         // A (마디수) (n비트) (m번째)
                         noteCount++;
                         double spawnTime = accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
-                        NoteSpawnInfo cur = new NoteSpawnInfo(spawnTime, (NoteType)((int)type - 65), 1f);
+                        NoteSpawnInfo cur = new NoteSpawnInfo(spawnTime, (NoteType)((int)type - 65));
                         Debug.Log(spawnTime);
-                        if (list.TryPeek(out NoteSpawnInfo prev)) prev.platformScale = (float)(2 * (cur.spawnTime - prev.spawnTime));
+                        if (list.TryPeek(out NoteSpawnInfo prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
                         list.Push(cur);
                         break;
                     case 'B':
@@ -80,9 +78,11 @@ public class LevelReader
                         spawnTime = accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
                         cur = new NoteSpawnInfo(spawnTime, (NoteType)((int)type - 65), float.Parse(myList[4]));
                         Debug.Log(spawnTime);
-                        if (list.TryPeek(out prev)) prev.platformScale *= (float)(2 * (cur.spawnTime - prev.spawnTime));
+                        if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
                         list.Push(cur);
                         break;
+                    case 'C':
+                        // C (마디수) (n비트) (m번째) (점프높이)
                     default:
                         Debug.LogError("Parse Error: Note type letter invalid");
                         return null;
