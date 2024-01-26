@@ -39,12 +39,15 @@ public class SelectManager : MonoBehaviour
     private int _currentPatternLevel;
 
     private bool _songMoving;
+
+    private bool _songListInvalid;
     
     private void Start()
     {
         _currentIndex = 0;
         _currentDifficulty = Difficulty.Easy;
         _songMoving = false;
+        _songListInvalid = false;
         
         // Song list initialization
         _songList.Clear();
@@ -54,6 +57,19 @@ public class SelectManager : MonoBehaviour
             _songList.Add(song);
         }
         
+        if (_songList.Count == 0)
+        {
+            Debug.LogError("No song found");
+            _songListInvalid = true;
+            highlightedSongNameText.text = "No song found";
+            currentSongText.text = "";
+            prevSong1Text.text = "";
+            prevSong2Text.text = "";
+            nextSong1Text.text = "";
+            nextSong2Text.text = "";
+            return;
+        }
+        
         SetSongListText();
         SetCurrentSongUI();
         SetCurrentPatternUI();
@@ -61,6 +77,8 @@ public class SelectManager : MonoBehaviour
 
     private void Update()
     {
+        if (_songListInvalid) return;
+
         // Song scroll
         if (!_songMoving)
         {
@@ -181,7 +199,7 @@ public class SelectManager : MonoBehaviour
         {
             Difficulty.Easy => Difficulty.Hard,
             Difficulty.Hard => Difficulty.Vex,
-            Difficulty.Vex => Difficulty.Easy,
+            Difficulty.Vex  => Difficulty.Easy,
             _ => throw new System.ArgumentException()
         };
         
@@ -193,7 +211,12 @@ public class SelectManager : MonoBehaviour
         SwitchDifficulty();
     }
 
-    public void OnClickSelectBackButton()
+    public void OnClickStartButton()
+    {
+        // TODO: Start game
+    }
+
+    public void OnClickBackButton()
     {
         SceneManager.LoadScene("Scenes/Main");
     }

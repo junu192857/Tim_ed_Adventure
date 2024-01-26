@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using Directory = System.IO.Directory;
 
 public enum Difficulty
 {
@@ -41,7 +39,7 @@ public static class MetaReader
     public static List<SongData> SongMetaList { get; private set; }
 
     /// <summary>
-    /// Read song meta from Levels folder and stores to <see cref="SongMetaList"/>. Must be called only once.
+    /// Read song meta from Levels folder and stores to <see cref="SongMetaList"/>. Called only once.
     /// </summary>
     public static void GetSongMeta()
     {
@@ -56,7 +54,7 @@ public static class MetaReader
 
             if (!File.Exists(metaDir))
             {
-                Debug.LogError($"Meta file not found in {dir}");
+                Debug.LogWarning($"Meta file not found in {dir}");
                 continue;
             }
             
@@ -70,7 +68,7 @@ public static class MetaReader
             {
                 var lineSplit = streamReader.ReadLine()?.Split(' ', 2);
 
-                if (lineSplit == null) continue;
+                if (lineSplit is null) continue;
 
                 switch (lineSplit[0])
                 {
