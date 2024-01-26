@@ -30,28 +30,44 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private Image rankImage;
     [SerializeField] private Text highScoreDescriptionText;
     [SerializeField] private Text highScoreValueText;
-    [SerializeField] private Text patternTypeText;
+    [SerializeField] private Text patternInfoText;
 
     private readonly List<SongData> _songList = new();
     private int _currentIndex;
     
-    private PatternType _currentPatternType;
-    private int _currentPatternDifficulty;
+    private Difficulty _currentDifficulty;
+    private int _currentPatternLevel;
 
     private bool _songMoving;
+
+    private bool _songListInvalid;
     
     private void Start()
     {
         _currentIndex = 0;
-        _currentPatternType = PatternType.Easy;
+        _currentDifficulty = Difficulty.Easy;
         _songMoving = false;
+        _songListInvalid = false;
         
         // Song list initialization
         _songList.Clear();
         
-        foreach (var song in SongListData.SongList)
+        foreach (var song in MetaReader.SongMetaList)
         {
             _songList.Add(song);
+        }
+        
+        if (_songList.Count == 0)
+        {
+            Debug.LogError("No song found");
+            _songListInvalid = true;
+            highlightedSongNameText.text = "No song found";
+            currentSongText.text = "";
+            prevSong1Text.text = "";
+            prevSong2Text.text = "";
+            nextSong1Text.text = "";
+            nextSong2Text.text = "";
+            return;
         }
         
         SetSongListText();
@@ -61,6 +77,8 @@ public class SelectManager : MonoBehaviour
 
     private void Update()
     {
+        if (_songListInvalid) return;
+
         // Song scroll
         if (!_songMoving)
         {
@@ -78,7 +96,7 @@ public class SelectManager : MonoBehaviour
         // Pattern type select
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            SwitchPatternType();
+            SwitchDifficulty();
         }
     }
 
@@ -102,19 +120,19 @@ public class SelectManager : MonoBehaviour
         var progress = Random.Range(98, 101);                               // TODO: Get progress
         var score = (progress == 100) ? Random.Range(1000000, 1010001) : 0; // TODO: Get score
         
-        _currentPatternDifficulty = _songList[_currentIndex].Difficulty[(int)_currentPatternType];
+        _currentPatternLevel = _songList[_currentIndex].Levels[(int)_currentDifficulty];
         
-        var patternText = _currentPatternType switch
+        var patternText = _currentDifficulty switch
         {
-            PatternType.Easy => "Easy",
-            PatternType.Hard => "Hard",
-            PatternType.Vex  => "Vex",
+            Difficulty.Easy => "Easy",
+            Difficulty.Hard => "Hard",
+            Difficulty.Vex  => "Vex",
             _ => throw new System.ArgumentException()
         };
 
-        patternText += " " + _currentPatternDifficulty;
+        patternText += " " + _currentPatternLevel;
         
-        patternTypeText.text = patternText;
+        patternInfoText.text = patternText;
         
         rankImage.sprite = rankImages[(int)GameManager.GetRank(score)];
         
@@ -175,13 +193,13 @@ public class SelectManager : MonoBehaviour
         _songMoving = false;
     }
 
-    private void SwitchPatternType()
+    private void SwitchDifficulty()
     {
-        _currentPatternType = _currentPatternType switch
+        _currentDifficulty = _currentDifficulty switch
         {
-            PatternType.Easy => PatternType.Hard,
-            PatternType.Hard => PatternType.Vex,
-            PatternType.Vex => PatternType.Easy,
+            Difficulty.Easy => Difficulty.Hard,
+            Difficulty.Hard => Difficulty.Vex,
+            Difficulty.Vex  => Difficulty.Easy,
             _ => throw new System.ArgumentException()
         };
         
@@ -190,10 +208,15 @@ public class SelectManager : MonoBehaviour
 
     public void OnClickPatternSelectButton()
     {
-        SwitchPatternType();
+        SwitchDifficulty();
     }
 
-    public void OnClickSelectBackButton()
+    public void OnClickStartButton()
+    {
+        // TODO: Start game
+    }
+
+    public void OnClickBackButton()
     {
         SceneManager.LoadScene("Scenes/Main");
     }
