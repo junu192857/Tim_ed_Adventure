@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Note : MonoBehaviour
 {
@@ -14,7 +15,9 @@ public class Note : MonoBehaviour
     public Vector3 spawnPos;
     public Vector3 destPos;
 
-    public virtual void GetInformationForPlayer(float platformScale, Vector3 startPos) { }
+    public Vector3 startPos;
+    public Vector3 endPos;
+
 
     public void Deactivate() {
         activated = false;

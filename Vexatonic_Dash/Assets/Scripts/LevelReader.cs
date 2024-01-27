@@ -7,6 +7,8 @@ using System.Linq;
 
 public class LevelReader
 {
+    private const float g = -9.8f;
+
     private FileStream reader;
     private StreamReader sr;
 
@@ -23,6 +25,10 @@ public class LevelReader
         accTime = 0;
         latestBPMChange = 1;
         noteCount = 0;
+
+        double spawnTime;
+        NoteSpawnInfo cur;
+        NoteSpawnInfo prev;
 
 
         Stack<NoteSpawnInfo> list = new Stack<NoteSpawnInfo>();
@@ -66,23 +72,32 @@ public class LevelReader
                     case 'A':
                         // A (마디수) (n비트) (m번째)
                         noteCount++;
-                        double spawnTime = accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
-                        NoteSpawnInfo cur = new NoteSpawnInfo(spawnTime, (NoteType)((int)type - 65));
-                        Debug.Log(spawnTime);
-                        if (list.TryPeek(out NoteSpawnInfo prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
+                        spawnTime = CalculateSpawnTime(myList);
+                        cur = new NoteSpawnInfo(spawnTime, NoteType.Normal);
+                        
+                        if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
                         list.Push(cur);
                         break;
                     case 'B':
                         // B (마디수) (n비트) (m번째) (대쉬 계수)
                         noteCount++;
-                        spawnTime = accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
-                        cur = new NoteSpawnInfo(spawnTime, (NoteType)((int)type - 65), float.Parse(myList[4]));
-                        Debug.Log(spawnTime);
+                        spawnTime = CalculateSpawnTime(myList);
+                        cur = new DashNoteSpawnInfo(spawnTime, NoteType.Dash, float.Parse(myList[4]));
                         if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
                         list.Push(cur);
                         break;
                     case 'C':
-                        // C (마디수) (n비트) (m번째) (점프높이)
+                        // C (마디수) (n비트) (m번째) (높이변화)
+                        noteCount++;
+                        spawnTime = CalculateSpawnTime(myList);
+                        cur = new JumpNoteSpawnInfo(spawnTime, NoteType.Jump, float.Parse(myList[4]));
+                        if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
+                        if (!ValidateJump(prev.noteLastingTime, float.Parse(myList[4]))) {
+                            Debug.LogError("Invalid jump note");
+                            return null;
+                        }
+                        list.Push(cur);
+                        break;
                     default:
                         Debug.LogError("Parse Error: Note type letter invalid");
                         return null;
@@ -91,6 +106,14 @@ public class LevelReader
         }
         Debug.LogError("This level does not have an END");
         return null;
+    }
+
+    private double CalculateSpawnTime(string[] myList) { 
+        return accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
+    }
+
+    private bool ValidateJump(double noteLastingTime, float heightDelta) {
+        return 0.5 * g * noteLastingTime * noteLastingTime < heightDelta;
     }
 
 }
