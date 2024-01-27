@@ -16,7 +16,7 @@ public class NoteSpawnInfo
 
     public double spawnTime; //bpm 및 마디수, 몇 번째 비트인지를 통해 계산한 스폰 타이밍.
     public NoteType noteType;
-    public float platformScale;
+    public double noteLastingTime = 1;
     public Vector3 spawnPosition;
     public NoteSpawnInfo(double spawnTime, NoteType noteType)
     {

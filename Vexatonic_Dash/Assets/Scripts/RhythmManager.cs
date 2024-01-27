@@ -84,7 +84,7 @@ public class RhythmManager : MonoBehaviour
     private void Awake()
     {
         lr = new LevelReader();
-        noteList = lr.ParseFile(Application.dataPath + "\\Levels\\Test.txt");
+        noteList = lr.ParseFile(Application.dataPath + "/Levels/test.txt");
         scorePerNotes = (double)1000000 / noteCount;
     }
     // Start is called before the first frame update
@@ -163,7 +163,6 @@ public class RhythmManager : MonoBehaviour
         {
             Note note = temp.GetComponent<Note>();
             var list = inputs.Where(input => input.inputType == note.noteType).ToList();
-
             myPlayer.MoveCharacter(note, gameTime);
 
 
@@ -264,43 +263,111 @@ public class RhythmManager : MonoBehaviour
         //float scrollSpeed = GameManager.myManager.scrollSpeed;
 
         Vector3 AnchorPosition = Vector3.zero;
+
+        float inputWidth; // 이 입력에서 다음 입력까지 캐릭터가 x방향으로 이동하는 거리.
+        GameObject platform;
+        Color c;
+        GameObject movingPlatform;
+
+        SpriteRenderer sr;
         
 
         foreach (var note in noteList) {
-            float platformScale = note.platformScale;
+            inputWidth = 2 * (float)note.noteLastingTime;
             switch (note.noteType) {
                 case NoteType.Normal:
-                    //
                     Debug.Log($"Anchor Position: {AnchorPosition}");
-                    GameObject platform = Instantiate(notePrefabs[0], AnchorPosition, Quaternion.identity);
+                    
+                    platform = Instantiate(notePrefabs[0], AnchorPosition, Quaternion.identity);
                     platform.GetComponent<Note>().permanent = true;
                     //TODO: 사용자 지정 노트 속도 (GameManager.noteSpeed)에 따라 spawnPosition의 위치 변화
                     note.spawnPosition = AnchorPosition + notePositiondelta * Vector3.down;
 
-
-                    Color c = platform.GetComponentInChildren<SpriteRenderer>().color;
+                    sr = platform.GetComponentInChildren<SpriteRenderer>();
+                    c = sr.color;
                     c.a = 0.5f;
-                    platform.GetComponentInChildren<SpriteRenderer>().color = c;
+                    sr.color = c;
 
-                    platform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * platformScale, 2.5f);
+                    
+                    sr.size = new Vector2(10 * inputWidth, 2.5f);
 
-                    GameObject movingPlatform = Instantiate(notePrefabs[0], 100 * Vector3.down, Quaternion.identity);
-                    movingPlatform.GetComponentInChildren<SpriteRenderer>().size = new Vector2(10 * platformScale, 2.5f);
+                    movingPlatform = Instantiate(notePrefabs[0], 100 * Vector3.down, Quaternion.identity);
+                    sr = movingPlatform.GetComponentInChildren<SpriteRenderer>();
 
-                    Note movingNote = movingPlatform.GetComponent<Note>();
-                    movingNote.noteEndTime = note.spawnTime + platformScale / 2;
+                    sr.size = new Vector2(10 * inputWidth, 2.5f);
+
+                    PlatformNote movingNote = movingPlatform.GetComponent<PlatformNote>();
+                    //movingNote.noteEndTime = noteList.IndexOf(note) == noteList.Count - 1 ? note.spawnTime + 1 : noteList[noteList.IndexOf(note) + 1].spawnTime;
+                    movingNote.noteType = NoteType.Normal;
+                    movingNote.noteEndTime = note.spawnTime + note.noteLastingTime;
+                    Debug.Log($"noteEndTime: {movingNote.noteEndTime}");
                     movingNote.spawnPos = note.spawnPosition;
                     movingNote.destPos = AnchorPosition;
-                    movingNote.GetInformationForPlayer(platformScale, note.spawnPosition + notePositiondelta * Vector3.up);
+                    AnchorPosition = movingNote.GetInformationForPlayer(inputWidth, AnchorPosition);
                     movingNote.Deactivate();
                     preSpawnedNotes.Enqueue(movingPlatform);
 
                     // TODO: 일반 노트가 기울어져 있다면 AnchorPosition을 다르게 바꾸기.
-                    AnchorPosition += new Vector3(platformScale, 0, 0);
                     break;
-                    
                 case NoteType.Dash:
+                    DashNoteSpawnInfo dashNote = note as DashNoteSpawnInfo;
+
+                    Debug.Log($"Anchor Position: {AnchorPosition}");
+                    platform = Instantiate(notePrefabs[1], AnchorPosition, Quaternion.identity);
+                    platform.GetComponent<Note>().permanent = true;
+                    //TODO: 사용자 지정 노트 속도 (GameManager.noteSpeed)에 따라 spawnPosition의 위치 변화
+                    dashNote.spawnPosition = AnchorPosition + notePositiondelta * Vector3.down;
+
+                    sr = platform.GetComponentInChildren<SpriteRenderer>();
+                    c = sr.color;
+                    c.a = 0.5f;
+                    sr.color = c;
+
+                    inputWidth *= dashNote.dashSpeedCoeff;
+                    sr.size = new Vector2(10 * inputWidth, 2.5f);
+
+                    movingPlatform = Instantiate(notePrefabs[1], 100 * Vector3.down, Quaternion.identity);
+                    sr = movingPlatform.GetComponentInChildren<SpriteRenderer>();
+                    sr.size = new Vector2(10 * inputWidth, 2.5f);
+
+                    PlatformNote platformMovingNote = movingPlatform.GetComponent<PlatformNote>();
+                    platformMovingNote.noteType = NoteType.Dash;
+                    platformMovingNote.noteEndTime = dashNote.spawnTime + dashNote.noteLastingTime;
+                    Debug.Log($"noteEndTime: {platformMovingNote.noteEndTime}");
+                    platformMovingNote.spawnPos = dashNote.spawnPosition;
+                    platformMovingNote.destPos = AnchorPosition;
+                    AnchorPosition = platformMovingNote.GetInformationForPlayer(inputWidth, AnchorPosition);
+                    platformMovingNote.Deactivate();
+                    preSpawnedNotes.Enqueue(movingPlatform);
+
+                    // TODO: 대쉬 노트가 기울어져 있다면 AnchorPosition을 다르게 바꾸기.
+                    break;
                 case NoteType.Jump:
+                    JumpNoteSpawnInfo jumpNote = note as JumpNoteSpawnInfo;
+                    Debug.Log($"Anchor Position: {AnchorPosition}");
+
+                    platform = Instantiate(notePrefabs[2], AnchorPosition, Quaternion.identity);
+                    platform.GetComponent<Note>().permanent = true;
+
+                    jumpNote.spawnPosition = AnchorPosition + notePositiondelta * Vector3.down;
+
+                    sr = platform.GetComponentInChildren<SpriteRenderer>();
+                    c = sr.color;
+                    c.a = 0.5f;
+                    sr.color = c;
+
+                    movingPlatform = Instantiate(notePrefabs[2], 100 * Vector3.down, Quaternion.identity);
+                    sr = movingPlatform.GetComponentInChildren<SpriteRenderer>();
+
+                    JumpNote jumpMovingNote = movingPlatform.GetComponent<JumpNote>();
+                    jumpMovingNote.noteEndTime = jumpNote.spawnTime + jumpNote.noteLastingTime;
+                    jumpMovingNote.noteType = NoteType.Jump;
+                    Debug.Log($"noteEndTime: {jumpMovingNote.noteEndTime}");
+                    jumpMovingNote.spawnPos = jumpNote.spawnPosition;
+                    jumpMovingNote.destPos = AnchorPosition;
+                    AnchorPosition = jumpMovingNote.GetInformationForPlayer(inputWidth, jumpNote.targetHeightDelta, AnchorPosition);
+                    jumpMovingNote.Deactivate();
+                    preSpawnedNotes.Enqueue(movingPlatform);
                     break;
             }
         }
@@ -310,6 +377,7 @@ public class RhythmManager : MonoBehaviour
         // 120bpm 4bit(0.5초) = 1칸 너비로 하자
         Debug.Log("Thanks!");
     }
+
 
     // Input 저장
     public void AddInput(PlayerInput input)

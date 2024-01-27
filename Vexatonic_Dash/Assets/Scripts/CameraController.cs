@@ -91,7 +91,7 @@ public class CameraController : MonoBehaviour
         Vector2 newCameraPos = _camera.transform.position;
         //x좌표는 해상도에 따라 다르게 조정해야 하지만 우선 1920*1080 (16:9) 비율 가정하고 작성함
         if (centeredPos.x < -0.35f) newCameraPos.x -= _camera.orthographicSize * 16 / 9 * 2 * (-0.35f - centeredPos.x);
-        else if (centeredPos.x > 0.35f) newCameraPos.x += _camera.orthographicSize * 16 / 9 * 2 * (centeredPos.x = -0.35f);
+        else if (centeredPos.x > 0.35f) newCameraPos.x += _camera.orthographicSize * 16 / 9 * 2 * (centeredPos.x - (-0.35f));
         if (centeredPos.y < -0.4f) newCameraPos.y -= _camera.orthographicSize * 2 * (-0.4f - centeredPos.y);
         else if (centeredPos.y > 0.4f) newCameraPos.y += _camera.orthographicSize * 2 * (centeredPos.y - 0.4f);
 

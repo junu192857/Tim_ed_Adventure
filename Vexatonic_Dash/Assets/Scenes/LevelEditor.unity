@@ -3377,7 +3377,6 @@ MonoBehaviour:
   notePrefabs:
   - {fileID: 583682281927100959, guid: 912cc5a44e0bf4e49ab659bc50ec4a64, type: 3}
   - {fileID: 583682281927100959, guid: fea87d035e31def4ebbd90a22b5aba95, type: 3}
-  - {fileID: 6583846502111674364, guid: c1d39e96d2b38b645b0e151990c36852, type: 3}
   judgementList: 0000000000000000000000000000000000000000
 --- !u!4 &1818378587
 Transform:

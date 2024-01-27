@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     [Header ("In-Game UI")]
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
+    [SerializeField] private Text fpsText;
 
     [Header ("Level Info UI")]
     [SerializeField] private GameObject levelInfo;
@@ -64,6 +65,7 @@ public class UIManager : MonoBehaviour
     {
         scoreText.text = "0";
         progressText.text = "0 %";
+        StartCoroutine(ShowFPSCoroutine());
     }
 
     private IEnumerator LevelInfoUICoroutine()
@@ -214,6 +216,22 @@ public class UIManager : MonoBehaviour
                 break;
             default:
                 throw new ArgumentException();
+        }
+    }
+
+    private IEnumerator ShowFPSCoroutine() {
+        float time = 0;
+        int fps = 0;
+        while (true) {
+            time += Time.deltaTime;
+            fps++;
+            if (time > 1f) {
+                fpsText.text = "FPS: " + fps;
+                time = 0f;
+                fps = 0;
+            }
+            yield return null;
+
         }
     }
 }
