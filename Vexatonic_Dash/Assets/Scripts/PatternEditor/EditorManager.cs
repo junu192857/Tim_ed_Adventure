@@ -19,6 +19,7 @@ public class EditorManager : MonoBehaviour
     public Text bpmInputText;
     public Text warningText;
 
+
     private void Start()
     {
         song = GetComponent<AudioSource>();
@@ -29,6 +30,8 @@ public class EditorManager : MonoBehaviour
     //TODO: 특정 부분부터 bpm 바꾸는 옵션. 일단은 매우귀찮다
     private double bpm;
 
+
+    // =========================== Initial Window for Editor ===============================
 
     public void StartEditor() {
         if (double.TryParse(bpmInputText.text, out bpm))
@@ -88,5 +91,10 @@ public class EditorManager : MonoBehaviour
             StartEditorButton.enabled = true;
         }
     }
+
+    // =========================== Camera Movement ===============================
+
     
+
+
 }
