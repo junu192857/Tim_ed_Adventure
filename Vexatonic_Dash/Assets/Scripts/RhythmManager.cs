@@ -273,7 +273,7 @@ public class RhythmManager : MonoBehaviour
         
 
         foreach (var note in noteList) {
-            inputWidth = 2 * (float)note.noteLastingTime;
+            inputWidth = GameManager.myManager.CalculateInputWidthFromTime((float)note.noteLastingTime);
             switch (note.noteType) {
                 case NoteType.Normal:
                     Debug.Log($"Anchor Position: {AnchorPosition}");

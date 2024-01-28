@@ -6,7 +6,7 @@ public class CharacterControl : MonoBehaviour
 {
     private IEnumerator characterCoroutine;
 
-    private const float g = -9.8f;
+    private float g => GameManager.g;
 
     public void MoveCharacter(Note note, double gameTime) {
         if (characterCoroutine != null) StopCoroutine(characterCoroutine);

@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
 
     public string filepath; // 레벨의 맵 파일 위치를 의미한다.
     // 맵 하나 추가할 때마다 업데이트는 불가능 --> filepath도 외부에 있어야 한다.
-    // 프로세카 같은 경우 곡 하나 추가되면 인게임에 반영
 
     public RhythmManager rm;
     public UIManager um;
@@ -40,6 +39,7 @@ public class GameManager : MonoBehaviour
         else {
             Destroy(gameObject);
         }
+        if (scrollSpeed == 0f) scrollSpeed = 1f;
     }
 
     public void Start()
@@ -57,4 +57,8 @@ public class GameManager : MonoBehaviour
         >= 0       and < 800000  => RankType.D,
         _ => throw new ArgumentOutOfRangeException()
     };
+
+    public float CalculateInputWidthFromTime(float time) =>  scrollSpeed * 2 * time;
+
+    public const float g = -9.8f;
 }
