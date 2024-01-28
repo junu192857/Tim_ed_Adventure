@@ -7,7 +7,7 @@ using System.Linq;
 
 public class LevelReader
 {
-    private const float g = -9.8f;
+    private float g => GameManager.g;
 
     private FileStream reader;
     private StreamReader sr;
