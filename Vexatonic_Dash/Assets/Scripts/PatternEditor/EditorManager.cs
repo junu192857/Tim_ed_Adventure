@@ -5,10 +5,13 @@ using System.IO;
 using SimpleFileBrowser;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System;
 
 public class EditorManager : MonoBehaviour
 {
     private AudioSource song;
+
+    private Camera mainCamera;
 
     [Header("InitialWindowUI")]
     public Text AudioNameText;
@@ -19,10 +22,18 @@ public class EditorManager : MonoBehaviour
     public Text bpmInputText;
     public Text warningText;
 
+    [Header("Editor")]
+    public GameObject measureLinePrefab;
+    public GameObject bitLinePrefab;
+    private List<GameObject> lines;
+    public Canvas canvas;
+
+    private int bit; // 4, 6, 8, 12, 16, 24, 32만 지원함
 
     private void Start()
     {
         song = GetComponent<AudioSource>();
+        mainCamera = Camera.main;
         PlaySongFromInitialButton.enabled = false;
         StartEditorButton.enabled = false;
     }
@@ -39,6 +50,10 @@ public class EditorManager : MonoBehaviour
             OuterPanel.SetActive(false);
             InnerPanel.SetActive(false);
             song.Stop();
+            lines = new List<GameObject>();
+            bit = 4;
+            Camera.main.transform.position = -5 * Vector3.forward;
+            ReloadMeasureCountLine();
         }
         else warningText.text = "Please Enter valid BPM!";
         
@@ -94,7 +109,37 @@ public class EditorManager : MonoBehaviour
 
     // =========================== Camera Movement ===============================
 
-    
+    //CameraInputAction에서 카메라를 조작할 때마다 실행시켜야 한다!!
+    public void ReloadMeasureCountLine() {
+        foreach (GameObject _line in lines) Destroy(_line);
+        GameObject line;
+        //BPM이 바뀌는 곡은 고려하지 않음
+        //플레이어의 이동 방향이 반대가 되는 기믹(벽점프 등)을 넣을 예정이지만 에디터에서는 그걸 감안하지 않음
+        double lineGap = 2 * 240 / (bpm * bit); //n비트 1개의 시간 240/(bpm*bit)지만 노트의 길이 = 시간 * 2이기 때문(변속이 없는 경우) 아 하드코딩 언젠간 업보받을것같음
+        int bitCount = (int)Math.Truncate((mainCamera.transform.position.x - mainCamera.orthographicSize * 16 / 9) / lineGap); // 0부터 시작
+        double linePosition = bitCount * lineGap;
+        while (linePosition <= mainCamera.transform.position.x + mainCamera.orthographicSize * 16 / 9) {
+            if (linePosition < 0f) {
+                bitCount++;
+                linePosition = bitCount * lineGap;
+                continue;
+            }
 
+            if (bitCount % bit == 0)
+            {
+                line = Instantiate(measureLinePrefab, mainCamera.WorldToScreenPoint(new Vector3((float)linePosition, mainCamera.transform.position.y, 0)), Quaternion.identity);
+                line.transform.SetParent(canvas.transform, true);
+                line.GetComponentInChildren<Text>().text = (bitCount / bit + 1).ToString();
+                lines.Add(line);
+            }
+            else { 
+                line = Instantiate(bitLinePrefab, mainCamera.WorldToScreenPoint(new Vector3((float)linePosition, mainCamera.transform.position.y, 0)), Quaternion.identity);
+                line.transform.SetParent(canvas.transform, true);
+                lines.Add(line);
+            }
+            bitCount++;
+            linePosition = bitCount * lineGap;
+        }
+    }
 
 }

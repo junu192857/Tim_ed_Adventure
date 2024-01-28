@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class CameraInputAction : MonoBehaviour
 {
+    [SerializeField] private EditorManager em;
+
     public void OnCameraMove(InputValue value)
     {
         Vector2 input = value.Get<Vector2>();
@@ -12,11 +14,13 @@ public class CameraInputAction : MonoBehaviour
             Vector3 cameraPos = Camera.main.transform.position;
             cameraPos += new Vector3(input.x, input.y, 0);
             Camera.main.transform.position = cameraPos;
+            em.ReloadMeasureCountLine();
         }
     }
 
     public void OnCameraZoom(InputValue value) {
         float input = value.Get<float>();
-        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + input, 2, 10);
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + input, 1, 10);
+        em.ReloadMeasureCountLine();
     }
 }
