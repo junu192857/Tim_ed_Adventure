@@ -37,6 +37,7 @@ public class RhythmManager : MonoBehaviour
 
     public int score;   // 반올림된 스코어
     private double realScore;   // 실제 스코어
+    public int minusScore;    // -방식 스코어
     private double scorePerNotes;    // 노트당 만점
     public float progress;    // TODO: Update progress every frame
     private int playedNotes;
@@ -98,6 +99,7 @@ public class RhythmManager : MonoBehaviour
         gameTime = -5;
         score = 0;
         realScore = 0;
+        minusScore = 1010000;
         progress = 0;
 
         myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity).GetComponent<CharacterControl>();
@@ -411,11 +413,20 @@ public class RhythmManager : MonoBehaviour
         score = (int) (realScore + 0.5);
     }
 
+    // -방식 스코어 업데이트
+    private void UpdateMinusScore(JudgementType judgement)
+    {
+        UpdateScore(judgement);
+
+        double tempScore = 1.01 * scorePerNotes * (noteCount - playedNotes) + realScore;
+        minusScore = (int)(tempScore + 0.5);
+    }
+
     // 퍼센트 업데이트
     private void UpdatePercentage()
     {
         playedNotes += 1;
-        progress = 100 * playedNotes / noteCount;
+        progress = 100 * (playedNotes / noteCount);
     }
 
     /*private IEnumerator CharacterMovementCoroutine() {
