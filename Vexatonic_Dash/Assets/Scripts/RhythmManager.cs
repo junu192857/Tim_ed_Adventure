@@ -163,7 +163,6 @@ public class RhythmManager : MonoBehaviour
         {
             Note note = temp.GetComponent<Note>();
             var list = inputs.Where(input => input.inputType == note.noteType).ToList();
-            myPlayer.MoveCharacter(note, gameTime);
 
 
             while (list.Count > 0)
@@ -192,6 +191,7 @@ public class RhythmManager : MonoBehaviour
 
                 spawnedNotes.Dequeue();
                 note.FixNote();
+                myPlayer.MoveCharacter(note, gameTime);
                 Debug.Log("Time after destroying note:" + Time.time);
                 
                 // }
