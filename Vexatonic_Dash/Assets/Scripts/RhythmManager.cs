@@ -152,12 +152,22 @@ public class RhythmManager : MonoBehaviour
         // 모든 입력의 생존시간을 Time.deltaTime만큼 줄인 뒤 시간이 다 된 input은 제거한다.
         if (inputs.Any())
         {
+            List<PlayerInput> inputsToBeRemoved = new List<PlayerInput>();
+            
             foreach (PlayerInput input in inputs)
             {
                 input.inputLifeTime -= Time.deltaTime;
-                if (input.inputLifeTime < 0) inputs.Remove(input);
-
+                if (input.inputLifeTime < 0) inputsToBeRemoved.Add(input);
+                if (input.inputLifeTime < 0) AddJudgement(JudgementType.Miss);
             }
+
+            // 제거할 input을 따로 빼놓고 나중에 처리
+            foreach (PlayerInput input in inputsToBeRemoved)
+            {
+                inputs.Remove(input);
+            }
+
+            inputsToBeRemoved.Clear();
         }
         // Comment: 입력시간의 정밀성 확보를 위한 방법상 이 부분을 앞으로 당김
         
@@ -165,8 +175,6 @@ public class RhythmManager : MonoBehaviour
         {
             Note note = temp.GetComponent<Note>();
             var list = inputs.Where(input => input.inputType == note.noteType).ToList();
-            myPlayer.MoveCharacter(note, gameTime);
-
 
             while (list.Count > 0)
             {
@@ -194,6 +202,7 @@ public class RhythmManager : MonoBehaviour
 
                 spawnedNotes.Dequeue();
                 note.FixNote();
+                myPlayer.MoveCharacter(note, gameTime);
                 Debug.Log("Time after destroying note:" + Time.time);
                 
                 // }
