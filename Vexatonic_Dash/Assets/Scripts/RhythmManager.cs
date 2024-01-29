@@ -156,7 +156,7 @@ public class RhythmManager : MonoBehaviour
             {
                 input.inputLifeTime -= Time.deltaTime;
                 if (input.inputLifeTime < 0) inputsToBeRemoved.Add(input);
-                // if (input.inputLifeTime < 0) AddJudgement(JudgementType.Miss);
+                if (input.inputLifeTime < 0) AddJudgement(JudgementType.Miss);
             }
 
             // 제거할 input을 따로 빼놓고 나중에 처리
