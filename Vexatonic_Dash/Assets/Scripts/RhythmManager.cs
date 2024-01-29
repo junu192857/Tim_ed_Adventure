@@ -435,7 +435,7 @@ public class RhythmManager : MonoBehaviour
     private void UpdatePercentage()
     {
         playedNotes += 1;
-        progress = 100 * (playedNotes / noteCount);
+        progress = 100 * ((float) playedNotes / noteCount);
     }
 
     /*private IEnumerator CharacterMovementCoroutine() {
