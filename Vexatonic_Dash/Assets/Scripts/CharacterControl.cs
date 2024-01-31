@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,7 +50,13 @@ public class CharacterControl : MonoBehaviour
         characterCoroutine = null;
     }
 
-    private IEnumerator JumpCharacterCoroutine(Note note, double gameTime) {
+    [Obsolete("Give character movement direction and gravity direction from now on please.")]
+    private IEnumerator JumpCharacterCoroutine(Note note, double gameTime)
+    {
+        return JumpCharacterCoroutine(note, gameTime, Vector2.right, Vector2.down);
+    }
+
+    private IEnumerator JumpCharacterCoroutine(Note note, double gameTime, Vector2 direction, Vector2 gravity) {
         JumpNote jumpNote = note as JumpNote;
 
 
