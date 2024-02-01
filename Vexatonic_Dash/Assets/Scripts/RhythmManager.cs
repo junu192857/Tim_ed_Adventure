@@ -85,15 +85,15 @@ public class RhythmManager : MonoBehaviour
     private void Awake()
     {
         GameManager.myManager.rm = this;
-        
-        levelFilePath = GameManager.myManager.filepath;
-        lr = new LevelReader();
-        noteList = lr.ParseFile(levelFilePath);
-        scorePerNotes = (double)1000000 / noteCount;
     }
     // Start is called before the first frame update
     void Start()
     {
+        levelFilePath = GameManager.myManager.filepath;
+        lr = new LevelReader();
+        noteList = lr.ParseFile(levelFilePath);
+        scorePerNotes = (double)1000000 / noteCount;
+        
         GenerateMap();
         Time.timeScale = 1f;
         GameManager.myManager.um.ShowLevelInfoUI();
