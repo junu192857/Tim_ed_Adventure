@@ -1,5 +1,5 @@
-SONG Test
-COMPOSER Test Artist
+SONG 240bpm_Metronome
+COMPOSER None
 LEVEL 1 1 1
 AUDIO audio.mp3
 EASY Test.txt

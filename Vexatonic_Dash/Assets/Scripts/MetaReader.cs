@@ -30,9 +30,8 @@ public struct SongData
 
 public static class MetaReader
 {
-    private const string SongsDirectory = "/Levels/";
     private const string MetaFileName = "meta.txt";
-    
+
     /// <summary>
     /// Stores song meta data while game is running.
     /// </summary>
@@ -46,11 +45,12 @@ public static class MetaReader
         if (SongMetaList is null) SongMetaList = new List<SongData>();
         else SongMetaList.Clear();
 
-        foreach (var dir in Directory.GetDirectories(Application.dataPath + SongsDirectory))
+        foreach (var d in Directory.GetDirectories(GameManager.SongsDirectory))
         {
+            var dir = d.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             Debug.Log($"Searching directory {dir}");
             
-            var metaDir = dir + '/' + MetaFileName;
+            var metaDir = dir + Path.DirectorySeparatorChar + MetaFileName;
 
             if (!File.Exists(metaDir))
             {
@@ -89,15 +89,15 @@ public static class MetaReader
                         Debug.Log("Audio file path: " + lineSplit[1]);
                         break;
                     case "EASY":
-                        currentSongData.PatternFilePath[0] = lineSplit[1];
+                        currentSongData.PatternFilePath[0] = dir + Path.DirectorySeparatorChar + lineSplit[1];
                         Debug.Log("Easy level: " + lineSplit[1]);
                         break;
                     case "HARD":
-                        currentSongData.PatternFilePath[1] = lineSplit[1];
+                        currentSongData.PatternFilePath[1] = dir + Path.DirectorySeparatorChar + lineSplit[1];
                         Debug.Log("Hard level: " + lineSplit[1]);
                         break;
                     case "VEX":
-                        currentSongData.PatternFilePath[2] = lineSplit[1];
+                        currentSongData.PatternFilePath[2] = dir + Path.DirectorySeparatorChar + lineSplit[1];
                         Debug.Log("Vex level: " + lineSplit[1]);
                         break;
                 }

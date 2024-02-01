@@ -55,6 +55,11 @@ public class UIManager : MonoBehaviour
     private static int[] JudgementList => GameManager.myManager.rm.judgementList;
     private static double GameTime => GameManager.myManager.rm.GameTime;
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
+
+    private void Awake()
+    {
+        GameManager.myManager.um = this;
+    }
     
     private void Start()
     {

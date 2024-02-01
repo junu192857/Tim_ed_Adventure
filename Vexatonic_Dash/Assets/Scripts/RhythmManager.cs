@@ -84,6 +84,8 @@ public class RhythmManager : MonoBehaviour
 
     private void Awake()
     {
+        GameManager.myManager.rm = this;
+        
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
         noteList = lr.ParseFile(levelFilePath);

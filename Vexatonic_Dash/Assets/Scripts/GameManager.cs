@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public enum RankType
@@ -15,6 +16,9 @@ public enum RankType
 
 public class GameManager : MonoBehaviour
 {
+    private const string LevelsDirectoryName = "Levels";
+    public static string SongsDirectory;
+
     public static GameManager myManager;
 
     public float scrollSpeed; // 카메라 이동 속도를 의미한다.
@@ -40,6 +44,9 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         if (scrollSpeed == 0f) scrollSpeed = 1f;
+
+        SongsDirectory = Application.dataPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                         + Path.DirectorySeparatorChar + LevelsDirectoryName;
     }
 
     public void Start()
