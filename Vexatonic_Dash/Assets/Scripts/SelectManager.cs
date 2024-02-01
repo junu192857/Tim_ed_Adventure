@@ -214,6 +214,10 @@ public class SelectManager : MonoBehaviour
     public void OnClickStartButton()
     {
         // TODO: Start game
+        
+        GameManager.myManager.filepath = _songList[_currentIndex].PatternFilePath[(int)_currentDifficulty];
+
+        SceneManager.LoadScene("Scenes/LevelTest");
     }
 
     public void OnClickBackButton()
