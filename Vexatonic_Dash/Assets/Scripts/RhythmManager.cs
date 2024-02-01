@@ -281,7 +281,17 @@ public class RhythmManager : MonoBehaviour
         state = RhythmState.GameClear;
         Time.timeScale = 0f;
 
-        GameManager.myManager.um.ShowResultUI();
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt(GameManager.myManager.um.songName + '_' + GameManager.myManager.um.difficulty + "Score",
+                highScore);
+            GameManager.myManager.um.ShowResultUI(true);
+        }
+        else
+        {
+            GameManager.myManager.um.ShowResultUI(false);
+        }
     }
 
     // 모든 플랫폼을 미리 스폰한다. 

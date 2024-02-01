@@ -129,7 +129,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(CountdownUICoroutine());
     }
 
-    public void ShowResultUI()
+    public void ShowResultUI(bool isNewRecord)
     {
         switch (GameManager.GetRank(Score))  // Set rank text, TODO: Set color or image of rank
         {
