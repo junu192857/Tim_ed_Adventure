@@ -49,9 +49,13 @@ public class UIManager : MonoBehaviour
     [Header ("Song Info")]
     public string songName;
     public string composerName;
+    public Difficulty difficulty;
 
+    private int _highProgress;
+    private int _highScore;
+    
     private static int Score => GameManager.myManager.rm.score;
-    private static int Progress => (int) GameManager.myManager.rm.progress;
+    private static int Progress => GameManager.myManager.rm.progress;
     private static int[] JudgementList => GameManager.myManager.rm.judgementList;
     private static double GameTime => GameManager.myManager.rm.GameTime;
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
@@ -64,6 +68,7 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         InitializeUI();
+        
     }
     
     private void InitializeUI()
