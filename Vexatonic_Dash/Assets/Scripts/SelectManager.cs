@@ -214,6 +214,8 @@ public class SelectManager : MonoBehaviour
     public void OnClickStartButton()
     {
         // TODO: Start game
+
+        SceneManager.LoadScene("Scenes/LevelTest");
     }
 
     public void OnClickBackButton()
