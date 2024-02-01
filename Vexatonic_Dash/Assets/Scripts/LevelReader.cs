@@ -54,6 +54,10 @@ public class LevelReader
                 latestBPMChange = int.Parse(myList[1]);
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
             }
+            else if (line.StartsWith("GRAVITY"))
+            {
+                // TODO: Implement Gravity Logic
+            }
             else if (line.StartsWith("END")) {
                 Debug.Log("Parse End");
 
@@ -77,6 +81,8 @@ public class LevelReader
                         
                         if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
                         list.Push(cur);
+                        
+                        
                         break;
                     case 'B':
                         // B (마디수) (n비트) (m번째) (대쉬 계수)
