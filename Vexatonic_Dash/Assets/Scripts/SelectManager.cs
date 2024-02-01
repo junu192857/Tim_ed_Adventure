@@ -117,8 +117,7 @@ public class SelectManager : MonoBehaviour
 
     private void SetCurrentPatternUI()
     {
-        var progress = Random.Range(98, 101);                               // TODO: Get progress
-        var score = (progress == 100) ? Random.Range(1000000, 1010001) : 0; // TODO: Get score
+        (int progress, int score) = GetScore(_songList[_currentIndex].SongName, _currentDifficulty);
         
         _currentPatternLevel = _songList[_currentIndex].Levels[(int)_currentDifficulty];
         
@@ -136,7 +135,7 @@ public class SelectManager : MonoBehaviour
         
         rankImage.sprite = rankImages[(int)GameManager.GetRank(score)];
         
-        if (score == 0)
+        if (progress == 100)
         {
             highScoreDescriptionText.text = "Progress";
             highScoreValueText.text = $"{progress} %";
@@ -204,6 +203,47 @@ public class SelectManager : MonoBehaviour
         };
         
         SetCurrentPatternUI();
+    }
+
+    /// <summary>
+    /// Get progress and score of the song from PlayerPrefs.
+    /// </summary>
+    /// <returns>(progress, score)</returns>
+    private static (int, int) GetScore(string songName, Difficulty difficulty)
+    {
+        var patternKey = songName + '_' + difficulty;
+        var progress = PlayerPrefs.GetInt(patternKey + "Progress", -1);
+
+        switch (progress)
+        {
+            // Cleared
+            case 100:
+                var score = PlayerPrefs.GetInt(patternKey + "Score", -1);
+
+                if (score is < 0 or > 1010000)
+                {
+                    Debug.LogError($"Invalid score {score} for {patternKey}");
+                    return (100, -1);
+                }
+
+                Debug.Log($"Loaded score {score} for {patternKey}");
+                return (100, score);
+            
+            // Played, not cleared
+            case >= 0 and < 100:
+                Debug.Log($"Loaded progress {progress} for {patternKey}");
+                return (progress, 0);
+            
+            // Not found
+            case -1:
+                Debug.Log($"No score found for {patternKey}");
+                return (0, 0);
+            
+            // Invalid
+            default:
+                Debug.LogError($"Invalid progress {progress} for {patternKey}");
+                return (-1, 0);
+        }
     }
 
     public void OnClickPatternSelectButton()
