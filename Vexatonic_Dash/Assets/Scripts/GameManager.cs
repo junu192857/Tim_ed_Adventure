@@ -106,7 +106,8 @@ public class GameManager : MonoBehaviour
         _ => throw new ArgumentOutOfRangeException()
     };
 
-    public float CalculateInputWidthFromTime(float time) =>  scrollSpeed * 2 * time;
+    public float CalculateInputWidthFromTime(double time) =>  scrollSpeed * 2 * (float)time;
+    public double CalculateTimeFromInputWidth(float width) => width / (2 * scrollSpeed);
 
     public const float g = -9.8f;
 }

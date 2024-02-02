@@ -360,7 +360,7 @@ public class RhythmManager : MonoBehaviour
                     c.a = 0.5f;
                     sr.color = c;
 
-                    inputWidth *= dashNote.dashSpeedCoeff;
+                    inputWidth *= dashNote.dashCoeff;
                     sr.size = new Vector2(10 * inputWidth, 2.5f);
 
                     movingPlatform = Instantiate(notePrefabs[1], 100 * Vector3.down, Quaternion.identity);
@@ -394,7 +394,7 @@ public class RhythmManager : MonoBehaviour
                     sr.color = c;
 
                     movingPlatform = Instantiate(notePrefabs[2], 100 * Vector3.down, Quaternion.identity);
-                    sr = movingPlatform.GetComponentInChildren<SpriteRenderer>();
+                    sr = movingPlatform.GetComponentInChildren<SpriteRenderer>(); // 이 줄 왜 있지??
 
                     JumpNote jumpMovingNote = movingPlatform.GetComponent<JumpNote>();
                     jumpMovingNote.noteEndTime = jumpNote.spawnTime + jumpNote.noteLastingTime;
@@ -402,15 +402,12 @@ public class RhythmManager : MonoBehaviour
                     Debug.Log($"noteEndTime: {jumpMovingNote.noteEndTime}");
                     jumpMovingNote.spawnPos = jumpNote.spawnPosition;
                     jumpMovingNote.destPos = AnchorPosition;
-                    AnchorPosition = jumpMovingNote.GetInformationForPlayer(inputWidth, jumpNote.targetHeightDelta, AnchorPosition);
+                    AnchorPosition = jumpMovingNote.GetInformationForPlayer(inputWidth, jumpNote.jumpHeight, AnchorPosition);
                     jumpMovingNote.Deactivate();
                     preSpawnedNotes.Enqueue(movingPlatform);
                     break;
             }
         }
-        
-        // Spawn Platform Object
-        // 다른 플랫폼들이 많지만, 우선 기본 이동 플랫폼만.
         // 120bpm 4bit(0.5초) = 1칸 너비로 하자
         Debug.Log("Thanks!");
     }

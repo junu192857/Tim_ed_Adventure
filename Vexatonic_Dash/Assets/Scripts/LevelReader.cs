@@ -55,7 +55,6 @@ public class LevelReader
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
             }
             else if (line.StartsWith("END")) {
-                Debug.Log("Parse End");
 
                 list.Peek().noteLastingTime = 1f;
                 List<NoteSpawnInfo> returnList = list.ToList();
