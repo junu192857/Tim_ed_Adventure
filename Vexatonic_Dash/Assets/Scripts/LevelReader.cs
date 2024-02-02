@@ -26,7 +26,6 @@ public class LevelReader
         latestBPMChange = 1;
         noteCount = 0;
 
-        double spawnTime;
         NoteSpawnInfo cur;
         NoteSpawnInfo prev;
 
@@ -72,31 +71,26 @@ public class LevelReader
                     return null;
                 }
                 char type = char.Parse(myList[0]);
+                
                 switch (type) {
                     case 'A':
-                        // A (마디수) (n비트) (m번째)
-                        noteCount++;
-                        spawnTime = CalculateSpawnTime(myList);
-                        cur = new NoteSpawnInfo(spawnTime, NoteType.Normal);
+                        // A (마디수) (n비트) (m번째) (경사도) (진행방향)
+                        cur = GenerateNoteSpawnInfo(myList);
                         
                         if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
                         list.Push(cur);
-                        
-                        
                         break;
                     case 'B':
-                        // B (마디수) (n비트) (m번째) (대쉬 계수)
-                        noteCount++;
-                        spawnTime = CalculateSpawnTime(myList);
-                        cur = new DashNoteSpawnInfo(spawnTime, NoteType.Dash, float.Parse(myList[4]));
+                        // B (마디수) (n비트) (m번째) (대쉬 계수) (종류) (경사도) (진행방향)
+                        cur = GenerateNoteSpawnInfo(myList);
+                        
                         if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
                         list.Push(cur);
                         break;
                     case 'C':
-                        // C (마디수) (n비트) (m번째) (높이변화)
-                        noteCount++;
-                        spawnTime = CalculateSpawnTime(myList);
-                        cur = new JumpNoteSpawnInfo(spawnTime, NoteType.Jump, float.Parse(myList[4]));
+                        // C (마디수) (n비트) (m번째) (높이변화) (종류) (경사도) (진행방향)
+                        cur = GenerateNoteSpawnInfo(myList);
+                        
                         if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
                         if (!ValidateJump(prev.noteLastingTime, float.Parse(myList[4]))) {
                             Debug.LogError("Invalid jump note");
@@ -122,4 +116,81 @@ public class LevelReader
         return 0.5 * g * noteLastingTime * noteLastingTime < heightDelta;
     }
 
+    private NoteSpawnInfo GenerateNoteSpawnInfo(string[] infoList)
+    {
+        // Local Variable Declaration
+        NoteType noteType;
+        int subTypeIndex = 0;
+        int angleIndex = 0;
+        int directionIndex = 0;
+        int legacyLength = 0;
+        double spawnTime = 0;
+        
+        NoteSpawnInfo generated;
+
+        // Initialization by type
+        switch (infoList[0])
+        {
+            case "A":
+                noteType = NoteType.Normal;
+                angleIndex = 4;
+                directionIndex = 5;
+                legacyLength = 4;
+                break;
+            case "B":
+                noteType = NoteType.Dash;
+                subTypeIndex = 5;
+                angleIndex = 6;
+                directionIndex = 7;
+                legacyLength = 5;
+                break;
+            case "C":
+                noteType = NoteType.Jump;
+                subTypeIndex = 5;
+                angleIndex = 6;
+                directionIndex = 7;
+                legacyLength = 5;
+                break;
+            default:
+                throw new ArgumentException("Invalid note information provided in map file");
+        }
+        
+        // Note Generation
+        noteCount++;
+        spawnTime = CalculateSpawnTime(infoList);
+        
+        generated = noteType switch
+        {
+            NoteType.Normal => new NoteSpawnInfo(spawnTime, NoteType.Normal),
+            NoteType.Dash => new DashNoteSpawnInfo(spawnTime, NoteType.Dash, float.Parse(infoList[4])),
+            NoteType.Jump => new JumpNoteSpawnInfo(spawnTime, NoteType.Jump, float.Parse(infoList[4])),
+            _ => throw new ArgumentException("Unknown or unimplemented note type")
+        };
+
+        if (infoList.Length == legacyLength)
+        {
+            // Legacy format check
+            Debug.LogWarning("Note information in the map file is in obsolete format. Please use the new style.");
+            return generated;
+        }
+
+        if (noteType != NoteType.Normal)
+            generated.noteSubType = infoList[subTypeIndex] switch
+            {
+                "G" => NoteSubType.Ground,
+                "A" => NoteSubType.Air,
+                "W" => NoteSubType.Wall,
+                _ => throw new ArgumentException("Invalid note subtype provided")
+            };
+
+        generated.angle = int.Parse(infoList[angleIndex]);
+        generated.direction = infoList[directionIndex] switch
+        {
+            "L" => CharacterDirection.Left,
+            "R" => CharacterDirection.Right,
+            _ => throw new ArgumentException("Invalid character direction provided")
+        };
+
+        return generated;
+    }
 }

@@ -13,6 +13,7 @@ public class Note : MonoBehaviour
     public double noteEndTime; // noteEndTime = 다음 노트의 spawnTime
     public NoteType noteType; // Normal, Dash, Jump, Attack, Defend. 프리팹 미리 만들 거라 알아서 0부터 하나씩 들어 있다.
     public NoteSubType noteSubType; // Ground, Air, Wall의 3종류. Wall은 JumpNote에만 쓸 수 있으며, PlatformNote에 쓰면 에러가 나도록 할 생각.
+    public CharacterDirection direction; // 노트를 처리했을 시 캐릭터가 이동하는 방향. 중력 방향을 아래라 했을 때 왼쪽, 오른쪽 기준
     public Vector3 spawnPos;
     public Vector3 destPos;
 
@@ -50,11 +51,4 @@ public class Note : MonoBehaviour
     }
 
 
-}
-
-public enum NoteSubType
-{
-    Ground,
-    Air,
-    Wall,
 }
