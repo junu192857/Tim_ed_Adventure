@@ -117,8 +117,7 @@ public class SelectManager : MonoBehaviour
 
     private void SetCurrentPatternUI()
     {
-        var progress = Random.Range(98, 101);                               // TODO: Get progress
-        var score = (progress == 100) ? Random.Range(1000000, 1010001) : 0; // TODO: Get score
+        (int progress, int score) = GameManager.GetScore(_songList[_currentIndex].SongName, _currentDifficulty);
         
         _currentPatternLevel = _songList[_currentIndex].Levels[(int)_currentDifficulty];
         
@@ -136,7 +135,7 @@ public class SelectManager : MonoBehaviour
         
         rankImage.sprite = rankImages[(int)GameManager.GetRank(score)];
         
-        if (score == 0)
+        if (progress == 100)
         {
             highScoreDescriptionText.text = "Progress";
             highScoreValueText.text = $"{progress} %";
@@ -214,6 +213,10 @@ public class SelectManager : MonoBehaviour
     public void OnClickStartButton()
     {
         // TODO: Start game
+        
+        GameManager.myManager.filepath = _songList[_currentIndex].PatternFilePath[(int)_currentDifficulty];
+
+        SceneManager.LoadScene("Scenes/LevelTest");
     }
 
     public void OnClickBackButton()

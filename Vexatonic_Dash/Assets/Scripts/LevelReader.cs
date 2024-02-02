@@ -58,7 +58,6 @@ public class LevelReader
                 // TODO: Implement Gravity Logic
             }
             else if (line.StartsWith("END")) {
-                Debug.Log("Parse End");
 
                 list.Peek().noteLastingTime = 1f;
                 List<NoteSpawnInfo> returnList = list.ToList();

@@ -16,6 +16,11 @@ public class InputManager : MonoBehaviour
 
     [DllImport("user32")]
     static extern short GetKeyState(int nVirtKey);
+
+    void Awake()
+    {
+        GameManager.myManager.im = this;
+    }
     
     void Start()
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public enum RankType
@@ -15,6 +16,9 @@ public enum RankType
 
 public class GameManager : MonoBehaviour
 {
+    private const string LevelsDirectoryName = "Levels";
+    public static string SongsDirectory;
+
     public static GameManager myManager;
 
     public float scrollSpeed; // 카메라 이동 속도를 의미한다.
@@ -40,11 +44,55 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         if (scrollSpeed == 0f) scrollSpeed = 1f;
+
+        SongsDirectory = Application.dataPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                         + Path.DirectorySeparatorChar + LevelsDirectoryName;
     }
 
     public void Start()
     {
         MetaReader.GetSongMeta();
+    }
+
+    /// <summary>
+    /// Get progress and score of the song from PlayerPrefs.
+    /// </summary>
+    /// <returns>(progress, score)</returns>
+    public static (int, int) GetScore(string songName, Difficulty difficulty)
+    {
+        var patternKey = songName + '_' + difficulty;
+        var progress = PlayerPrefs.GetInt(patternKey + "Progress", -1);
+
+        switch (progress)
+        {
+            // Cleared
+            case 100:
+                var score = PlayerPrefs.GetInt(patternKey + "Score", -1);
+
+                if (score is < 0 or > 1010000)
+                {
+                    Debug.LogError($"Invalid score {score} for {patternKey}");
+                    return (100, -1);
+                }
+
+                Debug.Log($"Loaded score {score} for {patternKey}");
+                return (100, score);
+            
+            // Played, not cleared
+            case >= 0 and < 100:
+                Debug.Log($"Loaded progress {progress} for {patternKey}");
+                return (progress, 0);
+            
+            // Not found
+            case -1:
+                Debug.Log($"No score found for {patternKey}");
+                return (0, 0);
+            
+            // Invalid
+            default:
+                Debug.LogError($"Invalid progress {progress} for {patternKey}");
+                return (-1, 0);
+        }
     }
 
     public static RankType GetRank(int score) => score switch
@@ -58,7 +106,8 @@ public class GameManager : MonoBehaviour
         _ => throw new ArgumentOutOfRangeException()
     };
 
-    public float CalculateInputWidthFromTime(float time) =>  scrollSpeed * 2 * time;
+    public float CalculateInputWidthFromTime(double time) =>  scrollSpeed * 2 * (float)time;
+    public double CalculateTimeFromInputWidth(float width) => width / (2 * scrollSpeed);
 
     public const float g = -9.8f;
     public Vector3 gravity = Vector3.down;

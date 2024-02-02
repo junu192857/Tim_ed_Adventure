@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PlatformPivot
   - Line
+  - JumpIndicator
   layers:
   - Default
   - TransparentFX

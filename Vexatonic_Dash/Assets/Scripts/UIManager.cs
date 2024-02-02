@@ -49,16 +49,26 @@ public class UIManager : MonoBehaviour
     [Header ("Song Info")]
     public string songName;
     public string composerName;
+    public Difficulty difficulty;
 
+    private int _highProgress;
+    private int _highScore;
+    
     private static int Score => GameManager.myManager.rm.score;
-    private static int Progress => (int) GameManager.myManager.rm.progress;
+    private static int Progress => GameManager.myManager.rm.progress;
     private static int[] JudgementList => GameManager.myManager.rm.judgementList;
     private static double GameTime => GameManager.myManager.rm.GameTime;
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
+
+    private void Awake()
+    {
+        GameManager.myManager.um = this;
+    }
     
     private void Start()
     {
         InitializeUI();
+        
     }
     
     private void InitializeUI()
@@ -119,7 +129,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(CountdownUICoroutine());
     }
 
-    public void ShowResultUI()
+    public void ShowResultUI(bool isNewRecord)
     {
         switch (GameManager.GetRank(Score))  // Set rank text, TODO: Set color or image of rank
         {
