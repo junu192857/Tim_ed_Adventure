@@ -8,6 +8,7 @@ public class CharacterControl : MonoBehaviour
     private IEnumerator characterCoroutine;
 
     private float g => GameManager.g;
+    private Vector3 gravity;
 
     public void MoveCharacter(Note note, double gameTime) {
         if (characterCoroutine != null) StopCoroutine(characterCoroutine);
@@ -84,5 +85,10 @@ public class CharacterControl : MonoBehaviour
         float y = startPos.y + v_y * time + 0.5f * g * time * time;
 
         return new Vector3(x, y, 0);
+    }
+
+    private void Start()
+    {
+        gravity = g * Vector3.down;
     }
 }

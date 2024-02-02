@@ -5,7 +5,6 @@ using System;
 
 public class JumpNote : Note
 {
-
     public Vector3 GetInformationForPlayer(float inputWidth, float targetHeightDelta, Vector3 startPos)
     {
         this.startPos = startPos;

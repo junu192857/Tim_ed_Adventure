@@ -53,7 +53,7 @@ public class LevelReader
                 latestBPMChange = int.Parse(myList[1]);
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
             }
-            else if (line.StartsWith("GRAVITY"))
+            else if (line.StartsWith("GRAVITY")) // GRAVITY (마디수) (n비트) (m번째) (중력 방향: 0이 아래, 90이 오른쪽)
             {
                 // TODO: Implement Gravity Logic
             }

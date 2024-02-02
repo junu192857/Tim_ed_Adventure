@@ -20,7 +20,8 @@ public class Note : MonoBehaviour
     public Vector3 startPos;
     public Vector3 endPos;
 
-
+    protected int angle; // 플랫폼의 기울기
+    
     public void Deactivate() {
         activated = false;
         gameObject.SetActive(false);

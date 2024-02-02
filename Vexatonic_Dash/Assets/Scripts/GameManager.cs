@@ -61,4 +61,5 @@ public class GameManager : MonoBehaviour
     public float CalculateInputWidthFromTime(float time) =>  scrollSpeed * 2 * time;
 
     public const float g = -9.8f;
+    public Vector3 gravity = Vector3.down;
 }
