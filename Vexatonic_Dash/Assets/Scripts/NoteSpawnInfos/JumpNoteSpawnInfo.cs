@@ -5,8 +5,8 @@ using UnityEngine;
 public class JumpNoteSpawnInfo : NoteSpawnInfo
 {
 
-    public float targetHeightDelta = 0f;
-    public JumpNoteSpawnInfo(double spawnTime, NoteType noteType, float targetHeightDelta) : base(spawnTime, noteType) {
-        this.targetHeightDelta = targetHeightDelta;
+    public float jumpHeight = 0f;
+    public JumpNoteSpawnInfo(double spawnTime, NoteType noteType, float jumpHeight) : base(spawnTime, noteType) {
+        this.jumpHeight = jumpHeight;
     }
 }

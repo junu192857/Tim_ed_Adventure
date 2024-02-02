@@ -334,7 +334,7 @@ public class RhythmManager : MonoBehaviour
                     c.a = 0.5f;
                     sr.color = c;
 
-                    inputWidth *= dashNote.dashSpeedCoeff;
+                    inputWidth *= dashNote.dashCoeff;
                     sr.size = new Vector2(10 * inputWidth, 2.5f);
 
                     movingPlatform = Instantiate(notePrefabs[1], 100 * Vector3.down, Quaternion.identity);
