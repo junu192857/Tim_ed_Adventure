@@ -39,8 +39,10 @@ public class RhythmManager : MonoBehaviour
     private double realScore;   // 실제 스코어
     public int minusScore;    // -방식 스코어
     private double scorePerNotes;    // 노트당 만점
-    public float progress;    // TODO: Update progress every frame
+    public int progress;
     private int playedNotes;
+    public int highProgress;
+    public int highScore;
     private int noteCount => LevelReader.noteCount;
     public JudgementType lastJudge;
 
@@ -107,6 +109,8 @@ public class RhythmManager : MonoBehaviour
 
         myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity).GetComponent<CharacterControl>();
 
+        (highProgress, highScore) =
+            GameManager.GetScore(GameManager.myManager.um.songName, GameManager.myManager.um.difficulty);
 
         // InputManager 세팅
         GameManager.myManager.im.StartLoop(
@@ -260,15 +264,34 @@ public class RhythmManager : MonoBehaviour
         state = RhythmState.GameOver;
         Time.timeScale = 0f;
 
-        //TODO: 프로그래스 저장, 계산하기
-        GameManager.myManager.um.ShowGameOverUI(false);
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt(GameManager.myManager.um.songName + '_' + GameManager.myManager.um.difficulty + "Score",
+                highScore);
+            GameManager.myManager.um.ShowGameOverUI(true);
+        }
+        else
+        {
+            GameManager.myManager.um.ShowGameOverUI(false);
+        }
     }
 
     private void GameClear() {
         state = RhythmState.GameClear;
         Time.timeScale = 0f;
 
-        GameManager.myManager.um.ShowResultUI();
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt(GameManager.myManager.um.songName + '_' + GameManager.myManager.um.difficulty + "Score",
+                highScore);
+            GameManager.myManager.um.ShowResultUI(true);
+        }
+        else
+        {
+            GameManager.myManager.um.ShowResultUI(false);
+        }
     }
 
     // 모든 플랫폼을 미리 스폰한다. 
@@ -438,7 +461,7 @@ public class RhythmManager : MonoBehaviour
     private void UpdatePercentage()
     {
         playedNotes += 1;
-        progress = 100 * ((float) playedNotes / noteCount);
+        progress = 100 * playedNotes / noteCount;
     }
 
     /*private IEnumerator CharacterMovementCoroutine() {
