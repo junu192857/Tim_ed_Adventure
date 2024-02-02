@@ -376,7 +376,7 @@ public class RhythmManager : MonoBehaviour
                     Debug.Log($"noteEndTime: {jumpMovingNote.noteEndTime}");
                     jumpMovingNote.spawnPos = jumpNote.spawnPosition;
                     jumpMovingNote.destPos = AnchorPosition;
-                    AnchorPosition = jumpMovingNote.GetInformationForPlayer(inputWidth, jumpNote.targetHeightDelta, AnchorPosition);
+                    AnchorPosition = jumpMovingNote.GetInformationForPlayer(inputWidth, jumpNote.jumpHeight, AnchorPosition);
                     jumpMovingNote.Deactivate();
                     preSpawnedNotes.Enqueue(movingPlatform);
                     break;

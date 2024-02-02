@@ -7,11 +7,19 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using System;
 
+public enum EditorState { 
+    EditorInitial,
+    EditorMain,
+    OnSetting
+}
+
 public class EditorManager : MonoBehaviour
 {
     private AudioSource song;
 
     private Camera mainCamera;
+
+    public EditorState editorState;
 
     [Header("InitialWindowUI")]
     public Text AudioNameText;
@@ -37,34 +45,35 @@ public class EditorManager : MonoBehaviour
     public List<GameObject> notePrefabs;
     public GameObject jumpEndIndicator;
     private GameObject selectedNote;
-    private bool editorReady;
     private Color c;
     private SpriteRenderer noteSprite;
     private float platformAngle;
+    private float dashPlatformAngle;
     private float dashCoeff;
-    private float jumpHeight;
-
-    [SerializeField] private GameObject normalNoteSettingPanel;
-    [SerializeField] private InputField normalAngleInputField;
-    [SerializeField] private GameObject dashNoteSettingPanel;
-    [SerializeField] private InputField dashAngleInputField;
-    [SerializeField] private InputField dashCoeffInputField;
-    [SerializeField] private GameObject jumpNoteSettingPanel;
-
-    [SerializeField] private InputField noteLengthInputField;
-    [SerializeField] private Text timeText;
-
-    [Header("LevelWriter")]
-    //private List<GameObject> placedNotes;
-    //private List<NoteSpawnInfo> noteSpawnInfos;
-    private List<NoteInfoPair> noteStorage;
-    public enum NoteWriteSetting {
+    public enum NoteWriteSetting
+    {
         MouseDiscrete,
         MouseContinuous,
         WriteLength
     }
     public NoteWriteSetting noteWriteSetting;
     private Vector3 mousePosition;
+    [SerializeField] private GameObject normalNoteSettingPanel;
+    [SerializeField] private InputField normalAngleInputField;
+    [SerializeField] private GameObject dashNoteSettingPanel;
+    [SerializeField] private InputField dashAngleInputField;
+    [SerializeField] private InputField dashCoeffInputField;
+    [SerializeField] private GameObject jumpNoteSettingPanel;
+    [SerializeField] private InputField noteLengthInputField;
+    [SerializeField] private GameObject settingBackgroundPanel;
+
+    [Header("LevelWriter")]
+    private List<NoteInfoPair> noteStorage;
+    [SerializeField] private GameObject mapSavePanel;
+    [SerializeField] private InputField mapNameInputField;
+    private FileStream writer;
+    private StreamWriter sw;
+    private string filepath;
 
 
     private void Start()
@@ -74,7 +83,7 @@ public class EditorManager : MonoBehaviour
         mainCamera.GetComponent<CameraInputAction>().enabled = false;
         PlaySongFromInitialButton.enabled = false;
         StartEditorButton.enabled = false;
-        editorReady = false;
+        editorState = EditorState.EditorInitial;
         //placedNotes = new List<GameObject>();
         //noteSpawnInfos = new List<NoteSpawnInfo>();
         noteStorage = new List<NoteInfoPair>();
@@ -97,7 +106,7 @@ public class EditorManager : MonoBehaviour
             indicatorEnabled = true;
             noteStartPosition = Vector3.zero;
             noteEndPosition = Vector3.zero;
-            editorReady = true;
+            editorState = EditorState.EditorMain;
             noteWriteSetting = NoteWriteSetting.MouseDiscrete;
             Camera.main.transform.position = -5 * Vector3.forward;
             mainCamera.GetComponent<CameraInputAction>().enabled = true;
@@ -210,7 +219,7 @@ public class EditorManager : MonoBehaviour
 
     private void Update()
     {
-        if (!editorReady || selectedNote == null) return;
+        if (editorState != EditorState.EditorMain || selectedNote == null) return;
 
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //노트 x좌표 변경하기. NoteWriteSetting이 WriteLength라면 별개의 함수를 통해 변경
@@ -279,17 +288,17 @@ public class EditorManager : MonoBehaviour
         switch (notePrefabs.IndexOf(selectedNote))
         {
             case 0:
-                info = new NoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteEndPosition.x - noteStartPosition.x), NoteType.Normal);
+                info = new NoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Normal);
                 Debug.Log("Hello from normalNote");
                 break;
             case 1:
                 // TODO: dashCoeff를 인겜에서 조정할 수 있게 하기
-                info = new DashNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteEndPosition.x - noteStartPosition.x), NoteType.Dash, dashCoeff);
+                info = new DashNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Dash, dashCoeff);
                 Debug.Log("Hello from dashNote");
                 break;
             case 2:
                 // TODO: jumpHeight를 인겜에서 조정할 수 있게 하기
-                info = new JumpNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteEndPosition.x - noteStartPosition.x), NoteType.Jump, jumpHeight);
+                info = new JumpNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Jump, noteEndPosition.y - noteStartPosition.y);
                 Debug.Log("Hello from jumpNote");
                 break;
             default:
@@ -358,6 +367,7 @@ public class EditorManager : MonoBehaviour
     }
 
     public void OpenNoteSetting(int noteIndex) {
+        editorState = EditorState.OnSetting;
         switch (noteIndex) {
             case 0:
                 normalNoteSettingPanel.SetActive(true);
@@ -371,37 +381,87 @@ public class EditorManager : MonoBehaviour
             default:
                 break;
         }
-        TotalPanel.SetActive(true);
+        settingBackgroundPanel.SetActive(true);
     }
 
     public void QuitNoteSetting(int noteIndex) {
         switch (noteIndex)
         {
             case 0:
-                if (float.TryParse(normalAngleInputField.text, out platformAngle)) {
-                    if (0 <= platformAngle && platformAngle < 90f)
+                if (/* float.TryParse(normalAngleInputField.text, out platformAngle)*/ true) {
+                    if (/* 0 <= platformAngle && platformAngle < 90f */ true)
                     {
                         normalNoteSettingPanel.SetActive(false);
-                        TotalPanel.SetActive(false);
+                        settingBackgroundPanel.SetActive(false);
+                        editorState = EditorState.EditorMain;
                     }
                 }
                 break;
             case 1:
-                if (float.TryParse(dashAngleInputField.text, out platformAngle) && float.TryParse(dashCoeffInputField.text, out dashCoeff))
+                if (/* float.TryParse(dashAngleInputField.text, out dashPlatformAngle) && */ float.TryParse(dashCoeffInputField.text, out dashCoeff))
                 {
-                    if (0 <= platformAngle && platformAngle < 90f && 0 < dashCoeff)
+                    if (/* 0 <= dashPlatformAngle && dashPlatformAngle < 90f && */ 0 < dashCoeff)
                     {
                         dashNoteSettingPanel.SetActive(false);
-                        TotalPanel.SetActive(false);
+                        settingBackgroundPanel.SetActive(false);
+                        editorState = EditorState.EditorMain;
                     }
                 }
                 break;
             case 2:
                 jumpNoteSettingPanel.SetActive(false);
-                TotalPanel.SetActive(false);
+                settingBackgroundPanel.SetActive(false);
+                editorState = EditorState.EditorMain;
                 break;
             default:
                 break;
         }
+    }
+
+    // =========================== Save Map File ===============================
+    public void OpenMapSavePanel() {
+        mapSavePanel.SetActive(true);
+        settingBackgroundPanel.SetActive(true);
+        editorState = EditorState.OnSetting;
+    }
+
+    public void SaveEditorToMapFile() {
+        filepath = Application.dataPath + "/SavedLevels/" + mapNameInputField.text + ".txt";
+        writer = new FileStream(filepath, FileMode.Create, FileAccess.Write);
+        sw = new StreamWriter(writer);
+
+        NoteSpawnInfo info;
+
+        foreach (NoteInfoPair pair in noteStorage) {
+            info = pair.info;
+            switch (pair.info.noteType) {
+                case NoteType.Normal:
+                    sw.WriteLine("A " + info.spawnTime);
+                    break;
+                case NoteType.Dash:
+                    DashNoteSpawnInfo dashInfo = info as DashNoteSpawnInfo;
+                    sw.WriteLine("B " + dashInfo.spawnTime + " " + dashInfo.dashCoeff);
+                    break;
+                case NoteType.Jump:
+                    JumpNoteSpawnInfo jumpInfo = info as JumpNoteSpawnInfo;
+                    sw.WriteLine("C " + jumpInfo.spawnTime + " " + jumpInfo.jumpHeight);
+                    break;
+            }
+        }
+        sw.WriteLine("END");
+        sw.Close();
+        mapSavePanel.SetActive(false);
+        settingBackgroundPanel.SetActive(false);
+        editorState = EditorState.EditorMain;
+    }
+}
+
+class NoteInfoPair {
+    public GameObject note;
+    public NoteSpawnInfo info;
+
+    public NoteInfoPair(GameObject note, NoteSpawnInfo info) {
+        this.note = note;
+        this.info = info;
     }
 }
