@@ -55,15 +55,15 @@ public class EditorManager : MonoBehaviour
     [SerializeField] private Text timeText;
 
     [Header("LevelWriter")]
-    public List<GameObject> placedNotes;
-    private List<NoteSpawnInfo> notes;
-    public enum NoteWriteSetting { 
+    //private List<GameObject> placedNotes;
+    //private List<NoteSpawnInfo> noteSpawnInfos;
+    private List<NoteInfoPair> noteStorage;
+    public enum NoteWriteSetting {
         MouseDiscrete,
         MouseContinuous,
         WriteLength
     }
     public NoteWriteSetting noteWriteSetting;
-    private Toggle enabledToggle;
     private Vector3 mousePosition;
 
 
@@ -75,6 +75,9 @@ public class EditorManager : MonoBehaviour
         PlaySongFromInitialButton.enabled = false;
         StartEditorButton.enabled = false;
         editorReady = false;
+        //placedNotes = new List<GameObject>();
+        //noteSpawnInfos = new List<NoteSpawnInfo>();
+        noteStorage = new List<NoteInfoPair>();
     }
 
     //TODO: 특정 부분부터 bpm 바꾸는 옵션. 일단은 매우귀찮다
@@ -101,7 +104,7 @@ public class EditorManager : MonoBehaviour
             ReloadMeasureCountLine();
         }
         else warningText.text = "Please Enter valid BPM!";
-        
+
     }
     public void PlaySong() => song.Play();
     public void BrowseSong()
@@ -182,7 +185,7 @@ public class EditorManager : MonoBehaviour
                 line.GetComponentInChildren<Text>().text = (bitCount / bit + 1).ToString();
                 lines.Add(line);
             }
-            else { 
+            else {
                 line = Instantiate(bitLinePrefab, mainCamera.WorldToScreenPoint(new Vector3((float)linePosition, mainCamera.transform.position.y, 0)), Quaternion.identity);
                 line.transform.SetParent(canvas.transform, true);
                 lines.Add(line);
@@ -210,7 +213,7 @@ public class EditorManager : MonoBehaviour
         if (!editorReady || selectedNote == null) return;
 
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // x좌표 변경하기.
+        //노트 x좌표 변경하기. NoteWriteSetting이 WriteLength라면 별개의 함수를 통해 변경
         if (noteWriteSetting != NoteWriteSetting.WriteLength)
         {
             if (noteWriteSetting == NoteWriteSetting.MouseDiscrete)
@@ -253,7 +256,6 @@ public class EditorManager : MonoBehaviour
                 noteSprite.size = new Vector2(10 * (noteEndPosition.x - noteStartPosition.x), 2.5f);
                 break;
             case 2:
-
                 break;
             default:
                 throw new NotImplementedException();
@@ -268,7 +270,6 @@ public class EditorManager : MonoBehaviour
         {
             if (indicator != null && indicator != jumpEndIndicator) Destroy(indicator);
         }
-
         c.a = 1f;
         noteSprite.color = c;
         if (jumpEndIndicator != null) jumpEndIndicator.GetComponent<SpriteRenderer>().color = c;
@@ -279,20 +280,37 @@ public class EditorManager : MonoBehaviour
         {
             case 0:
                 info = new NoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteEndPosition.x - noteStartPosition.x), NoteType.Normal);
+                Debug.Log("Hello from normalNote");
                 break;
             case 1:
                 // TODO: dashCoeff를 인겜에서 조정할 수 있게 하기
                 info = new DashNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteEndPosition.x - noteStartPosition.x), NoteType.Dash, dashCoeff);
+                Debug.Log("Hello from dashNote");
                 break;
             case 2:
                 // TODO: jumpHeight를 인겜에서 조정할 수 있게 하기
                 info = new JumpNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteEndPosition.x - noteStartPosition.x), NoteType.Jump, jumpHeight);
+                Debug.Log("Hello from jumpNote");
                 break;
             default:
+                info = null;
                 break;
         }
+        //placedNotes.Add(notePreview);
+        //noteSpawnInfos.Add(info);
+        noteStorage.Add(new NoteInfoPair(notePreview, info));
         notePreview = null;
         jumpEndIndicator = null;
+        if (noteWriteSetting == NoteWriteSetting.WriteLength) SetNotePreviewByWriteLength();
+    }
+
+    public void DeleteLastNote() {
+        if (noteStorage.Count == 0) return;
+        NoteInfoPair pair = noteStorage[^1];
+        noteStartPosition = pair.note.transform.position;
+        Destroy(pair.note);
+
+        noteStorage.RemoveAt(noteStorage.Count - 1);
         if (noteWriteSetting == NoteWriteSetting.WriteLength) SetNotePreviewByWriteLength();
     }
 
@@ -306,7 +324,7 @@ public class EditorManager : MonoBehaviour
         };
     }
 
-    public void ShowWriteLengthSetting() { 
+    public void ShowWriteLengthSetting() {
         noteLengthInputField.gameObject.SetActive(true);
         SetNotePreviewByWriteLength();
     }
@@ -334,7 +352,7 @@ public class EditorManager : MonoBehaviour
         noteEndPosition.x = noteStartPosition.x + noteWidth;
     }
 
-    public void SelectNote(int noteIndex) { 
+    public void SelectNote(int noteIndex) {
         selectedNote = notePrefabs[noteIndex];
         if (noteWriteSetting == NoteWriteSetting.WriteLength) SetNotePreviewByWriteLength();
     }
@@ -360,7 +378,7 @@ public class EditorManager : MonoBehaviour
         switch (noteIndex)
         {
             case 0:
-                if (float.TryParse(normalAngleInputField.text, out platformAngle)){
+                if (float.TryParse(normalAngleInputField.text, out platformAngle)) {
                     if (0 <= platformAngle && platformAngle < 90f)
                     {
                         normalNoteSettingPanel.SetActive(false);
