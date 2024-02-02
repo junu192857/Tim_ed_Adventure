@@ -3369,8 +3369,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9766a28e5ec440f4e8496cb8959d487e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelFilePath: C:\Users\USER\Desktop\UPnL\Vexatonic_Dash\Vexatonic_Dash\Vexatonic_Dash\Assets\Levels\Tutorial.txt
+  levelFilePath: 
   score: 0
+  minusScore: 0
   progress: 0
   lastJudge: 0
   player: {fileID: 657871927803377089, guid: 61855e68254911f468c7cba30cfbaa7c, type: 3}
