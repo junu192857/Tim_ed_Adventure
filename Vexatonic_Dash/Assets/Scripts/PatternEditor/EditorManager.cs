@@ -106,6 +106,7 @@ public class EditorManager : MonoBehaviour
             indicatorEnabled = true;
             noteStartPosition = Vector3.zero;
             noteEndPosition = Vector3.zero;
+            dashCoeff = 1.5f;
             editorState = EditorState.EditorMain;
             noteWriteSetting = NoteWriteSetting.MouseDiscrete;
             Camera.main.transform.position = -5 * Vector3.forward;

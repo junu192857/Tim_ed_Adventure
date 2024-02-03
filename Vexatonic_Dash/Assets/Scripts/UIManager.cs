@@ -118,8 +118,8 @@ public class UIManager : MonoBehaviour
 
     public void ShowLevelInfoUI()
     {
-        levelInfoSongNameText.text = songName;
-        levelInfoComposerNameText.text = composerName;
+        levelInfoSongNameText.text = GameManager.myManager.selectedComposerName;
+        levelInfoComposerNameText.text = GameManager.myManager.selectedSongName;
         StartCoroutine(LevelInfoUICoroutine());
     }
 

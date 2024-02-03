@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
     public UIManager um;
     public InputManager im;
 
+    public string selectedSongName;
+    public string selectedComposerName;
+
     public void Awake()
     {
         if (myManager == null)
