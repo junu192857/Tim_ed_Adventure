@@ -116,8 +116,6 @@ public class LevelReader
     }
 
     private bool ValidateJump(double noteLastingTime, float jumpHeight) {
-        Debug.Log(0.5 * g * noteLastingTime * noteLastingTime);
-        Debug.Log(jumpHeight);
         return 0.5 * g * noteLastingTime * noteLastingTime < jumpHeight;
     }
 
