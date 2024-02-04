@@ -30,15 +30,18 @@ public class EditorManager : MonoBehaviour
     public Text bpmInputText;
     public Text warningText;
 
-    [Header("BeatIndicator")]
+    [Header("Indicator")]
     public GameObject measureLinePrefab;
     public GameObject bitLinePrefab;
+    public GameObject songLinePrefab;
+    private IEnumerator songLineMoveCoroutine;
+    private GameObject songLine;
     public Canvas canvas;
     private List<GameObject> lines;
     private int bit; // 4, 6, 8, 12, 16, 24, 32만 지원함
     private bool indicatorEnabled;
 
-    [Header("NoteWriter")]
+    [Header("EditorMain")]
     private Vector3 noteStartPosition; // 다음에 배치할 노트의 시작점
     private Vector3 noteEndPosition; // 다음에 배치할 노트의 끝점
     private GameObject notePreview; // 노트가 어떻게 생길지 미리 알려줌
@@ -213,6 +216,45 @@ public class EditorManager : MonoBehaviour
         }
         indicatorEnabled = toggle.isOn;
         if (toggle.isOn) ReloadMeasureCountLine();
+    }
+
+    public void SongToggleIngame(Toggle toggle)
+    {
+        if (songLineMoveCoroutine != null) StopCoroutine(songLineMoveCoroutine);
+        if (toggle.isOn)
+        {
+            if (songLine != null) Destroy(songLine);
+            float startPositionX = mainCamera.transform.position.x - mainCamera.orthographicSize * 16 / 9;
+            songLine = Instantiate(songLinePrefab, mainCamera.WorldToScreenPoint(new Vector3(startPositionX, mainCamera.transform.position.y, 0f)), Quaternion.identity);
+            songLine.transform.SetParent(canvas.transform, true);
+            songLineMoveCoroutine = MoveSongLineCoroutine(startPositionX, songLine);
+        }
+        else {
+            song.Stop();
+            songLineMoveCoroutine = FixSongLineCoroutine(songLine);
+        }
+        StartCoroutine(songLineMoveCoroutine);
+    }
+
+    private IEnumerator MoveSongLineCoroutine(float startX, GameObject line)
+    {
+        if (startX < 0) startX = 0f;
+        float musicTime = startX / (2 * GameManager.myManager.scrollSpeed);
+        song.time = musicTime;
+        song.Play();
+        while (true) {
+            line.GetComponent<RectTransform>().position = mainCamera.WorldToScreenPoint(new Vector3(startX, mainCamera.transform.position.y, 0f));
+            startX += 2 * Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private IEnumerator FixSongLineCoroutine(GameObject line) {
+        Vector3 positionDelta = line.GetComponent<RectTransform>().position - mainCamera.WorldToScreenPoint(new Vector3(0, mainCamera.transform.position.y, 0));
+        while (true) {
+            line.GetComponent<RectTransform>().position = mainCamera.WorldToScreenPoint(new Vector3(0, mainCamera.transform.position.y, 0)) + positionDelta;
+            yield return null;
+        }
     }
 
     // =========================== Editor Main ===============================
@@ -418,6 +460,8 @@ public class EditorManager : MonoBehaviour
                 break;
         }
     }
+
+    
 
     // =========================== Save Map File ===============================
     public void OpenMapSavePanel() {
