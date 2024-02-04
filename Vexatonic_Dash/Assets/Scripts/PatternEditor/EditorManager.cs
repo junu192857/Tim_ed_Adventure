@@ -181,9 +181,9 @@ public class EditorManager : MonoBehaviour
         GameObject line;
         //BPM이 바뀌는 곡은 고려하지 않음
         //플레이어의 이동 방향이 반대가 되는 기믹(벽점프 등)을 넣을 예정이지만 에디터에서는 그걸 감안하지 않음
-        double lineGap = GameManager.myManager.scrollSpeed * 2 * 240 / (bpm * bit); //n비트 1개의 시간 240/(bpm*bit)지만 노트의 길이 = 시간 * 2이기 때문(변속이 없는 경우) 아 하드코딩 언젠간 업보받을것같음
+        float lineGap = GameManager.myManager.CalculateInputWidthFromTime(240 / (bpm * bit)); //n비트 1개의 시간 240/(bpm*bit)지만 노트의 길이 = 시간 * 2이기 때문(변속이 없는 경우) 아 하드코딩 언젠간 업보받을것같음
         int bitCount = (int)((mainCamera.transform.position.x - mainCamera.orthographicSize * 16 / 9) / lineGap); // 0부터 시작
-        double linePosition = bitCount * lineGap;
+        float linePosition = bitCount * lineGap;
         while (linePosition <= mainCamera.transform.position.x + mainCamera.orthographicSize * 16 / 9) {
             if (linePosition < 0f) {
                 bitCount++;
@@ -238,13 +238,13 @@ public class EditorManager : MonoBehaviour
 
     private IEnumerator MoveSongLineCoroutine(float startX, GameObject line)
     {
-        if (startX < 0) startX = 0f;
-        float musicTime = startX / (2 * GameManager.myManager.scrollSpeed);
+        if (startX < 0) startX = 0;
+        float musicTime = (float)GameManager.myManager.CalculateTimeFromInputWidth(startX);
         song.time = musicTime;
         song.Play();
         while (true) {
             line.GetComponent<RectTransform>().position = mainCamera.WorldToScreenPoint(new Vector3(startX, mainCamera.transform.position.y, 0f));
-            startX += 2 * Time.deltaTime;
+            startX += GameManager.myManager.CalculateInputWidthFromTime(Time.deltaTime);
             yield return null;
         }
     }
@@ -270,7 +270,7 @@ public class EditorManager : MonoBehaviour
         {
             if (noteWriteSetting == NoteWriteSetting.MouseDiscrete)
             {
-                double lineGap = GameManager.myManager.scrollSpeed * 2 * 240 / (bpm * bit);
+                double lineGap = GameManager.myManager.CalculateInputWidthFromTime(240 / (bpm * bit));
                 int bitCount = (int)(mousePosition.x / lineGap);
                 noteEndPosition = new Vector3((float)(lineGap * bitCount), noteStartPosition.y, 0);
             }
@@ -396,7 +396,7 @@ public class EditorManager : MonoBehaviour
             if (bitExpression.Length != 2) return;
             if (int.TryParse(bitExpression[0], out int multiply) && int.TryParse(bitExpression[1], out int bit))
             {
-                noteWidth = GameManager.myManager.scrollSpeed * 2 * 240 * multiply / (bpm * bit);
+                noteWidth = GameManager.myManager.CalculateInputWidthFromTime(240 * multiply / (bpm * bit));
             }
             else return;
         }
