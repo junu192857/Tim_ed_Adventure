@@ -51,13 +51,7 @@ public class CharacterControl : MonoBehaviour
         characterCoroutine = null;
     }
 
-    [Obsolete("Give character movement direction and gravity direction from now on please.")]
-    private IEnumerator JumpCharacterCoroutine(Note note, double gameTime)
-    {
-        return JumpCharacterCoroutine(note, gameTime, Vector2.down);
-    }
-
-    private IEnumerator JumpCharacterCoroutine(Note note, double gameTime, Vector2 gravity) {
+    private IEnumerator JumpCharacterCoroutine(Note note, double gameTime) {
         JumpNote jumpNote = note as JumpNote;
 
 
@@ -69,10 +63,16 @@ public class CharacterControl : MonoBehaviour
 
         float v_x = (note.endPos.x - note.startPos.x) / playerMovingTime;
         float v_y = (note.endPos.y - note.startPos.y) / playerMovingTime - 0.5f * g * playerMovingTime;
+        
+        // Vector3 vDelta = (note.endPos - note.startPos) / playerMovingTime;
+        // Vector3 vVertical = -0.5f * g * playerMovingTime;
+        // Vector3 v = vDelta + vVertical
 
         while (time < playerMovingTime + 0.166f) {
             Vector3 targetPosition = CalculateJumpPosition(v_x, v_y, time, note.startPos);
             if (time > playerMovingTime) targetPosition.y = note.endPos.y;
+            // Vector3 targetPosition = CalculateJumpPosition(v, time, note.startPos);
+            // if (time > playerMovingTime) targetPosition = note.endPos;
             gameObject.transform.position = targetPosition;
             time += Time.deltaTime;
             yield return null;
@@ -80,11 +80,17 @@ public class CharacterControl : MonoBehaviour
         characterCoroutine = null;
     }
 
+    [Obsolete("Please provide vector directly instead its x and y coordination")]
     private Vector3 CalculateJumpPosition(float v_x, float v_y, float time, Vector3 startPos) {
         float x = startPos.x + v_x * time;
         float y = startPos.y + v_y * time + 0.5f * g * time * time;
 
         return new Vector3(x, y, 0);
+    }
+
+    private Vector3 CalculateJumpPosition(Vector3 v, float time, Vector3 startPos)
+    {
+        return startPos + (v * time) + (0.5f * GameManager.myManager.GravityAsVector * time * time);
     }
 
     private void Start()

@@ -34,6 +34,7 @@ public class NoteSpawnInfo
     public int angle;
     public double noteLastingTime = 1;
     public Vector3 spawnPosition;
+    
     public NoteSpawnInfo(double spawnTime, NoteType noteType)
     {
         this.spawnTime = spawnTime;
