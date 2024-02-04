@@ -53,6 +53,8 @@ public class RhythmManager : MonoBehaviour
 
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
     private List<NoteSpawnInfo> noteList;
+    private List<GravityData> gravityDataList;
+    private Queue<GravityData> gravityQueue;
 
     private Queue<GameObject> preSpawnedNotes = new Queue<GameObject>();
     //게임오브젝트가 활성화된 노트들.
@@ -228,6 +230,8 @@ public class RhythmManager : MonoBehaviour
                 AddJudgement(JudgementType.Miss);
             }
         }
+        
+        UpdateGravity();
     }
 
 
@@ -433,6 +437,30 @@ public class RhythmManager : MonoBehaviour
         myPlayer.transform.position = 
         yield return null;
     }*/
+    
+    // 중력 업데이트
+    private void UpdateGravity()
+    {
+        GravityData nextGravity;
+        if (gravityQueue.TryPeek(out nextGravity) && (gameTime >= nextGravity.time))
+        {
+            GameManager.myManager.gravity = nextGravity.Angle;
+            gravityQueue.Dequeue();
+        }
+    }
+    
+    // 특정 타이밍에서의 중력 방향 판단
+    private int GetGravityByTiming(double timing)
+    {
+        int prevAngle = 0;
+        foreach (GravityData data in gravityDataList)
+        {
+            if (timing < data.time) prevAngle = data.Angle;
+            else break;
+        }
+
+        return prevAngle;
+    }
 }
 
 public enum JudgementType

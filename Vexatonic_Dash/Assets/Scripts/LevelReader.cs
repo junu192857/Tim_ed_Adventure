@@ -21,7 +21,13 @@ public class LevelReader
     public static int noteCount; // 채보의 전체 노트수
 
     //맵 파일을 읽어 노트 정보에 관한 Queue로 반환하는 함수.
-    public List<NoteSpawnInfo> ParseFile(string filepath) {
+    [Obsolete("Gravity data added. Please use the newer one.")]
+    public List<NoteSpawnInfo> ParseFile(string filepath)
+    {
+        return ParseFile(filepath, out List<GravityData> dummy);
+    }
+    
+    public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList) {
         accTime = 0;
         latestBPMChange = 1;
         noteCount = 0;
@@ -31,6 +37,8 @@ public class LevelReader
 
 
         Stack<NoteSpawnInfo> list = new Stack<NoteSpawnInfo>();
+        Stack<GravityData> gravityInfoStack = new Stack<GravityData>();
+        gravityDataList = new List<GravityData>();
 
         string line;
 
@@ -53,15 +61,26 @@ public class LevelReader
                 latestBPMChange = int.Parse(myList[1]);
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
             }
-            else if (line.StartsWith("GRAVITY")) // GRAVITY (마디수) (n비트) (m번째) (중력 방향: 0이 아래, 90이 오른쪽)
+            else if (line.StartsWith("GRAVITY")) // GRAVITY (시간) (중력 방향: 0이 아래, 90이 오른쪽)
             {
-                // TODO: Implement Gravity Logic
+                GravityData prevGravityData;
+                double gravityTime = double.Parse(myList[1]);
+                int gravityAngle = int.Parse(myList[2]);
+
+                if (gravityInfoStack.TryPeek(out prevGravityData) && (prevGravityData.time > gravityTime))
+                    throw new ArgumentException("Gravity data does not entered in right order");
+                
+                gravityInfoStack.Push(new GravityData(gravityTime, gravityAngle));
             }
             else if (line.StartsWith("END")) {
 
                 list.Peek().noteLastingTime = 1f;
                 List<NoteSpawnInfo> returnList = list.ToList();
                 returnList.Reverse();
+
+                gravityDataList = gravityInfoStack.ToList();
+                gravityDataList.Reverse();
+                
                 return returnList;
             }
             else {

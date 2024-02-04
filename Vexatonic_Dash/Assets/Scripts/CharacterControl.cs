@@ -8,7 +8,7 @@ public class CharacterControl : MonoBehaviour
     private IEnumerator characterCoroutine;
 
     private float g => GameManager.g;
-    private Vector3 gravity;
+    private int gravityAngle;
 
     public void MoveCharacter(Note note, double gameTime) {
         if (characterCoroutine != null) StopCoroutine(characterCoroutine);
@@ -89,6 +89,17 @@ public class CharacterControl : MonoBehaviour
 
     private void Start()
     {
-        gravity = g * Vector3.down;
+        UpdateGravity();
+    }
+
+    private void Update()
+    {
+        UpdateGravity();
+    }
+    
+    private void UpdateGravity()
+    {
+        gravityAngle = GameManager.myManager.gravity;
+        transform.rotation = Quaternion.Euler(0f, 0f, gravityAngle);
     }
 }

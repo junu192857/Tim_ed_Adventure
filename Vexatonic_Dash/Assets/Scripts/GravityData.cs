@@ -3,7 +3,7 @@ using UnityEngine;
 public class GravityData
 {
     public double time;
-    public Vector3 Direction { get; }
+    public int Angle { get; }
 
     /// <summary>
     /// Generates new GravityData with given time and angle.
@@ -13,6 +13,6 @@ public class GravityData
     public GravityData(double time, int angle)
     {
         this.time = time;
-        Direction = Quaternion.Euler(0f, 0f, -angle) * Vector3.down;
+        this.Angle = angle;
     }
 }
