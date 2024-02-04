@@ -95,7 +95,7 @@ public class RhythmManager : MonoBehaviour
         lr = new LevelReader();
         noteList = lr.ParseFile(levelFilePath);
         scorePerNotes = (double)1000000 / noteCount;
-        
+
         GenerateMap();
         Time.timeScale = 1f;
         GameManager.myManager.um.ShowLevelInfoUI();

@@ -42,19 +42,19 @@ public class LevelReader
             Debug.Log(line);
 
             var myList = line.Split(' ');
-            if (line.StartsWith("NAME")) {
+            /* if (line.StartsWith("NAME")) {
                 GameManager.myManager.um.songName = myList[1];
             }
             else if (line.StartsWith("COMPOSER")) { 
                 GameManager.myManager.um.composerName = myList[1];
-            }
-            else if (line.StartsWith("BPM")) // Ex) BPM 1 180: 1번째 마디부터 180 BPM.
+            } 
+            if (line.StartsWith("BPM")) // Ex) BPM 1 180: 1번째 마디부터 180 BPM.
             {
                 accTime += _1bitTime * (int.Parse(myList[1]) - latestBPMChange);
                 latestBPMChange = int.Parse(myList[1]);
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
-            }
-            else if (line.StartsWith("END")) {
+            } */
+            if (line.StartsWith("END")) {
 
                 list.Peek().noteLastingTime = 1f;
                 List<NoteSpawnInfo> returnList = list.ToList();
@@ -69,50 +69,54 @@ public class LevelReader
                 char type = char.Parse(myList[0]);
                 switch (type) {
                     case 'A':
-                        // A (마디수) (n비트) (m번째)
+                        // A (스폰시간)
                         noteCount++;
-                        spawnTime = CalculateSpawnTime(myList);
+                        spawnTime = double.Parse(myList[1]);
                         cur = new NoteSpawnInfo(spawnTime, NoteType.Normal);
-                        
-                        if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
-                        list.Push(cur);
                         break;
                     case 'B':
-                        // B (마디수) (n비트) (m번째) (대쉬 계수)
+                        // B (스폰시간) (대쉬 계수)
                         noteCount++;
-                        spawnTime = CalculateSpawnTime(myList);
-                        cur = new DashNoteSpawnInfo(spawnTime, NoteType.Dash, float.Parse(myList[4]));
-                        if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
-                        list.Push(cur);
+                        spawnTime = double.Parse(myList[1]);
+                        cur = new DashNoteSpawnInfo(spawnTime, NoteType.Dash, float.Parse(myList[2]));
                         break;
                     case 'C':
-                        // C (마디수) (n비트) (m번째) (높이변화)
+                        // C (스폰시간) (높이변화)
                         noteCount++;
-                        spawnTime = CalculateSpawnTime(myList);
-                        cur = new JumpNoteSpawnInfo(spawnTime, NoteType.Jump, float.Parse(myList[4]));
-                        if (list.TryPeek(out prev)) prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
-                        if (!ValidateJump(prev.noteLastingTime, float.Parse(myList[4]))) {
-                            Debug.LogError("Invalid jump note");
-                            return null;
-                        }
-                        list.Push(cur);
+                        spawnTime = double.Parse(myList[1]);
+                        cur = new JumpNoteSpawnInfo(spawnTime, NoteType.Jump, float.Parse(myList[2]));
                         break;
                     default:
                         Debug.LogError("Parse Error: Note type letter invalid");
                         return null;
                 }
+                if (list.TryPeek(out prev))
+                {
+                    prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
+                    if (prev.noteType == NoteType.Jump)
+                    {
+                        JumpNoteSpawnInfo jump = prev as JumpNoteSpawnInfo;
+                        if (!ValidateJump(jump.noteLastingTime, jump.jumpHeight))
+                        {
+                            Debug.LogError("Invalid jump note");
+                            return null;
+                        }
+                    }
+                }
+                list.Push(cur);
             }
         }
         Debug.LogError("This level does not have an END");
         return null;
     }
 
+    // 새로운 파일 읽기 방식에서는 필요 없는 함수
     private double CalculateSpawnTime(string[] myList) { 
         return accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
     }
 
-    private bool ValidateJump(double noteLastingTime, float heightDelta) {
-        return 0.5 * g * noteLastingTime * noteLastingTime < heightDelta;
+    private bool ValidateJump(double noteLastingTime, float jumpHeight) {
+        return 0.5 * g * noteLastingTime * noteLastingTime < jumpHeight;
     }
 
 }
