@@ -18,6 +18,8 @@ public class Note : MonoBehaviour
     public Vector3 startPos; // 이 노트에서 움직이는 캐릭터의 시작 위치
     public Vector3 endPos;  // 이 노트에서 움직이는 캐릭터의 끝 위치
 
+    public GameObject parentNote = null; // 움직이는 노트의 목적지에 있는 고정된 노트.
+
 
     public void Deactivate() {
         activated = false;
@@ -35,6 +37,7 @@ public class Note : MonoBehaviour
 
     public void FixNote() {
         permanent = true;
+        if (parentNote != null) Destroy(parentNote);
         transform.position = destPos;
     }
 

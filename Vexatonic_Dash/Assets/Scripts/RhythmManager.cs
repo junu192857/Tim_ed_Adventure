@@ -114,7 +114,7 @@ public class RhythmManager : MonoBehaviour
 
         // InputManager 세팅
         GameManager.myManager.im.StartLoop(
-            new List<KeyCode> { KeyCode.F, KeyCode.J, KeyCode.R, KeyCode.U, KeyCode.Space },
+            new List<KeyCode> { KeyCode.F, KeyCode.J, KeyCode.D, KeyCode.K, KeyCode.Space },
             new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
         );
         StartCoroutine(nameof(StartReceivingInput));
@@ -210,7 +210,6 @@ public class RhythmManager : MonoBehaviour
                 spawnedNotes.Dequeue();
                 note.FixNote();
                 myPlayer.MoveCharacter(note, gameTime);
-                Debug.Log("Time after destroying note:" + Time.time);
                 
                 // }
 
@@ -225,6 +224,7 @@ public class RhythmManager : MonoBehaviour
             if (temp.GetComponent<Note>().lifetime < -0.166f)
             {
                 Destroy(spawnedNotes.Dequeue());
+                //TODO: MISS여도 죽지 않게 되는 경우를 만드려면 여기서도 FixNote() 실행 필요.
                 AddJudgement(JudgementType.Miss);
             }
         }
@@ -340,6 +340,7 @@ public class RhythmManager : MonoBehaviour
                     Debug.Log($"noteEndTime: {movingNote.noteEndTime}");
                     movingNote.spawnPos = note.spawnPosition;
                     movingNote.destPos = AnchorPosition;
+                    movingNote.parentNote = platform;
                     AnchorPosition = movingNote.GetInformationForPlayer(inputWidth, AnchorPosition);
                     movingNote.Deactivate();
                     preSpawnedNotes.Enqueue(movingPlatform);
@@ -373,6 +374,7 @@ public class RhythmManager : MonoBehaviour
                     Debug.Log($"noteEndTime: {platformMovingNote.noteEndTime}");
                     platformMovingNote.spawnPos = dashNote.spawnPosition;
                     platformMovingNote.destPos = AnchorPosition;
+                    platformMovingNote.parentNote = platform;
                     AnchorPosition = platformMovingNote.GetInformationForPlayer(inputWidth, AnchorPosition);
                     platformMovingNote.Deactivate();
                     preSpawnedNotes.Enqueue(movingPlatform);
@@ -402,6 +404,7 @@ public class RhythmManager : MonoBehaviour
                     Debug.Log($"noteEndTime: {jumpMovingNote.noteEndTime}");
                     jumpMovingNote.spawnPos = jumpNote.spawnPosition;
                     jumpMovingNote.destPos = AnchorPosition;
+                    jumpMovingNote.parentNote = platform;
                     AnchorPosition = jumpMovingNote.GetInformationForPlayer(inputWidth, jumpNote.jumpHeight, AnchorPosition);
                     jumpMovingNote.Deactivate();
                     preSpawnedNotes.Enqueue(movingPlatform);
