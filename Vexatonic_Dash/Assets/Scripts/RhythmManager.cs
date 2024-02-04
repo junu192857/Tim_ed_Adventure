@@ -114,7 +114,7 @@ public class RhythmManager : MonoBehaviour
 
         // InputManager 세팅
         GameManager.myManager.im.StartLoop(
-            new List<KeyCode> { KeyCode.F, KeyCode.J, KeyCode.R, KeyCode.U, KeyCode.Space },
+            new List<KeyCode> { KeyCode.F, KeyCode.J, KeyCode.D, KeyCode.K, KeyCode.Space },
             new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
         );
         StartCoroutine(nameof(StartReceivingInput));
