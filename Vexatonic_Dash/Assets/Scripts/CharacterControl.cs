@@ -81,16 +81,14 @@ public class CharacterControl : MonoBehaviour
     }
 
     [Obsolete("Please provide vector directly instead its x and y coordination")]
-    private Vector3 CalculateJumpPosition(float v_x, float v_y, float time, Vector3 startPos) {
-        float x = startPos.x + v_x * time;
-        float y = startPos.y + v_y * time + 0.5f * g * time * time;
-
-        return new Vector3(x, y, 0);
+    private Vector3 CalculateJumpPosition(float v_x, float v_y, float time, Vector3 startPos)
+    {
+        return CalculateJumpPosition(new Vector2(v_x, v_y), time, startPos);
     }
 
     private Vector3 CalculateJumpPosition(Vector3 v, float time, Vector3 startPos)
     {
-        return startPos + (v * time) + (0.5f * GameManager.myManager.GravityAsVector * time * time);
+        return startPos + (v * time) + (0.5f * time * time * GameManager.myManager.GravityAsVector);
     }
 
     private void Start()
