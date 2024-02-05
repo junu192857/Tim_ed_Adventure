@@ -97,7 +97,7 @@ public class RhythmManager : MonoBehaviour
         lr = new LevelReader();
         noteList = lr.ParseFile(levelFilePath);
         scorePerNotes = (double)1000000 / noteCount;
-        
+
         GenerateMap();
         Time.timeScale = 1f;
         GameManager.myManager.um.ShowLevelInfoUI();
@@ -116,7 +116,7 @@ public class RhythmManager : MonoBehaviour
 
         // InputManager 세팅
         GameManager.myManager.im.StartLoop(
-            new List<KeyCode> { KeyCode.F, KeyCode.J, KeyCode.R, KeyCode.U, KeyCode.Space },
+            new List<KeyCode> { KeyCode.F, KeyCode.J, KeyCode.D, KeyCode.K, KeyCode.Space },
             new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
         );
         StartCoroutine(nameof(StartReceivingInput));
@@ -212,7 +212,6 @@ public class RhythmManager : MonoBehaviour
                 spawnedNotes.Dequeue();
                 note.FixNote();
                 myPlayer.MoveCharacter(note, gameTime);
-                Debug.Log("Time after destroying note:" + Time.time);
                 
                 // }
 
@@ -227,6 +226,7 @@ public class RhythmManager : MonoBehaviour
             if (temp.GetComponent<Note>().lifetime < -0.166f)
             {
                 Destroy(spawnedNotes.Dequeue());
+                //TODO: MISS여도 죽지 않게 되는 경우를 만드려면 여기서도 FixNote() 실행 필요.
                 AddJudgement(JudgementType.Miss);
             }
         }
@@ -367,11 +367,14 @@ public class RhythmManager : MonoBehaviour
         };
         note.noteType = type;
         note.noteEndTime = info.spawnTime + info.noteLastingTime;
+        // note.noteEndTime = noteList.IndexOf(note) == noteList.Count - 1 ? note.spawnTime + 1 : noteList[noteList.IndexOf(note) + 1].spawnTime;
         Debug.Log($"noteEndTime: {note.noteEndTime}");
 
         note.spawnPos = info.spawnPosition;
         note.destPos = AnchorPosition;
         note.transform.localScale = new Vector3((int) info.direction, 1, 1);
+
+        note.parentNote = noteMarker;
 
         Vector3 nextPosition = type switch
         {

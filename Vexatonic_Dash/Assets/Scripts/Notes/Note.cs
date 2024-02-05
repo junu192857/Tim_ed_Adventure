@@ -22,6 +22,8 @@ public class Note : MonoBehaviour
 
     protected int angle; // 플랫폼의 기울기
     
+    public GameObject parentNote = null; // 움직이는 노트의 목적지에 있는 고정된 노트.
+
     public void Deactivate() {
         activated = false;
         gameObject.SetActive(false);
@@ -38,6 +40,7 @@ public class Note : MonoBehaviour
 
     public void FixNote() {
         permanent = true;
+        if (parentNote != null) Destroy(parentNote);
         transform.position = destPos;
     }
 
