@@ -98,6 +98,9 @@ public class RhythmManager : MonoBehaviour
         noteList = lr.ParseFile(levelFilePath);
         scorePerNotes = (double)1000000 / noteCount;
 
+        gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
+        gravityQueue = new Queue<GravityData>();
+
         GenerateMap();
         Time.timeScale = 1f;
         GameManager.myManager.um.ShowLevelInfoUI();
@@ -306,7 +309,7 @@ public class RhythmManager : MonoBehaviour
         Vector3 AnchorPosition = Vector3.zero;
 
         foreach (var note in noteList)
-            AnchorPosition = SpawnNote(note, note.noteType, AnchorPosition);
+            AnchorPosition = SpawnNote(note, AnchorPosition);
         
         // Spawn Platform Object
         // 다른 플랫폼들이 많지만, 우선 기본 이동 플랫폼만.
@@ -315,27 +318,47 @@ public class RhythmManager : MonoBehaviour
     }
 
     // 노트 찍고 다음 AnchorPosition 돌려주는 역할
-    private Vector3 SpawnNote(NoteSpawnInfo info, NoteType type, Vector3 AnchorPosition)
+    private Vector3 SpawnNote(NoteSpawnInfo info, Vector3 AnchorPosition)
     {
         Debug.Log($"Anchor Position: {AnchorPosition}");
         
         // Local variable declaration area
         float inputWidth = GameManager.myManager.CalculateInputWidthFromTime((float) info.noteLastingTime);
+        NoteType type = info.noteType;
+        NoteSubType subType = info.noteSubType;
         // 다음 입력까지 캐릭터의 x방향 이동 거리
-
-        GameObject notePrefab = type switch
+        int notePrefabIndex = type switch
         {
-            NoteType.Normal => notePrefabs[0],
-            NoteType.Dash   => notePrefabs[1],
-            NoteType.Jump   => notePrefabs[2],
+            NoteType.Normal => 0,
+            NoteType.Dash => 4,
+            NoteType.Jump => 9,
             _ => throw new ArgumentException("Unknown or Unimplemented Note Type")
         };
+
+        if (type != NoteType.Jump && subType == NoteSubType.Ground)
+            notePrefabIndex += info.angle switch
+            {
+                0 => 0,
+                30 => 1,
+                45 => 2,
+                60 => 3,
+                _ => 0
+            };
+        if (type == NoteType.Dash && subType == NoteSubType.Air) notePrefabIndex = 8;
+        if (type == NoteType.Jump && subType == NoteSubType.Air) notePrefabIndex = 10;
+        if (type == NoteType.Jump && subType == NoteSubType.Wall) notePrefabIndex = 11;
+            // Should be fixed later, but from now on I'll just hard-code these due to time lack
+
+        GameObject notePrefab = notePrefabs[notePrefabIndex];
         
         // Marker spawn area
         GameObject noteMarker = Instantiate(notePrefab, AnchorPosition, Quaternion.identity);
         noteMarker.GetComponent<Note>().permanent = true; 
         // TODO: 사용자 지정 노트 속도 (GameManager.noteSpeed)에 따라 spawnPosition의 위치 변화
-        info.spawnPosition = AnchorPosition + notePositiondelta *
+        if (subType == NoteSubType.Wall)
+            info.spawnPosition = AnchorPosition + notePositiondelta * (int) info.direction *
+                (Quaternion.AngleAxis(GetGravityByTiming(info.spawnTime), Vector3.forward) * Vector3.left);
+        else info.spawnPosition = AnchorPosition + notePositiondelta *
             (Quaternion.AngleAxis(GetGravityByTiming(info.spawnTime), Vector3.forward) * Vector3.down);
 
         // Marker style modification area
@@ -346,8 +369,15 @@ public class RhythmManager : MonoBehaviour
 
         if (type == NoteType.Dash)
             inputWidth *= (info as DashNoteSpawnInfo).dashCoeff;
-        if (type != NoteType.Jump)
-            markerRenderer.size = new Vector2(10 * inputWidth, 2.5f);
+        if (type != NoteType.Jump && subType == NoteSubType.Ground)
+            markerRenderer.size = info.angle switch
+            {
+                0 => new Vector2(10 * inputWidth, 2.5f),
+                30 => new Vector2(10 * inputWidth, 8.27f),
+                45 => new Vector2(10 * inputWidth, 12.5f),
+                60 => new Vector2(10 * inputWidth, 19.82f),
+                _ => new Vector2()
+            };
 
         noteMarker.transform.localScale = new Vector3((int) info.direction, 1, 1);
         
@@ -356,7 +386,7 @@ public class RhythmManager : MonoBehaviour
 
         SpriteRenderer noteRenderer = noteObject.GetComponentInChildren<SpriteRenderer>();
         if (type != NoteType.Jump)
-            noteRenderer.size = new Vector2(10 * inputWidth, 2.5f);
+            noteRenderer.size = markerRenderer.size;
         
         // Note Configuration area
         Note note = type switch
@@ -379,9 +409,9 @@ public class RhythmManager : MonoBehaviour
         Vector3 nextPosition = type switch
         {
             NoteType.Normal or NoteType.Dash => (note as PlatformNote)
-                .GetInformationForPlayer(inputWidth, AnchorPosition),
+                .GetInformationForPlayer(inputWidth, AnchorPosition, GetGravityByTiming(info.spawnTime)),
             NoteType.Jump                    => (note as JumpNote)
-                .GetInformationForPlayer(inputWidth, (info as JumpNoteSpawnInfo).jumpHeight, AnchorPosition),
+                .GetInformationForPlayer(inputWidth, (info as JumpNoteSpawnInfo).jumpHeight, AnchorPosition, GetGravityByTiming(info.spawnTime)),
             _ => throw new ArgumentException("Unknown or Unimplemented Note Type")
         };
         note.Deactivate();

@@ -2788,6 +2788,9 @@ MonoBehaviour:
   rm: {fileID: 1818378586}
   um: {fileID: 1773674259}
   im: {fileID: 528055179}
+  selectedSongName: 
+  selectedComposerName: 
+  gravity: 0
 --- !u!4 &1504029264
 Transform:
   m_ObjectHideFlags: 0
@@ -3325,6 +3328,7 @@ MonoBehaviour:
   judgeTextPrefab: {fileID: 3475141772924465932, guid: 1a82db01fca3b45fd890e1f6981d468e, type: 3}
   songName: SongName
   composerName: Various Artist
+  difficulty: 0
 --- !u!4 &1773674260
 Transform:
   m_ObjectHideFlags: 0
@@ -3373,12 +3377,23 @@ MonoBehaviour:
   score: 0
   minusScore: 0
   progress: 0
+  highProgress: 0
+  highScore: 0
   lastJudge: 0
   player: {fileID: 657871927803377089, guid: 61855e68254911f468c7cba30cfbaa7c, type: 3}
   notePrefabs:
   - {fileID: 583682281927100959, guid: 912cc5a44e0bf4e49ab659bc50ec4a64, type: 3}
+  - {fileID: 4780835758759157808, guid: 5f37f44c20cb4dd4ea68d214dfc0d603, type: 3}
+  - {fileID: 3446514640882802197, guid: f40acb2e34b45a4418d92ab4fdda0455, type: 3}
+  - {fileID: 8056788444527841495, guid: ac5e72aa59f59d345945df4a1ccfcd55, type: 3}
   - {fileID: 583682281927100959, guid: fea87d035e31def4ebbd90a22b5aba95, type: 3}
+  - {fileID: 4920555043131801790, guid: 9f2140391ca44e348a93fcc5df0c4beb, type: 3}
+  - {fileID: 6688362413695766401, guid: fc4393edf973ded45ba78c25cda930fd, type: 3}
+  - {fileID: 8229985862160769946, guid: 03f01e565da8f704ebc29eb682903238, type: 3}
+  - {fileID: 2131051095598566796, guid: 2b4adce07b2e81e47a221235658cb387, type: 3}
   - {fileID: 6583846502111674364, guid: c1d39e96d2b38b645b0e151990c36852, type: 3}
+  - {fileID: 4025377695504220162, guid: afe98c34ff174214fbe228ac24172c17, type: 3}
+  - {fileID: 2608520025944236846, guid: 59f52e12cc0bf2f4eb054ebdbc88e4ec, type: 3}
   judgementList: 0000000000000000000000000000000000000000
 --- !u!4 &1818378587
 Transform:

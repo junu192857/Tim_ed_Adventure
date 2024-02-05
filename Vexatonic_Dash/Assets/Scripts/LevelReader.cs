@@ -15,9 +15,6 @@ public class LevelReader
     private double spawnTime; //계산을 통해 얻어내는 노트별 스폰 시간.
     private double _1bitTime; //한 마디의 지속시간. 계산법 = 240/(BPM)
 
-    private double accTime; // 기본적으로 0이고, BPM이 바뀔 때마다 바뀌기 전까지 곡의 진행 시간이 저장된다.
-    private int latestBPMChange; // 가장 최근에 BPM이 바뀐 마디수
-
     public static int noteCount; // 채보의 전체 노트수
 
     //맵 파일을 읽어 노트 정보에 관한 Queue로 반환하는 함수.
@@ -28,8 +25,6 @@ public class LevelReader
     }
     
     public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList) {
-        accTime = 0;
-        latestBPMChange = 1;
         noteCount = 0;
 
         NoteSpawnInfo cur;
@@ -89,7 +84,6 @@ public class LevelReader
                     Debug.LogError("Parse Error: Length of Note type letter is not 1");
                     return null;
                 }
-                char type = char.Parse(myList[0]);
                         
                 // A (스폰시간) 0 (종류) (경사도) (진행방향)
                 // B (스폰시간) (대쉬 계수) (종류) (경사도) (진행방향)
@@ -124,9 +118,6 @@ public class LevelReader
     {
         // Local Variable Declaration
         NoteType noteType;
-        int subTypeIndex = 3;
-        int angleIndex = 4;
-        int directionIndex = 5;
         int legacyLength = 0;
         double spawnTime = 0;
         
@@ -158,8 +149,8 @@ public class LevelReader
         generated = noteType switch
         {
             NoteType.Normal => new NoteSpawnInfo(spawnTime, NoteType.Normal),
-            NoteType.Dash => new DashNoteSpawnInfo(spawnTime, NoteType.Dash, float.Parse(infoList[4])),
-            NoteType.Jump => new JumpNoteSpawnInfo(spawnTime, NoteType.Jump, float.Parse(infoList[4])),
+            NoteType.Dash => new DashNoteSpawnInfo(spawnTime, NoteType.Dash, float.Parse(infoList[2])),
+            NoteType.Jump => new JumpNoteSpawnInfo(spawnTime, NoteType.Jump, float.Parse(infoList[2])),
             _ => throw new ArgumentException("Unknown or unimplemented note type")
         };
 
@@ -171,7 +162,7 @@ public class LevelReader
         }
 
         if (noteType != NoteType.Normal)
-            generated.noteSubType = infoList[subTypeIndex] switch
+            generated.noteSubType = infoList[3] switch
             {
                 "G" => NoteSubType.Ground,
                 "A" => NoteSubType.Air,
@@ -179,8 +170,8 @@ public class LevelReader
                 _ => throw new ArgumentException("Invalid note subtype provided")
             };
 
-        generated.angle = int.Parse(infoList[angleIndex]);
-        generated.direction = infoList[directionIndex] switch
+        generated.angle = int.Parse(infoList[4]);
+        generated.direction = infoList[5] switch
         {
             "L" => CharacterDirection.Left,
             "R" => CharacterDirection.Right,
