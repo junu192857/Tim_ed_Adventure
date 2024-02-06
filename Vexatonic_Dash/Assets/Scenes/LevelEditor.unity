@@ -2293,7 +2293,7 @@ MonoBehaviour:
   bitLinePrefab: {fileID: 7924221544791590777, guid: 55ec826913258604781df77a1ed35baa, type: 3}
   songLinePrefab: {fileID: 3401823553981393376, guid: 8437750aedc6b4340b8767ff63070b3d, type: 3}
   bitInputField: {fileID: 417229664}
-  offsetInputField: {fileID: 0}
+  offsetInputField: {fileID: 156677134}
   canvas: {fileID: 1865527480}
   notePrefabs:
   - {fileID: 583682281927100959, guid: 912cc5a44e0bf4e49ab659bc50ec4a64, type: 3}
