@@ -113,4 +113,7 @@ public class GameManager : MonoBehaviour
     public double CalculateTimeFromInputWidth(float width) => width / (2 * scrollSpeed);
 
     public const float g = -9.8f;
+    public int gravity = 0;
+
+    public Vector3 GravityAsVector => g * (Quaternion.AngleAxis(gravity, Vector3.forward) * Vector3.up);
 }

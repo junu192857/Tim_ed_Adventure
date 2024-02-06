@@ -5,12 +5,10 @@ using System;
 
 public class JumpNote : Note
 {
-
-    public Vector3 GetInformationForPlayer(float inputWidth, float jumpHeight, Vector3 startPos)
+    public Vector3 GetInformationForPlayer(float inputWidth, float jumpHeight, Vector3 startPos, int gravity)
     {
         this.startPos = startPos;
-        Vector3 endPos = startPos + new Vector3(inputWidth, jumpHeight);
-        this.endPos = endPos;
+        this.endPos = startPos + (Quaternion.AngleAxis(gravity, Vector3.forward) * new Vector3(inputWidth, jumpHeight));
         return endPos;
     }
 }

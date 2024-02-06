@@ -15,23 +15,25 @@ public class LevelReader
     private double spawnTime; //계산을 통해 얻어내는 노트별 스폰 시간.
     private double _1bitTime; //한 마디의 지속시간. 계산법 = 240/(BPM)
 
-    private double accTime; // 기본적으로 0이고, BPM이 바뀔 때마다 바뀌기 전까지 곡의 진행 시간이 저장된다.
-    private int latestBPMChange; // 가장 최근에 BPM이 바뀐 마디수
-
     public static int noteCount; // 채보의 전체 노트수
 
     //맵 파일을 읽어 노트 정보에 관한 Queue로 반환하는 함수.
-    public List<NoteSpawnInfo> ParseFile(string filepath) {
-        accTime = 0;
-        latestBPMChange = 1;
+    [Obsolete("Gravity data added. Please use the newer one.")]
+    public List<NoteSpawnInfo> ParseFile(string filepath)
+    {
+        return ParseFile(filepath, out List<GravityData> dummy);
+    }
+    
+    public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList) {
         noteCount = 0;
 
-        double spawnTime;
         NoteSpawnInfo cur;
         NoteSpawnInfo prev;
 
 
         Stack<NoteSpawnInfo> list = new Stack<NoteSpawnInfo>();
+        Stack<GravityData> gravityInfoStack = new Stack<GravityData>();
+        gravityDataList = new List<GravityData>();
 
         string line;
 
@@ -42,7 +44,8 @@ public class LevelReader
             Debug.Log(line);
 
             var myList = line.Split(' ');
-            /* if (line.StartsWith("NAME")) {
+            /*
+            if (line.StartsWith("NAME")) {
                 GameManager.myManager.um.songName = myList[1];
             }
             else if (line.StartsWith("COMPOSER")) { 
@@ -53,12 +56,27 @@ public class LevelReader
                 accTime += _1bitTime * (int.Parse(myList[1]) - latestBPMChange);
                 latestBPMChange = int.Parse(myList[1]);
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
-            } */
-            if (line.StartsWith("END")) {
+            }
+            */
+            if (line.StartsWith("GRAVITY")) // GRAVITY (시간) (중력 방향: 0이 아래, 90이 오른쪽)
+            {
+                GravityData prevGravityData;
+                double gravityTime = double.Parse(myList[1]);
+                int gravityAngle = int.Parse(myList[2]);
 
+                if (gravityInfoStack.TryPeek(out prevGravityData) && (prevGravityData.time > gravityTime))
+                    throw new ArgumentException("Gravity data does not entered in right order");
+                
+                gravityInfoStack.Push(new GravityData(gravityTime, gravityAngle));
+            }
+            else if (line.StartsWith("END")) {
                 list.Peek().noteLastingTime = 1f;
                 List<NoteSpawnInfo> returnList = list.ToList();
                 returnList.Reverse();
+
+                gravityDataList = gravityInfoStack.ToList();
+                gravityDataList.Reverse();
+                
                 return returnList;
             }
             else {
@@ -66,30 +84,12 @@ public class LevelReader
                     Debug.LogError("Parse Error: Length of Note type letter is not 1");
                     return null;
                 }
-                char type = char.Parse(myList[0]);
-                switch (type) {
-                    case 'A':
-                        // A (스폰시간)
-                        noteCount++;
-                        spawnTime = double.Parse(myList[1]);
-                        cur = new NoteSpawnInfo(spawnTime, NoteType.Normal);
-                        break;
-                    case 'B':
-                        // B (스폰시간) (대쉬 계수)
-                        noteCount++;
-                        spawnTime = double.Parse(myList[1]);
-                        cur = new DashNoteSpawnInfo(spawnTime, NoteType.Dash, float.Parse(myList[2]));
-                        break;
-                    case 'C':
-                        // C (스폰시간) (높이변화)
-                        noteCount++;
-                        spawnTime = double.Parse(myList[1]);
-                        cur = new JumpNoteSpawnInfo(spawnTime, NoteType.Jump, float.Parse(myList[2]));
-                        break;
-                    default:
-                        Debug.LogError("Parse Error: Note type letter invalid");
-                        return null;
-                }
+                        
+                // A (스폰시간) 0 (종류) (경사도) (진행방향)
+                // B (스폰시간) (대쉬 계수) (종류) (경사도) (진행방향)
+                // C (스폰시간) (높이변화) (종류) (경사도) (진행방향)
+                cur = GenerateNoteSpawnInfo(myList);
+                
                 if (list.TryPeek(out prev))
                 {
                     prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
@@ -110,13 +110,74 @@ public class LevelReader
         return null;
     }
 
-    // 새로운 파일 읽기 방식에서는 필요 없는 함수
-    private double CalculateSpawnTime(string[] myList) { 
-        return accTime + (int.Parse(myList[1]) - latestBPMChange) * _1bitTime + (_1bitTime / double.Parse(myList[2]) * (int.Parse(myList[3]) - 1));
-    }
-
     private bool ValidateJump(double noteLastingTime, float jumpHeight) {
         return 0.5 * g * noteLastingTime * noteLastingTime < jumpHeight;
     }
 
+    private NoteSpawnInfo GenerateNoteSpawnInfo(string[] infoList)
+    {
+        // Local Variable Declaration
+        NoteType noteType;
+        int legacyLength = 0;
+        double spawnTime = 0;
+        
+        NoteSpawnInfo generated;
+
+        // Initialization by type
+        switch (infoList[0])
+        {
+            case "A":
+                noteType = NoteType.Normal;
+                legacyLength = 2;
+                break;
+            case "B":
+                noteType = NoteType.Dash;
+                legacyLength = 3;
+                break;
+            case "C":
+                noteType = NoteType.Jump;
+                legacyLength = 3;
+                break;
+            default:
+                throw new ArgumentException("Invalid note information provided in map file");
+        }
+        
+        // Note Generation
+        noteCount++;
+        spawnTime = double.Parse(infoList[1]);
+        
+        generated = noteType switch
+        {
+            NoteType.Normal => new NoteSpawnInfo(spawnTime, NoteType.Normal),
+            NoteType.Dash => new DashNoteSpawnInfo(spawnTime, NoteType.Dash, float.Parse(infoList[2])),
+            NoteType.Jump => new JumpNoteSpawnInfo(spawnTime, NoteType.Jump, float.Parse(infoList[2])),
+            _ => throw new ArgumentException("Unknown or unimplemented note type")
+        };
+
+        if (infoList.Length == legacyLength)
+        {
+            // Legacy format check
+            Debug.LogWarning("Note information in the map file is in obsolete format. Please use the new style.");
+            return generated;
+        }
+
+        if (noteType != NoteType.Normal)
+            generated.noteSubType = infoList[3] switch
+            {
+                "G" => NoteSubType.Ground,
+                "A" => NoteSubType.Air,
+                "W" => NoteSubType.Wall,
+                _ => throw new ArgumentException("Invalid note subtype provided")
+            };
+
+        generated.angle = int.Parse(infoList[4]);
+        generated.direction = infoList[5] switch
+        {
+            "L" => CharacterDirection.Left,
+            "R" => CharacterDirection.Right,
+            _ => throw new ArgumentException("Invalid character direction provided")
+        };
+
+        return generated;
+    }
 }
