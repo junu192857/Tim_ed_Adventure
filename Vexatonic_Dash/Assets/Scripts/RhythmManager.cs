@@ -371,10 +371,10 @@ public class RhythmManager : MonoBehaviour
         if (type != NoteType.Jump && subType == NoteSubType.Ground)
             markerRenderer.size = info.angle switch
             {
-                0 => new Vector2(10 * inputWidth, 2.5f),
-                30 => new Vector2(10 * inputWidth, 8.27f),
-                45 => new Vector2(10 * inputWidth, 12.5f),
-                60 => new Vector2(10 * inputWidth, 19.82f),
+                0 => new Vector2(10 * inputWidth, 2.5f * inputWidth),
+                30 => new Vector2(10 * inputWidth, 8.27f * inputWidth),
+                45 => new Vector2(10 * inputWidth, 12.5f * inputWidth),
+                60 => new Vector2(10 * inputWidth, 19.82f * inputWidth),
                 _ => new Vector2()
             };
 
