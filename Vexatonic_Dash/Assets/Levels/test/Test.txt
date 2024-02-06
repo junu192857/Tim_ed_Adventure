@@ -1,6 +1,7 @@
 A 0 0 0 0 R
 B 1 1 G 0 R
-B 2 1 G 30 R
-C 3 1 G 0 R
-B 4 1 A 0 R
+C 2 1 G 0 R
+C 3 1 W 0 L
+C 4 1 W 0 R
+A 5 0 0 0 R
 END
