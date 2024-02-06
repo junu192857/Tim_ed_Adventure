@@ -34,6 +34,7 @@ public class EditorManager : MonoBehaviour
     public GameObject measureLinePrefab;
     public GameObject bitLinePrefab;
     public GameObject songLinePrefab;
+    public InputField bitInputField;
     private IEnumerator songLineMoveCoroutine;
     private GameObject songLine;
     public Canvas canvas;
@@ -106,6 +107,7 @@ public class EditorManager : MonoBehaviour
             song.Stop();
             lines = new List<GameObject>();
             bit = 4;
+            bitInputField.text = "4";
             indicatorEnabled = true;
             noteStartPosition = Vector3.zero;
             noteEndPosition = Vector3.zero;
@@ -207,6 +209,8 @@ public class EditorManager : MonoBehaviour
             linePosition = bitCount * lineGap;
         }
     }
+
+    public void ChangeBit() { if (int.TryParse(bitInputField.text, out bit)) ReloadMeasureCountLine(); }
 
     public void ToggleLines(Toggle toggle)
     {
