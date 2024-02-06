@@ -69,7 +69,7 @@ public class CharacterControl : MonoBehaviour
         // Vector3 v = vDelta + vVertical
 
         while (time < playerMovingTime + 0.166f) {
-            Vector3 targetPosition = CalculateJumpPosition(v_x, v_y, time, note.startPos);
+            Vector3 targetPosition = CalculateJumpPosition(new Vector2(v_x, v_y), time, note.startPos);
             if (time > playerMovingTime) targetPosition.y = note.endPos.y;
             // Vector3 targetPosition = CalculateJumpPosition(v, time, note.startPos);
             // if (time > playerMovingTime) targetPosition = note.endPos;
