@@ -24,6 +24,9 @@ public class CameraInputAction : MonoBehaviour
         em.ReloadMeasureCountLine();
     }
 
+    public void OnMusicOffset(InputValue value) {
+        em.ChangeMusicOffset(value.Get<float>());
+    }
     private void Update()
     {
         if (em.editorState != EditorState.EditorMain) return;

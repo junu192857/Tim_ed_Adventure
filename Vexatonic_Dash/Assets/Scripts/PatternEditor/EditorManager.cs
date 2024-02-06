@@ -35,13 +35,15 @@ public class EditorManager : MonoBehaviour
     public GameObject bitLinePrefab;
     public GameObject songLinePrefab;
     public InputField bitInputField;
+    private float musicOffset;
+    public InputField offsetInputField;
     private IEnumerator songLineMoveCoroutine;
     private GameObject songLine;
     public Canvas canvas;
     private List<GameObject> lines;
     private int bit;
     private bool indicatorEnabled;
-    private float musicOffset;
+
 
     [Header("EditorMain")]
     private Vector3 noteStartPosition; // 다음에 배치할 노트의 시작점
@@ -109,6 +111,8 @@ public class EditorManager : MonoBehaviour
             lines = new List<GameObject>();
             bit = 4;
             bitInputField.text = "4";
+            musicOffset = 0f;
+            offsetInputField.text = $"{musicOffset}";
             indicatorEnabled = true;
             noteStartPosition = Vector3.zero;
             noteEndPosition = Vector3.zero;
@@ -233,6 +237,7 @@ public class EditorManager : MonoBehaviour
             songLine = Instantiate(songLinePrefab, mainCamera.WorldToScreenPoint(new Vector3(startPositionX, mainCamera.transform.position.y, 0f)), Quaternion.identity);
             songLine.transform.SetParent(canvas.transform, true);
             songLineMoveCoroutine = MoveSongLineCoroutine(startPositionX, songLine);
+            StartCoroutine(StartSongCoroutine(startPositionX));
         }
         else {
             song.Stop();
@@ -241,12 +246,25 @@ public class EditorManager : MonoBehaviour
         StartCoroutine(songLineMoveCoroutine);
     }
 
+    private IEnumerator StartSongCoroutine(float startX) {
+        if (startX < 0) startX = 0;
+        float musicTime = (float)GameManager.myManager.CalculateTimeFromInputWidth(startX) + musicOffset / 1000;
+        Debug.Log(musicTime);
+        if (musicTime >= 0f) {
+            song.time = musicTime;
+            song.Play();
+            yield return null;
+        }
+        else {
+            yield return new WaitForSeconds(-musicTime);
+            Debug.Log("Hello?");
+            song.time = 0f;
+            song.Play();
+        }
+    }
     private IEnumerator MoveSongLineCoroutine(float startX, GameObject line)
     {
         if (startX < 0) startX = 0;
-        float musicTime = (float)GameManager.myManager.CalculateTimeFromInputWidth(startX);
-        song.time = musicTime;
-        song.Play();
         while (true) {
             line.GetComponent<RectTransform>().position = mainCamera.WorldToScreenPoint(new Vector3(startX, mainCamera.transform.position.y, 0f));
             startX += GameManager.myManager.CalculateInputWidthFromTime(Time.deltaTime);
@@ -261,6 +279,13 @@ public class EditorManager : MonoBehaviour
             yield return null;
         }
     }
+
+    public void ChangeMusicOffset(float value) {
+        musicOffset = value < 0 ? musicOffset - 1 : musicOffset + 1;
+        offsetInputField.text = musicOffset.ToString();
+    }
+
+    public void ChangeMusicOffsetDirectly() => float.TryParse(offsetInputField.text, out musicOffset);
 
     // =========================== Editor Main ===============================
 

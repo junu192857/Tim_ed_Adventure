@@ -12,9 +12,6 @@ public class LevelReader
     private FileStream reader;
     private StreamReader sr;
 
-    private double spawnTime; //계산을 통해 얻어내는 노트별 스폰 시간.
-    private double _1bitTime; //한 마디의 지속시간. 계산법 = 240/(BPM)
-
     public static int noteCount; // 채보의 전체 노트수
 
     //맵 파일을 읽어 노트 정보에 관한 Queue로 반환하는 함수.

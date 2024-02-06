@@ -2312,7 +2312,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainParent: {fileID: 416315823}
-  playParent: {fileID: 0}
   settingsParent: {fileID: 80439201}
   videoSettingsParent: {fileID: 1109053188}
   audioSettingsParent: {fileID: 706789395}
@@ -5426,6 +5425,10 @@ MonoBehaviour:
   filepath: 
   rm: {fileID: 0}
   um: {fileID: 0}
+  im: {fileID: 0}
+  selectedSongName: 
+  selectedComposerName: 
+  gravity: 0
 --- !u!4 &1611857184
 Transform:
   m_ObjectHideFlags: 0
