@@ -95,11 +95,11 @@ public class RhythmManager : MonoBehaviour
     {
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
-        noteList = lr.ParseFile(levelFilePath);
+        gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
+        noteList = lr.ParseFile(levelFilePath, out gravityDataList);
         scorePerNotes = (double)1000000 / noteCount;
 
-        gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
-        gravityQueue = new Queue<GravityData>();
+        gravityQueue = new Queue<GravityData>(gravityDataList);
 
         GenerateMap();
         Time.timeScale = 1f;
@@ -326,6 +326,7 @@ public class RhythmManager : MonoBehaviour
         float inputWidth = GameManager.myManager.CalculateInputWidthFromTime((float) info.noteLastingTime);
         NoteType type = info.noteType;
         NoteSubType subType = info.noteSubType;
+        Quaternion noteGravity = Quaternion.AngleAxis(GetGravityByTiming(info.spawnTime), Vector3.forward);
         // 다음 입력까지 캐릭터의 x방향 이동 거리
         int notePrefabIndex = type switch
         {
@@ -356,10 +357,8 @@ public class RhythmManager : MonoBehaviour
         noteMarker.GetComponent<Note>().permanent = true; 
         // TODO: 사용자 지정 노트 속도 (GameManager.noteSpeed)에 따라 spawnPosition의 위치 변화
         if (subType == NoteSubType.Wall)
-            info.spawnPosition = AnchorPosition + notePositiondelta * (int) info.direction *
-                (Quaternion.AngleAxis(GetGravityByTiming(info.spawnTime), Vector3.forward) * Vector3.left);
-        else info.spawnPosition = AnchorPosition + notePositiondelta *
-            (Quaternion.AngleAxis(GetGravityByTiming(info.spawnTime), Vector3.forward) * Vector3.down);
+            info.spawnPosition = AnchorPosition + notePositiondelta * (int) info.direction * (noteGravity * Vector3.left);
+        else info.spawnPosition = AnchorPosition + notePositiondelta * (noteGravity * Vector3.down);
 
         // Marker style modification area
         SpriteRenderer markerRenderer = noteMarker.GetComponentInChildren<SpriteRenderer>();
@@ -380,6 +379,7 @@ public class RhythmManager : MonoBehaviour
             };
 
         noteMarker.transform.localScale = new Vector3((int) info.direction, 1, 1);
+        noteMarker.transform.rotation = noteGravity;
         
         // Note spawn area
         GameObject noteObject = Instantiate(notePrefab, 100 * Vector3.down, Quaternion.identity);
@@ -403,6 +403,7 @@ public class RhythmManager : MonoBehaviour
         note.spawnPos = info.spawnPosition;
         note.destPos = AnchorPosition;
         note.transform.localScale = new Vector3((int) info.direction, 1, 1);
+        note.transform.rotation = noteGravity;
 
         note.parentNote = noteMarker;
 
@@ -492,10 +493,10 @@ public class RhythmManager : MonoBehaviour
         int prevAngle = 0;
         foreach (GravityData data in gravityDataList)
         {
-            if (timing < data.time) prevAngle = data.Angle;
+            if (timing >= data.time) prevAngle = data.Angle;
             else break;
         }
-
+        
         return prevAngle;
     }
 }
