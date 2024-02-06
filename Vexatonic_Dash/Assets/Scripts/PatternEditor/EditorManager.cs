@@ -30,15 +30,19 @@ public class EditorManager : MonoBehaviour
     public Text bpmInputText;
     public Text warningText;
 
-    [Header("BeatIndicator")]
+    [Header("Indicator")]
     public GameObject measureLinePrefab;
     public GameObject bitLinePrefab;
+    public GameObject songLinePrefab;
+    public InputField bitInputField;
+    private IEnumerator songLineMoveCoroutine;
+    private GameObject songLine;
     public Canvas canvas;
     private List<GameObject> lines;
     private int bit; // 4, 6, 8, 12, 16, 24, 32만 지원함
     private bool indicatorEnabled;
 
-    [Header("NoteWriter")]
+    [Header("EditorMain")]
     private Vector3 noteStartPosition; // 다음에 배치할 노트의 시작점
     private Vector3 noteEndPosition; // 다음에 배치할 노트의 끝점
     private GameObject notePreview; // 노트가 어떻게 생길지 미리 알려줌
@@ -103,6 +107,7 @@ public class EditorManager : MonoBehaviour
             song.Stop();
             lines = new List<GameObject>();
             bit = 4;
+            bitInputField.text = "4";
             indicatorEnabled = true;
             noteStartPosition = Vector3.zero;
             noteEndPosition = Vector3.zero;
@@ -178,9 +183,9 @@ public class EditorManager : MonoBehaviour
         GameObject line;
         //BPM이 바뀌는 곡은 고려하지 않음
         //플레이어의 이동 방향이 반대가 되는 기믹(벽점프 등)을 넣을 예정이지만 에디터에서는 그걸 감안하지 않음
-        double lineGap = GameManager.myManager.scrollSpeed * 2 * 240 / (bpm * bit); //n비트 1개의 시간 240/(bpm*bit)지만 노트의 길이 = 시간 * 2이기 때문(변속이 없는 경우) 아 하드코딩 언젠간 업보받을것같음
+        float lineGap = GameManager.myManager.CalculateInputWidthFromTime(240 / (bpm * bit)); //n비트 1개의 시간 240/(bpm*bit)지만 노트의 길이 = 시간 * 2이기 때문(변속이 없는 경우) 아 하드코딩 언젠간 업보받을것같음
         int bitCount = (int)((mainCamera.transform.position.x - mainCamera.orthographicSize * 16 / 9) / lineGap); // 0부터 시작
-        double linePosition = bitCount * lineGap;
+        float linePosition = bitCount * lineGap;
         while (linePosition <= mainCamera.transform.position.x + mainCamera.orthographicSize * 16 / 9) {
             if (linePosition < 0f) {
                 bitCount++;
@@ -205,6 +210,8 @@ public class EditorManager : MonoBehaviour
         }
     }
 
+    public void ChangeBit() { if (int.TryParse(bitInputField.text, out bit)) ReloadMeasureCountLine(); }
+
     public void ToggleLines(Toggle toggle)
     {
         foreach (GameObject line in lines)
@@ -213,6 +220,45 @@ public class EditorManager : MonoBehaviour
         }
         indicatorEnabled = toggle.isOn;
         if (toggle.isOn) ReloadMeasureCountLine();
+    }
+
+    public void SongToggleIngame(Toggle toggle)
+    {
+        if (songLineMoveCoroutine != null) StopCoroutine(songLineMoveCoroutine);
+        if (toggle.isOn)
+        {
+            if (songLine != null) Destroy(songLine);
+            float startPositionX = mainCamera.transform.position.x - mainCamera.orthographicSize * 16 / 9;
+            songLine = Instantiate(songLinePrefab, mainCamera.WorldToScreenPoint(new Vector3(startPositionX, mainCamera.transform.position.y, 0f)), Quaternion.identity);
+            songLine.transform.SetParent(canvas.transform, true);
+            songLineMoveCoroutine = MoveSongLineCoroutine(startPositionX, songLine);
+        }
+        else {
+            song.Stop();
+            songLineMoveCoroutine = FixSongLineCoroutine(songLine);
+        }
+        StartCoroutine(songLineMoveCoroutine);
+    }
+
+    private IEnumerator MoveSongLineCoroutine(float startX, GameObject line)
+    {
+        if (startX < 0) startX = 0;
+        float musicTime = (float)GameManager.myManager.CalculateTimeFromInputWidth(startX);
+        song.time = musicTime;
+        song.Play();
+        while (true) {
+            line.GetComponent<RectTransform>().position = mainCamera.WorldToScreenPoint(new Vector3(startX, mainCamera.transform.position.y, 0f));
+            startX += GameManager.myManager.CalculateInputWidthFromTime(Time.deltaTime);
+            yield return null;
+        }
+    }
+
+    private IEnumerator FixSongLineCoroutine(GameObject line) {
+        Vector3 positionDelta = line.GetComponent<RectTransform>().position - mainCamera.WorldToScreenPoint(new Vector3(0, mainCamera.transform.position.y, 0));
+        while (true) {
+            line.GetComponent<RectTransform>().position = mainCamera.WorldToScreenPoint(new Vector3(0, mainCamera.transform.position.y, 0)) + positionDelta;
+            yield return null;
+        }
     }
 
     // =========================== Editor Main ===============================
@@ -228,7 +274,7 @@ public class EditorManager : MonoBehaviour
         {
             if (noteWriteSetting == NoteWriteSetting.MouseDiscrete)
             {
-                double lineGap = GameManager.myManager.scrollSpeed * 2 * 240 / (bpm * bit);
+                double lineGap = GameManager.myManager.CalculateInputWidthFromTime(240 / (bpm * bit));
                 int bitCount = (int)(mousePosition.x / lineGap);
                 noteEndPosition = new Vector3((float)(lineGap * bitCount), noteStartPosition.y, 0);
             }
@@ -354,7 +400,7 @@ public class EditorManager : MonoBehaviour
             if (bitExpression.Length != 2) return;
             if (int.TryParse(bitExpression[0], out int multiply) && int.TryParse(bitExpression[1], out int bit))
             {
-                noteWidth = GameManager.myManager.scrollSpeed * 2 * 240 * multiply / (bpm * bit);
+                noteWidth = GameManager.myManager.CalculateInputWidthFromTime(240 * multiply / (bpm * bit));
             }
             else return;
         }
@@ -418,6 +464,8 @@ public class EditorManager : MonoBehaviour
                 break;
         }
     }
+
+    
 
     // =========================== Save Map File ===============================
     public void OpenMapSavePanel() {
