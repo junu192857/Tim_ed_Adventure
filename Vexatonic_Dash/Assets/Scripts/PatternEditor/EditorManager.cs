@@ -112,7 +112,7 @@ public class EditorManager : MonoBehaviour
             bit = 4;
             bitInputField.text = "4";
             musicOffset = 0f;
-            offsetInputField.text = $"{musicOffset} ms";
+            offsetInputField.text = $"{musicOffset}";
             indicatorEnabled = true;
             noteStartPosition = Vector3.zero;
             noteEndPosition = Vector3.zero;
