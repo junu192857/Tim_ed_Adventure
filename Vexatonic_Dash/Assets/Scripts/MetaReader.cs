@@ -104,7 +104,8 @@ public static class MetaReader
             }
             
             Debug.Log($"End searching directory {dir}");
-            
+
+            streamReader.Close();
             SongMetaList.Add(currentSongData);
         }
         

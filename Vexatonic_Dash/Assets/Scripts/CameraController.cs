@@ -16,10 +16,11 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator cameraCoroutine;
 
-    private bool isAuto;
+    private bool isFixed;
 
     private void Start()
     {
+        isFixed = false;
         StartCoroutine(LateStart());
     }
 
