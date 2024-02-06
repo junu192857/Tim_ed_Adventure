@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
         else {
             Destroy(gameObject);
         }
-        if (scrollSpeed == 0f) scrollSpeed = 1f;
+        if (scrollSpeed == 0f) scrollSpeed = 1.5f;
 
         SongsDirectory = Application.dataPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                          + Path.DirectorySeparatorChar + LevelsDirectoryName;

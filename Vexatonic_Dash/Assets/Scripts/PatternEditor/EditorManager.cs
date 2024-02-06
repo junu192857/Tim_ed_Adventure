@@ -39,8 +39,9 @@ public class EditorManager : MonoBehaviour
     private GameObject songLine;
     public Canvas canvas;
     private List<GameObject> lines;
-    private int bit; // 4, 6, 8, 12, 16, 24, 32만 지원함
+    private int bit;
     private bool indicatorEnabled;
+    private float musicOffset;
 
     [Header("EditorMain")]
     private Vector3 noteStartPosition; // 다음에 배치할 노트의 시작점
