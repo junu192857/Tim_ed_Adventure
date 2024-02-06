@@ -354,6 +354,7 @@ public class RhythmManager : MonoBehaviour
         
         // Marker spawn area
         GameObject noteMarker = Instantiate(notePrefab, AnchorPosition, Quaternion.identity);
+        noteMarker.transform.localScale = new Vector3((int)info.direction, 1f, 1f);
         noteMarker.GetComponent<Note>().permanent = true; 
         // TODO: 사용자 지정 노트 속도 (GameManager.noteSpeed)에 따라 spawnPosition의 위치 변화
         if (subType == NoteSubType.Wall)
@@ -383,7 +384,7 @@ public class RhythmManager : MonoBehaviour
         
         // Note spawn area
         GameObject noteObject = Instantiate(notePrefab, 100 * Vector3.down, Quaternion.identity);
-
+        noteObject.transform.localScale = new Vector3((int)info.direction, 1f, 1f);
         SpriteRenderer noteRenderer = noteObject.GetComponentInChildren<SpriteRenderer>();
         if (type != NoteType.Jump)
             noteRenderer.size = markerRenderer.size;
