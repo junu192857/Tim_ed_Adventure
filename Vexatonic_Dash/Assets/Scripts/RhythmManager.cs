@@ -402,6 +402,7 @@ public class RhythmManager : MonoBehaviour
 
         note.spawnPos = info.spawnPosition;
         note.destPos = AnchorPosition;
+        note.direction = info.direction;
         note.transform.localScale = new Vector3((int) info.direction, 1, 1);
         note.transform.rotation = noteGravity;
 
