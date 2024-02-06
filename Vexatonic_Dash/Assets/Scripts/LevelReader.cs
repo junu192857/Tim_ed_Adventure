@@ -62,9 +62,16 @@ public class LevelReader
                 int gravityAngle = int.Parse(myList[2]);
 
                 if (gravityInfoStack.TryPeek(out prevGravityData) && (prevGravityData.time > gravityTime))
+                {
+                    sr.Close();
                     throw new ArgumentException("Gravity data does not entered in right order");
-                
+                }
+
                 gravityInfoStack.Push(new GravityData(gravityTime, gravityAngle));
+            }
+            else if (line.StartsWith("CAM"))
+            {
+                
             }
             else if (line.StartsWith("END")) {
                 list.Peek().noteLastingTime = 1f;
@@ -74,11 +81,13 @@ public class LevelReader
                 gravityDataList = gravityInfoStack.ToList();
                 gravityDataList.Reverse();
                 
+                sr.Close();
                 return returnList;
             }
             else {
                 if (myList[0].Length != 1) {
                     Debug.LogError("Parse Error: Length of Note type letter is not 1");
+                    sr.Close();
                     return null;
                 }
                         
@@ -96,6 +105,7 @@ public class LevelReader
                         if (!ValidateJump(jump.noteLastingTime, jump.jumpHeight))
                         {
                             Debug.LogError("Invalid jump note");
+                            sr.Close();
                             return null;
                         }
                     }
@@ -104,6 +114,7 @@ public class LevelReader
             }
         }
         Debug.LogError("This level does not have an END");
+        sr.Close();
         return null;
     }
 
@@ -176,5 +187,14 @@ public class LevelReader
         };
 
         return generated;
+    }
+
+    private CameraControlInfo generateCamControlInfo(string[] infoList)
+    {
+        // Local variable declaration & definition
+        string subCommand = infoList[1];
+        
+        
+        return new CameraControlInfo();
     }
 }

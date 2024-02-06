@@ -16,6 +16,8 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator cameraCoroutine;
 
+    private bool isAuto;
+
     private void Start()
     {
         StartCoroutine(LateStart());
