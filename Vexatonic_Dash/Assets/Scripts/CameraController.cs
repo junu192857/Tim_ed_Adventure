@@ -144,19 +144,19 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator ZoomCamera(double scale, double term)
     {
-        Vector2 currentScale = _camera.transform.localScale;
-        Vector2 destScale = new Vector2((float) scale, (float) scale);
+        float currentScale = _camera.orthographicSize;
+        float destScale = 5f * (float)scale;
         float localTime = 0f;
 
         while (localTime < term)
         {
-            Vector2 tempScale = GetSineEaseValue(currentScale, destScale, (float) (localTime / term));
-            _camera.transform.localScale = Vec2ToVec3(tempScale);
+            float tempScale = GetSineEaseValue(currentScale, destScale, (float) (localTime / term));
+            _camera.orthographicSize = tempScale;
             yield return null;
             localTime += Time.deltaTime;
         }
 
-        _camera.transform.localScale = Vec2ToVec3(destScale);
+        _camera.orthographicSize = destScale;
     }
 
     private IEnumerator ChangeCameraVelocity(Vector2 velocity, double term)
@@ -179,15 +179,6 @@ public class CameraController : MonoBehaviour
         return new Vector2(
             GetSineEaseValue(startValue.x, endValue.x, ratio),
             GetSineEaseValue(startValue.y, endValue.y, ratio)
-        );
-    }
-
-    private Vector3 Vec2ToVec3(Vector2 value)
-    {
-        return new Vector3(
-            value.x,
-            value.y,
-            1f
         );
     }
 }
