@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
     [SerializeField] private Text fpsText;
+    [SerializeField] private Text healthText;
 
     [Header ("Level Info UI")]
     [SerializeField] private GameObject levelInfo;
@@ -60,6 +61,7 @@ public class UIManager : MonoBehaviour
     private static double GameTime => GameManager.myManager.rm.GameTime;
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
 
+    private static int Health => GameManager.myManager.rm.health;
     private void Awake()
     {
         GameManager.myManager.um = this;
@@ -74,6 +76,7 @@ public class UIManager : MonoBehaviour
     private void InitializeUI()
     {
         scoreText.text = "0";
+        healthText.text = "health : 100";
         progressText.text = "0 %";
         StartCoroutine(ShowFPSCoroutine());
     }
@@ -113,6 +116,7 @@ public class UIManager : MonoBehaviour
     public void UpdateInGameUI()
     {
         scoreText.text = Score.ToString();
+        healthText.text = "health : " + Health.ToString();
         progressText.text = Progress + " %";
     }
 

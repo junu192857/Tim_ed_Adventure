@@ -28,6 +28,8 @@ public class RhythmManager : MonoBehaviour
 
     //게임 진행 시간. -5초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
     private double gameTime;
+    public double unbeatTime = 3.0f;
+    private double lastHit;
 
     public double GameTime {
         get => gameTime;
@@ -41,6 +43,7 @@ public class RhythmManager : MonoBehaviour
     private double scorePerNotes;    // 노트당 만점
     public int progress;
     private int playedNotes;
+    public int health;
     public int highProgress;
     public int highScore;
     private int noteCount => LevelReader.noteCount;
@@ -111,6 +114,9 @@ public class RhythmManager : MonoBehaviour
         realScore = 0;
         minusScore = 1010000;
         progress = 0;
+        health = 100;
+        lastHit = -unbeatTime - 1;
+
 
         myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity).GetComponent<CharacterControl>();
 
@@ -226,14 +232,15 @@ public class RhythmManager : MonoBehaviour
 
         if (spawnedNotes.TryPeek(out temp))
         {
-            if (temp.GetComponent<Note>().lifetime < -0.166f)
+            Note note = temp.GetComponent<Note>();
+            if (note.lifetime < -0.166f)
             {
-                Destroy(spawnedNotes.Dequeue());
-                //TODO: MISS여도 죽지 않게 되는 경우를 만드려면 여기서도 FixNote() 실행 필요.
+                spawnedNotes.Dequeue();
+                note.FixNote();
+                myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
             }
         }
-        
         UpdateGravity();
     }
 
@@ -256,13 +263,21 @@ public class RhythmManager : MonoBehaviour
         lastJudge = type;
 
         if (type == JudgementType.Miss) { 
-            GameOver();
-            return;
+            if (gameTime - lastHit >= unbeatTime) {
+                lastHit = gameTime;
+                health -= 20;
+            }
         }
+
 
         UpdateScore(type);
         UpdatePercentage();
         GameManager.myManager.um.UpdateInGameUI();
+        
+        if (health <= 0) {
+            GameOver();
+            return;
+        }
 
         if (playedNotes == noteCount && state == RhythmState.Ingame) GameClear();
     }
@@ -331,23 +346,26 @@ public class RhythmManager : MonoBehaviour
         int notePrefabIndex = type switch
         {
             NoteType.Normal => 0,
-            NoteType.Dash => 4,
-            NoteType.Jump => 9,
+            NoteType.Dash => 7,
+            NoteType.Jump => 15,
             _ => throw new ArgumentException("Unknown or Unimplemented Note Type")
         };
 
         if (type != NoteType.Jump && subType == NoteSubType.Ground)
             notePrefabIndex += info.angle switch
             {
+                -60 => 6,
+                -45 => 5,
+                -30 => 4,
                 0 => 0,
                 30 => 1,
                 45 => 2,
                 60 => 3,
                 _ => 0
             };
-        if (type == NoteType.Dash && subType == NoteSubType.Air) notePrefabIndex = 8;
-        if (type == NoteType.Jump && subType == NoteSubType.Air) notePrefabIndex = 10;
-        if (type == NoteType.Jump && subType == NoteSubType.Wall) notePrefabIndex = 11;
+        if (type == NoteType.Dash && subType == NoteSubType.Air) notePrefabIndex = 14;
+        if (type == NoteType.Jump && subType == NoteSubType.Air) notePrefabIndex = 16;
+        if (type == NoteType.Jump && subType == NoteSubType.Wall) notePrefabIndex = 17;
             // Should be fixed later, but from now on I'll just hard-code these due to time lack
 
         GameObject notePrefab = notePrefabs[notePrefabIndex];
