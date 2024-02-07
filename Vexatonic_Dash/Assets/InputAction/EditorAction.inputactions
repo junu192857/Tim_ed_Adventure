@@ -31,6 +31,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "DirectionToggle",
+                    "type": "Button",
+                    "id": "5d908672-fee2-4b74-8349-12edab192f21",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -152,6 +161,39 @@
                     "processors": "",
                     "groups": "Mouse & Keyboard",
                     "action": "MusicOffset",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Direction",
+                    "id": "aee99546-826a-4c41-8bc2-7cb0aa4d6333",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DirectionToggle",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "85f7e203-a71e-4690-a138-1614da173594",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DirectionToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "c8293b71-ee79-443a-bc89-78f8803ad69d",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DirectionToggle",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }
