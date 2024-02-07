@@ -145,7 +145,7 @@ public class CameraController : MonoBehaviour
     private IEnumerator ZoomCamera(double scale, double term)
     {
         float currentScale = _camera.orthographicSize;
-        float destScale = 5f * (float)scale;
+        float destScale = 3f * (float)scale;
         float localTime = 0f;
 
         while (localTime < term)
