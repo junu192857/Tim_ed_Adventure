@@ -101,4 +101,93 @@ public class CameraController : MonoBehaviour
         return newCameraPos;
     }
 
+    private IEnumerator FixCamera(Vector2 fixPivot, double term)
+    {
+        isFixed = true;
+
+        Vector2 currentPosition = _camera.transform.position;
+        float localTime = 0f;
+
+        while (localTime < term)
+        {
+            Vector2 tempPos = GetSineEaseValue(currentPosition, fixPivot, (float)(localTime / term));
+            _camera.transform.position = tempPos;
+            yield return null;
+            localTime += Time.deltaTime;
+        }
+
+        _camera.transform.position = fixPivot;
+    }
+
+    private void UnfixCamera(double term)
+    {
+        isFixed = false;
+        
+        
+    }
+
+    private IEnumerator RotateCamera(int angle, double term)
+    {
+        int currentAngle = (int) _camera.transform.rotation.eulerAngles.z;
+        float localTime = 0f;
+
+        while (localTime < term)
+        {
+            float tempAngle = GetSineEaseValue(currentAngle, angle, (float)(localTime / term));
+            _camera.transform.rotation = Quaternion.AngleAxis(tempAngle, Vector3.forward);
+            yield return null;
+            localTime += Time.deltaTime;
+        }
+
+        _camera.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    }
+
+    private IEnumerator ZoomCamera(double scale, double term)
+    {
+        Vector2 currentScale = _camera.transform.localScale;
+        Vector2 destScale = new Vector2((float) scale, (float) scale);
+        float localTime = 0f;
+
+        while (localTime < term)
+        {
+            Vector2 tempScale = GetSineEaseValue(currentScale, destScale, (float) (localTime / term));
+            _camera.transform.localScale = Vec2ToVec3(tempScale);
+            yield return null;
+            localTime += Time.deltaTime;
+        }
+
+        _camera.transform.localScale = Vec2ToVec3(destScale);
+    }
+
+    private IEnumerator ChangeCameraVelocity(Vector2 velocity, double term)
+    {
+        // TODO: Velocity Logic
+        yield return null;
+    }
+
+    private float GetSineEaseValue(float startValue, float endValue, float ratio)
+    {
+        float x = 2 * Mathf.PI * ratio;
+        float scale = (endValue - startValue) / 2.0f;
+        float pivot = (endValue + startValue) / 2.0f;
+
+        return pivot - scale * Mathf.Cos(x);
+    }
+
+    private Vector2 GetSineEaseValue(Vector2 startValue, Vector2 endValue, float ratio)
+    {
+        return new Vector2(
+            GetSineEaseValue(startValue.x, endValue.x, ratio),
+            GetSineEaseValue(startValue.y, endValue.y, ratio)
+        );
+    }
+
+    private Vector3 Vec2ToVec3(Vector2 value)
+    {
+        return new Vector3(
+            value.x,
+            value.y,
+            1f
+        );
+    }
 }

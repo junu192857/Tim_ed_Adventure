@@ -201,7 +201,7 @@ public class LevelReader
         // CAM ZOOM (time) (term) (scale)
         // CAM VELOCITY (time) 0 (x) (y) | CAM VELOCITY (time) 0 DEFAULT
         // CAM ROTATE (time) (term) (angle)
-        // CAM FIX (time) (term) 0/1 (x) (y) | CAM FIX (time) (term) 0/1 DEFAULT
+        // CAM FIX (time) (term) 0/1 (x) (y) | CAM FIX (time) (term) 0 DEFAULT
         switch (subCommand)
         {
             case "ZOOM":
