@@ -331,23 +331,26 @@ public class RhythmManager : MonoBehaviour
         int notePrefabIndex = type switch
         {
             NoteType.Normal => 0,
-            NoteType.Dash => 4,
-            NoteType.Jump => 9,
+            NoteType.Dash => 7,
+            NoteType.Jump => 15,
             _ => throw new ArgumentException("Unknown or Unimplemented Note Type")
         };
 
         if (type != NoteType.Jump && subType == NoteSubType.Ground)
             notePrefabIndex += info.angle switch
             {
+                -60 => 6,
+                -45 => 5,
+                -30 => 4,
                 0 => 0,
                 30 => 1,
                 45 => 2,
                 60 => 3,
                 _ => 0
             };
-        if (type == NoteType.Dash && subType == NoteSubType.Air) notePrefabIndex = 8;
-        if (type == NoteType.Jump && subType == NoteSubType.Air) notePrefabIndex = 10;
-        if (type == NoteType.Jump && subType == NoteSubType.Wall) notePrefabIndex = 11;
+        if (type == NoteType.Dash && subType == NoteSubType.Air) notePrefabIndex = 14;
+        if (type == NoteType.Jump && subType == NoteSubType.Air) notePrefabIndex = 16;
+        if (type == NoteType.Jump && subType == NoteSubType.Wall) notePrefabIndex = 17;
             // Should be fixed later, but from now on I'll just hard-code these due to time lack
 
         GameObject notePrefab = notePrefabs[notePrefabIndex];
