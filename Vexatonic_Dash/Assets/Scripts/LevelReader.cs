@@ -62,9 +62,16 @@ public class LevelReader
                 int gravityAngle = int.Parse(myList[2]);
 
                 if (gravityInfoStack.TryPeek(out prevGravityData) && (prevGravityData.time > gravityTime))
+                {
+                    sr.Close();
                     throw new ArgumentException("Gravity data does not entered in right order");
-                
+                }
+
                 gravityInfoStack.Push(new GravityData(gravityTime, gravityAngle));
+            }
+            else if (line.StartsWith("CAM"))
+            {
+                CameraControlInfo camInfo = generateCamControlInfo(myList);
             }
             else if (line.StartsWith("END")) {
                 list.Peek().noteLastingTime = 1f;
@@ -74,11 +81,13 @@ public class LevelReader
                 gravityDataList = gravityInfoStack.ToList();
                 gravityDataList.Reverse();
                 
+                sr.Close();
                 return returnList;
             }
             else {
                 if (myList[0].Length != 1) {
                     Debug.LogError("Parse Error: Length of Note type letter is not 1");
+                    sr.Close();
                     return null;
                 }
                         
@@ -96,6 +105,7 @@ public class LevelReader
                         if (!ValidateJump(jump.noteLastingTime, jump.jumpHeight))
                         {
                             Debug.LogError("Invalid jump note");
+                            sr.Close();
                             return null;
                         }
                     }
@@ -104,6 +114,7 @@ public class LevelReader
             }
         }
         Debug.LogError("This level does not have an END");
+        sr.Close();
         return null;
     }
 
@@ -176,5 +187,55 @@ public class LevelReader
         };
 
         return generated;
+    }
+
+    private CameraControlInfo generateCamControlInfo(string[] infoList)
+    {
+        // Local variable declaration & definition
+        string subCommand = infoList[1];
+        double time = double.Parse(infoList[2]);
+        double term = double.Parse(infoList[3]);
+        CameraControlInfo info;
+
+        // Subcommand Process
+        // CAM ZOOM (time) (term) (scale)
+        // CAM VELOCITY (time) 0 (x) (y) | CAM VELOCITY (time) 0 DEFAULT
+        // CAM ROTATE (time) (term) (angle)
+        // CAM FIX (time) (term) 0/1 (x) (y) | CAM FIX (time) (term) 0 DEFAULT
+        switch (subCommand)
+        {
+            case "ZOOM":
+                double zoomScale = double.Parse(infoList[4]);
+                info = new CameraZoomInfo(time, term, zoomScale);
+                break;
+            case "VELOCITY":
+                if (infoList[4].Equals("DEFAULT")) info = new CameraVelocityInfo(time, true, new Vector2());
+                else if (infoList.Length == 6)
+                    info = new CameraVelocityInfo(time, false, new Vector2(
+                        float.Parse(infoList[4]),
+                        float.Parse(infoList[5])
+                    ));
+                else throw new ArgumentException("Invalid line detected while parsing velocity info");
+                break;
+            case "ROTATE":
+                int rotateAngle = int.Parse(infoList[4]);
+                info = new CameraRotateInfo(time, term, rotateAngle);
+                break;
+            case "FIX":
+                bool isFixActivation = !infoList[4].Equals("0");
+                if (infoList[5].Equals("DEFAULT"))
+                    info = new CameraFixInfo(time, term, true, isFixActivation, new Vector2());
+                else if (infoList.Length == 7)
+                    info = new CameraFixInfo(time, term, false, isFixActivation, new Vector2(
+                        float.Parse(infoList[5]),
+                        float.Parse(infoList[6])
+                    ));
+                else throw new ArgumentException("Invalid lien detected while parsing fix info");
+                break;
+            default:
+                throw new ArgumentException("Unknown camera control subcommand");
+        }
+        
+        return info;
     }
 }
