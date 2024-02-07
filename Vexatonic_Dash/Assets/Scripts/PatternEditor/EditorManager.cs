@@ -370,7 +370,7 @@ public class EditorManager : MonoBehaviour
             if (indicator != null && indicator != jumpEndIndicator) Destroy(indicator);
         }
         // TODO: 벽점프 노트면 자동 direction 및 directionText 변화시키기. 벽점프는 무조건 진행방향의 반대이므로, direction이 유저 설정에 의존하지 않고 이전 노트의 direction에 의존한다.
-        c.a = direction == CharacterDirection.Right ? 1f : 0.5f;
+        c.a = direction == CharacterDirection.Right ? 1f : 0.75f;
         noteSprite.color = c;
         if (jumpEndIndicator != null) jumpEndIndicator.GetComponent<SpriteRenderer>().color = c;
 
@@ -555,10 +555,17 @@ public class EditorManager : MonoBehaviour
             NoteType.Jump => (info as JumpNoteSpawnInfo).jumpHeight.ToString() + " ",
             _ => "X "
         };
+        string subType = info.noteSubType switch
+        {
+            NoteSubType.Air => "A ",
+            NoteSubType.Wall => "W ",
+            NoteSubType.Ground => "G ",
+            _ => "0 "
+        };
         string angle = info is JumpNoteSpawnInfo ? "0 " : info.angle.ToString() + " ";
         string direction = info.direction == CharacterDirection.Left ? "L" : "R";
 
-        return type + spawnTime + dashCoeffOrJumpHeight + angle + direction;
+        return type + spawnTime + dashCoeffOrJumpHeight + subType +  angle + direction;
     }
 }
 
