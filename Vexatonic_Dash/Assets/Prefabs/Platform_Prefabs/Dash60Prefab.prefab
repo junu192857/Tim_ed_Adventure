@@ -133,7 +133,7 @@ MonoBehaviour:
   activated: 0
   lifetime: 0
   noteEndTime: 0
-  noteType: 0
+  noteType: 1
   noteSubType: 0
   direction: 0
   spawnPos: {x: 0, y: 0, z: 0}

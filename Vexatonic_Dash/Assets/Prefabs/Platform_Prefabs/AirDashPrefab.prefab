@@ -49,13 +49,14 @@ MonoBehaviour:
   activated: 0
   lifetime: 0
   noteEndTime: 0
-  noteType: 0
-  noteSubType: 0
+  noteType: 1
+  noteSubType: 1
   direction: 0
   spawnPos: {x: 0, y: 0, z: 0}
   destPos: {x: 0, y: 0, z: 0}
   startPos: {x: 0, y: 0, z: 0}
   endPos: {x: 0, y: 0, z: 0}
+  parentNote: {fileID: 0}
 --- !u!1 &6580449936264015977
 GameObject:
   m_ObjectHideFlags: 0
