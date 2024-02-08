@@ -20,7 +20,7 @@ public class Note : MonoBehaviour
     public Vector3 startPos; // 이 노트에서 움직이는 캐릭터의 시작 위치
     public Vector3 endPos;  // 이 노트에서 움직이는 캐릭터의 끝 위치
 
-    protected int angle; // 플랫폼의 기울기
+    [SerializeField] protected int angle; // 플랫폼의 기울기
     
     public GameObject parentNote = null; // 움직이는 노트의 목적지에 있는 고정된 노트.
 

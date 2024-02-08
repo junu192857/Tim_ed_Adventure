@@ -6,6 +6,7 @@ using SimpleFileBrowser;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 
 public enum EditorState { 
     EditorInitial,
@@ -56,9 +57,11 @@ public class EditorManager : MonoBehaviour
     private GameObject selectedNote;
     private Color c;
     private SpriteRenderer noteSprite;
+    private int[] angleArray = { 0, 30, 45, 60, -30, -45, -60, 0, 30, 45, 60, -30, -45, -60 };
     private int platformAngle;
     private int dashPlatformAngle;
     private float dashCoeff;
+    private int gravity;
     public enum NoteWriteSetting
     {
         MouseDiscrete,
@@ -120,6 +123,7 @@ public class EditorManager : MonoBehaviour
             noteStartPosition = Vector3.zero;
             noteEndPosition = Vector3.zero;
             dashCoeff = 1.5f;
+            gravity = 0;
             editorState = EditorState.EditorMain;
             noteWriteSetting = NoteWriteSetting.MouseDiscrete;
             Camera.main.transform.position = -5 * Vector3.forward;
@@ -311,7 +315,7 @@ public class EditorManager : MonoBehaviour
         if (editorState != EditorState.EditorMain || selectedNote == null) return;
 
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //노트 x좌표 변경하기. NoteWriteSetting이 WriteLength라면 별개의 함수를 통해 변경
+        //NoteEndPosition x좌표 변경하기. NoteWriteSetting이 WriteLength라면 별개의 함수를 통해 변경
         if (noteWriteSetting != NoteWriteSetting.WriteLength)
         {
             if (noteWriteSetting == NoteWriteSetting.MouseDiscrete)
@@ -324,7 +328,7 @@ public class EditorManager : MonoBehaviour
         }
         //노트 y좌표 변경하기.
         if (notePrefabs.IndexOf(selectedNote) >= 14) noteEndPosition.y = mousePosition.y;
-        else noteEndPosition.y = noteStartPosition.y;
+        else noteEndPosition.y = noteStartPosition.y + Mathf.Tan(Mathf.Deg2Rad * angleArray[notePrefabs.IndexOf(selectedNote)]);
 
 
 
@@ -341,9 +345,10 @@ public class EditorManager : MonoBehaviour
         c.a = 0.5f;
         noteSprite.color = c;
 
+        // Air Dash나 모든 종류의 Jump일 때, Jump Indicator를 놓는다. 다른 노트들과 달리 noteEndPosition을 명확하게 볼 수 없기 때문.
         if (notePrefabs.IndexOf(selectedNote) >= 14)
         {
-            jumpEndIndicator = Instantiate(notePrefabs[17], noteEndPosition, Quaternion.identity);
+            jumpEndIndicator = Instantiate(notePrefabs[18], noteEndPosition, Quaternion.identity);
             jumpEndIndicator.GetComponent<SpriteRenderer>().color = c;
         }
 
@@ -353,7 +358,28 @@ public class EditorManager : MonoBehaviour
             case 7:
                 noteSprite.size = new Vector2(10 * (noteEndPosition.x - noteStartPosition.x), 2.5f);
                 break;
+            case 1:
+            case 4:
+            case 8:
+            case 11:
+                noteSprite.size = new Vector2(10 * (noteEndPosition.x - noteStartPosition.x), 8.27f);
+                break;
+            case 2:
+            case 5:
+            case 9:
+            case 12:
+                noteSprite.size = new Vector2(10 * (noteEndPosition.x - noteStartPosition.x), 12.5f);
+                break;
+            case 3:
+            case 6:
+            case 10:
+            case 13:
+                noteSprite.size = new Vector2(10 * (noteEndPosition.x - noteStartPosition.x), 19.82f);
+                break;
             case 14:
+            case 15:
+            case 16:
+            case 17:
                 break;
             default:
                 throw new NotImplementedException();
@@ -370,36 +396,76 @@ public class EditorManager : MonoBehaviour
             if (indicator != null && indicator != jumpEndIndicator) Destroy(indicator);
         }
         // TODO: 벽점프 노트면 자동 direction 및 directionText 변화시키기. 벽점프는 무조건 진행방향의 반대이므로, direction이 유저 설정에 의존하지 않고 이전 노트의 direction에 의존한다.
+        if (notePrefabs.IndexOf(selectedNote) == 17) {
+            direction = noteStorage.Last().info.direction switch
+            {
+                CharacterDirection.Left => CharacterDirection.Right,
+                CharacterDirection.Right => CharacterDirection.Left,
+                _ => throw new ArgumentException()
+            };
+        }
         c.a = direction == CharacterDirection.Right ? 1f : 0.75f;
         noteSprite.color = c;
+
         if (jumpEndIndicator != null) jumpEndIndicator.GetComponent<SpriteRenderer>().color = c;
 
         NoteSpawnInfo info;
-        //TODO: 새로운 노트들 추가
+
         switch (notePrefabs.IndexOf(selectedNote))
         {
-            case 0:
+            case int i when i <= 6:
                 // A (스폰시간) 0 0 (경사도) (진행방향) 
-                info = new NoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Normal);
-                info.angle = platformAngle;
-                info.direction = direction;
+                info = new NoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Normal)
+                {
+                    angle = platformAngle,
+                    direction = direction,
+                };
                 break;
-            case 7:
+            case int i when 6 < i && i <= 13:
                 // B (스폰시간) (대쉬 계수) G (경사도) (진행방향)
-                info = new DashNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Dash, dashCoeff);
-                info.noteSubType = NoteSubType.Ground;
-                info.angle = dashPlatformAngle;
-                info.direction = direction;
+                info = new DashNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Dash, dashCoeff)
+                {
+                    noteSubType = NoteSubType.Ground,
+                    angle = dashPlatformAngle,
+                    direction = direction
+                };
                 break;
             case 14:
+                // B (스폰시간) (대쉬 계수) A 0 (진행방향)
+                info = new DashNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Dash, dashCoeff)
+                {
+                    noteSubType = NoteSubType.Air,
+                    angle = 0,
+                    direction = direction
+                };
+                break;
+            case 15:
                 // C (스폰시간) (높이변화) G 0 (진행방향)
-                info = new JumpNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Jump, noteEndPosition.y - noteStartPosition.y);
-                info.noteSubType = NoteSubType.Ground;
-                info.direction = direction;
+                info = new JumpNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Jump, noteEndPosition.y - noteStartPosition.y)
+                {
+                    noteSubType = NoteSubType.Ground,
+                    direction = direction
+                };
+                break;
+            case 16:
+                // C (스폰시간) (높이변화) A 0 (진행방향)
+                info = new JumpNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Jump, noteEndPosition.y - noteStartPosition.y)
+                {
+                    noteSubType = NoteSubType.Air,
+                    direction = direction
+                };
+                break;
+            case 17:
+                // C (스폰시간) (높이변화) W 0 (진행방향)
+                info = new JumpNoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Jump, noteEndPosition.y - noteStartPosition.y)
+                {
+                    noteSubType = NoteSubType.Wall,
+                    direction = direction
+                };
                 break;
             default:
                 info = null;
-                break;
+                throw new ArgumentOutOfRangeException();
         }
         //placedNotes.Add(notePreview);
         //noteSpawnInfos.Add(info);
@@ -462,6 +528,8 @@ public class EditorManager : MonoBehaviour
 
     public void SelectNote(int noteIndex) {
         selectedNote = notePrefabs[noteIndex];
+        if (noteIndex < 7) platformAngle = angleArray[noteIndex];
+        else if (noteIndex < 14) dashPlatformAngle = angleArray[noteIndex];
         if (noteWriteSetting == NoteWriteSetting.WriteLength) SetNotePreviewByWriteLength();
     }
 
@@ -487,24 +555,16 @@ public class EditorManager : MonoBehaviour
         switch (noteIndex)
         {
             case 0:
-                if (/* float.TryParse(normalAngleInputField.text, out platformAngle)*/ true) {
-                    if (/* 0 <= platformAngle && platformAngle < 90f */ true)
-                    {
-                        normalNoteSettingPanel.SetActive(false);
-                        settingBackgroundPanel.SetActive(false);
-                        editorState = EditorState.EditorMain;
-                    }
-                }
+                normalNoteSettingPanel.SetActive(false);
+                settingBackgroundPanel.SetActive(false);
+                editorState = EditorState.EditorMain;
                 break;
             case 1:
-                if (/* float.TryParse(dashAngleInputField.text, out dashPlatformAngle) && */ float.TryParse(dashCoeffInputField.text, out dashCoeff))
+                if (float.TryParse(dashCoeffInputField.text, out dashCoeff) && 0 < dashCoeff)
                 {
-                    if (/* 0 <= dashPlatformAngle && dashPlatformAngle < 90f && */ 0 < dashCoeff)
-                    {
-                        dashNoteSettingPanel.SetActive(false);
-                        settingBackgroundPanel.SetActive(false);
-                        editorState = EditorState.EditorMain;
-                    }
+                    dashNoteSettingPanel.SetActive(false);
+                    settingBackgroundPanel.SetActive(false);
+                    editorState = EditorState.EditorMain;
                 }
                 break;
             case 2:
