@@ -119,11 +119,18 @@ public class CameraController : MonoBehaviour
         _camera.transform.position = fixPivot;
     }
 
-    private void UnfixCamera(double term)
+    private IEnumerator UnfixCamera(double term)
     {
+        Vector2 currentPosition = _camera.transform.position;
+        float localTime = 0f;
+
+        while (localTime < term)
+        {
+            yield return null;
+            localTime += Time.deltaTime;
+        }
+
         isFixed = false;
-        
-        
     }
 
     private IEnumerator RotateCamera(int angle, double term)
