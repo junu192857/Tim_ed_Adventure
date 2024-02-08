@@ -57,7 +57,7 @@ public class EditorManager : MonoBehaviour
     private GameObject selectedNote;
     private Color c;
     private SpriteRenderer noteSprite;
-    private int[] angleArray = { 0, 30, 45, 60, -30, -45, -60, 0, 30, 45, 60, -30, -45, -60 };
+    private int[] angleArray = { 0, 30, 45, 60, -30, -45, -60, 0, 30, 45, 60, -30, -45, -60, 0 };
     private int platformAngle;
     private int dashPlatformAngle;
     private float dashCoeff;
@@ -327,7 +327,7 @@ public class EditorManager : MonoBehaviour
             else noteEndPosition = new Vector3(mousePosition.x, noteStartPosition.y, 0);
         }
         //노트 y좌표 변경하기.
-        if (notePrefabs.IndexOf(selectedNote) >= 14) noteEndPosition.y = mousePosition.y;
+        if (notePrefabs.IndexOf(selectedNote) >= 15) noteEndPosition.y = mousePosition.y;
         else noteEndPosition.y = noteStartPosition.y + Mathf.Tan(Mathf.Deg2Rad * angleArray[notePrefabs.IndexOf(selectedNote)]);
 
 
@@ -397,14 +397,20 @@ public class EditorManager : MonoBehaviour
         }
         // TODO: 벽점프 노트면 자동 direction 및 directionText 변화시키기. 벽점프는 무조건 진행방향의 반대이므로, direction이 유저 설정에 의존하지 않고 이전 노트의 direction에 의존한다.
         if (notePrefabs.IndexOf(selectedNote) == 17) {
-            direction = noteStorage.Last().info.direction switch
-            {
-                CharacterDirection.Left => CharacterDirection.Right,
-                CharacterDirection.Right => CharacterDirection.Left,
-                _ => throw new ArgumentException()
-            };
+            switch (noteStorage.Last().info.direction) { 
+                case CharacterDirection.Left:
+                    direction = CharacterDirection.Right;
+                    directionText.text = "Direction: Right";
+                    break;
+                case CharacterDirection.Right:
+                    direction = CharacterDirection.Left;
+                    directionText.text = "Direction: Left";
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
         }
-        c.a = direction == CharacterDirection.Right ? 1f : 0.75f;
+        c.a = direction == CharacterDirection.Right ? 1f : 0.5f;
         noteSprite.color = c;
 
         if (jumpEndIndicator != null) jumpEndIndicator.GetComponent<SpriteRenderer>().color = c;
