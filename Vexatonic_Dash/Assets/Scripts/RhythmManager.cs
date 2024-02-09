@@ -391,9 +391,9 @@ public class RhythmManager : MonoBehaviour
             markerRenderer.size = info.angle switch
             {
                 0 => new Vector2(10 * inputWidth, 2.5f),
-                30 => new Vector2(10 * inputWidth, 8.27f * inputWidth),
-                45 => new Vector2(10 * inputWidth, 12.5f * inputWidth),
-                60 => new Vector2(10 * inputWidth, 19.82f * inputWidth),
+                30 or -30 => new Vector2(10 * inputWidth, 8.27f),
+                45 or -45 => new Vector2(10 * inputWidth, 12.5f),
+                60 or -60 => new Vector2(10 * inputWidth, 19.82f),
                 _ => new Vector2()
             };
 
