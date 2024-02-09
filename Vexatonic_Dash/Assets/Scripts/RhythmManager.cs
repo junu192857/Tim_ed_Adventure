@@ -325,11 +325,6 @@ public class RhythmManager : MonoBehaviour
 
         foreach (var note in noteList)
             AnchorPosition = SpawnNote(note, AnchorPosition);
-        
-        // Spawn Platform Object
-        // 다른 플랫폼들이 많지만, 우선 기본 이동 플랫폼만.
-        // 120bpm 4bit(0.5초) = 1칸 너비로 하자
-        Debug.Log("Thanks!");
     }
 
     // 노트 찍고 다음 AnchorPosition 돌려주는 역할
@@ -366,7 +361,9 @@ public class RhythmManager : MonoBehaviour
         if (type == NoteType.Dash && subType == NoteSubType.Air) notePrefabIndex = 14;
         if (type == NoteType.Jump && subType == NoteSubType.Air) notePrefabIndex = 16;
         if (type == NoteType.Jump && subType == NoteSubType.Wall) notePrefabIndex = 17;
+        if (type == NoteType.Normal && subType == NoteSubType.End) notePrefabIndex = 18;
             // Should be fixed later, but from now on I'll just hard-code these due to time lack
+            // Me too
 
         GameObject notePrefab = notePrefabs[notePrefabIndex];
         

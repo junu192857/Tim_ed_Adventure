@@ -73,17 +73,6 @@ public class LevelReader
             {
                 CameraControlInfo camInfo = generateCamControlInfo(myList);
             }
-            else if (line.StartsWith("END")) {
-                list.Peek().noteLastingTime = 1f;
-                List<NoteSpawnInfo> returnList = list.ToList();
-                returnList.Reverse();
-
-                gravityDataList = gravityInfoStack.ToList();
-                gravityDataList.Reverse();
-                
-                sr.Close();
-                return returnList;
-            }
             else {
                 if (myList[0].Length != 1) {
                     Debug.LogError("Parse Error: Length of Note type letter is not 1");
@@ -111,9 +100,21 @@ public class LevelReader
                     }
                 }
                 list.Push(cur);
+
+                if (cur.noteSubType == NoteSubType.End) {
+                    cur.noteLastingTime = 1f;
+                    List<NoteSpawnInfo> returnList = list.ToList();
+                    returnList.Reverse();
+
+                    gravityDataList = gravityInfoStack.ToList();
+                    gravityDataList.Reverse();
+
+                    sr.Close();
+                    return returnList;
+                }
             }
         }
-        Debug.LogError("This level does not have an END");
+        Debug.LogError("This level does not have an END Note");
         sr.Close();
         return null;
     }
@@ -126,7 +127,7 @@ public class LevelReader
     {
         // Local Variable Declaration
         NoteType noteType;
-        int legacyLength = 0;
+        // int legacyLength = 0;
         double spawnTime = 0;
         
         NoteSpawnInfo generated;
@@ -136,15 +137,15 @@ public class LevelReader
         {
             case "A":
                 noteType = NoteType.Normal;
-                legacyLength = 2;
+                // legacyLength = 2;
                 break;
             case "B":
                 noteType = NoteType.Dash;
-                legacyLength = 3;
+                // legacyLength = 3;
                 break;
             case "C":
                 noteType = NoteType.Jump;
-                legacyLength = 3;
+                // legacyLength = 3;
                 break;
             default:
                 throw new ArgumentException("Invalid note information provided in map file");
@@ -162,19 +163,22 @@ public class LevelReader
             _ => throw new ArgumentException("Unknown or unimplemented note type")
         };
 
-        if (infoList.Length == legacyLength)
+        // Legacy format을 더 이상 이용할 일이 없음.
+        /*if (infoList.Length == legacyLength)
         {
             // Legacy format check
             Debug.LogWarning("Note information in the map file is in obsolete format. Please use the new style.");
             return generated;
-        }
+        }*/
 
-        if (noteType != NoteType.Normal)
+        // if (noteType != NoteType.Normal) 
+        // Comment: 이제 Normal이어도 E라는 특수한 NoteSubType을 가질 수 있음. 그 외의 모든 NormalNote는 Ground로 처리
             generated.noteSubType = infoList[3] switch
             {
                 "G" => NoteSubType.Ground,
                 "A" => NoteSubType.Air,
                 "W" => NoteSubType.Wall,
+                "E" => NoteSubType.End,
                 _ => throw new ArgumentException("Invalid note subtype provided")
             };
 

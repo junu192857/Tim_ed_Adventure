@@ -5,9 +5,7 @@ using UnityEngine;
 public enum NoteType { 
     Normal,
     Dash,
-    Jump,
-    Attack,
-    Defend
+    Jump
 }
 
 public enum NoteSubType
@@ -15,6 +13,7 @@ public enum NoteSubType
     Ground,
     Air,
     Wall,
+    End
 }
 
 public enum CharacterDirection
