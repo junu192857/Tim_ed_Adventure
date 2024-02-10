@@ -23,8 +23,8 @@ public class GameManager : MonoBehaviour
 
     public float scrollSpeed; // 카메라 이동 속도를 의미한다.
     public float noteSpeed; // 노트의 속력을 의미한다.
-    public float globalOffset; // 인겜에서 설정할 수 있는 음악 오프셋이다.
-    public float levelOffset; // 에디터를 통해 정한 각 레벨에서의 오프셋이다.
+    public double globalOffset = 0; // 인겜 setting에서 설정할 수 있는 음악 오프셋이다.
+    public double levelOffset; // 에디터를 통해 정한 각 레벨에서의 오프셋이다.
     public float volume; // 소리 크기를 의미한다.
     
 

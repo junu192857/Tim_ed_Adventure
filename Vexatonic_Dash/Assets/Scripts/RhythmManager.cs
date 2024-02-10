@@ -13,7 +13,6 @@ public enum RhythmState {
 
 public class RhythmManager : MonoBehaviour
 {
-    [SerializeField] private SoundManager sm;
 
     private RhythmState state;
     // 레벨 텍스트 파일이 저장될 위치.
@@ -33,7 +32,7 @@ public class RhythmManager : MonoBehaviour
     public double unbeatTime = 3.0f;
     private double lastHit;
 
-    public static double levelOffset;
+    private AudioSource song;
 
     public double GameTime {
         get => gameTime;
@@ -100,6 +99,10 @@ public class RhythmManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        song = GameManager.myManager.sm.GetComponent<AudioSource>();
+        song.Stop();
+
+
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
         gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
@@ -133,6 +136,7 @@ public class RhythmManager : MonoBehaviour
             new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
         );
         StartCoroutine(nameof(StartReceivingInput));
+        StartCoroutine(StartSong());
     }
 
     void Update()
@@ -463,7 +467,8 @@ public class RhythmManager : MonoBehaviour
     private IEnumerator StartSong() {
         double songStartTiming = -(GameManager.myManager.globalOffset + GameManager.myManager.levelOffset) / 1000;
         while (gameTime < songStartTiming) yield return new WaitForEndOfFrame();
-        // soundManager.
+        song.time = (float)(gameTime - songStartTiming);
+        song.Play();
     }
 
     // 스코어 업데이트

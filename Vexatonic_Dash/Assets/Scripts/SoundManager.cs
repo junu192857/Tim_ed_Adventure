@@ -15,8 +15,11 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-        song = GetComponent<AudioSource>();
+        if (SceneManager.GetActiveScene().name == "Main")
+        {
+            DontDestroyOnLoad(gameObject);
+            song = GetComponent<AudioSource>();
+        }
     }
 
     //For Main Scene
@@ -29,6 +32,8 @@ public class SoundManager : MonoBehaviour
                 break;
             case "Select":
                 StartCoroutine(PlaySelectedSong(0));
+                break;
+            default:
                 break;
         }
     }
