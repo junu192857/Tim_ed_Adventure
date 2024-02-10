@@ -62,6 +62,7 @@ public class EditorManager : MonoBehaviour
     private int dashPlatformAngle;
     private float dashCoeff;
     private int gravity;
+    private bool hasEnd;
     public enum NoteWriteSetting
     {
         MouseDiscrete,
@@ -124,6 +125,7 @@ public class EditorManager : MonoBehaviour
             noteEndPosition = Vector3.zero;
             dashCoeff = 1.5f;
             gravity = 0;
+            hasEnd = false;
             editorState = EditorState.EditorMain;
             noteWriteSetting = NoteWriteSetting.MouseDiscrete;
             Camera.main.transform.position = -5 * Vector3.forward;
@@ -312,10 +314,10 @@ public class EditorManager : MonoBehaviour
     private void Update()
     {
         // 아래는 노트의 미리보기를 생성하는 부분
-        if (editorState != EditorState.EditorMain || selectedNote == null) return;
+        if (editorState != EditorState.EditorMain || selectedNote == null || hasEnd) return;
 
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //NoteEndPosition x좌표 변경하기. NoteWriteSetting이 WriteLength라면 별개의 함수를 통해 변경
+        //NoteEndPosition x좌표 변경하기. NoteWriteSetting이 WriteLength라면 별개의 함수를 통해 변경 << WriteLength는 기술력 문제로 삭제
         if (noteWriteSetting != NoteWriteSetting.WriteLength)
         {
             if (noteWriteSetting == NoteWriteSetting.MouseDiscrete)
@@ -327,9 +329,16 @@ public class EditorManager : MonoBehaviour
             else noteEndPosition = new Vector3(mousePosition.x, noteStartPosition.y, 0);
         }
         //노트 y좌표 변경하기.
-        if (notePrefabs.IndexOf(selectedNote) >= 15) noteEndPosition.y = mousePosition.y;
-        else noteEndPosition.y = noteStartPosition.y + Mathf.Tan(Mathf.Deg2Rad * angleArray[notePrefabs.IndexOf(selectedNote)]);
+        //Index 30인 위치에 있는 EndNote 이후로 추가 노트는 등장하지 않을 예정이라 대충 구현함
+        //if (notePrefabs.IndexOf(selectedNote) >= 15 && notePrefabs.IndexOf(selectedNote) != 30) noteEndPosition.y = mousePosition.y;
+        //else noteEndPosition.y = noteStartPosition.y + Mathf.Tan(Mathf.Deg2Rad * angleArray[notePrefabs.IndexOf(selectedNote)]);
 
+        noteEndPosition.y = notePrefabs.IndexOf(selectedNote) switch {
+            30 => noteStartPosition.y,
+            <= 14 => noteStartPosition.y + Mathf.Tan(Mathf.Deg2Rad * angleArray[notePrefabs.IndexOf(selectedNote)]),
+            >= 15 and < 30 => mousePosition.y,
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
 
         if (noteStartPosition.x >= noteEndPosition.x) return;
@@ -346,7 +355,7 @@ public class EditorManager : MonoBehaviour
         noteSprite.color = c;
 
         // Air Dash나 모든 종류의 Jump일 때, Jump Indicator를 놓는다. 다른 노트들과 달리 noteEndPosition을 명확하게 볼 수 없기 때문.
-        if (notePrefabs.IndexOf(selectedNote) >= 14)
+        if (notePrefabs.IndexOf(selectedNote) >= 14 && notePrefabs.IndexOf(selectedNote) != 30)
         {
             jumpEndIndicator = Instantiate(notePrefabs[18], noteEndPosition, Quaternion.identity);
             jumpEndIndicator.GetComponent<SpriteRenderer>().color = c;
@@ -380,6 +389,7 @@ public class EditorManager : MonoBehaviour
             case 15:
             case 16:
             case 17:
+            case 30:
                 break;
             default:
                 throw new NotImplementedException();
@@ -388,7 +398,7 @@ public class EditorManager : MonoBehaviour
 
     public void PutNote() {
 
-        if (noteStartPosition.x >= noteEndPosition.x || notePreview == null) return;
+        if (noteStartPosition.x >= noteEndPosition.x || notePreview == null || hasEnd) return;
         // notePreview를 불투명하게 바꿔서 노트 설치하기.
         GameObject[] previousJumpIndicator = GameObject.FindGameObjectsWithTag("JumpIndicator");
         foreach (GameObject indicator in previousJumpIndicator)
@@ -469,6 +479,15 @@ public class EditorManager : MonoBehaviour
                     direction = direction
                 };
                 break;
+            case 30:
+                info = new NoteSpawnInfo(GameManager.myManager.CalculateTimeFromInputWidth(noteStartPosition.x), NoteType.Normal)
+                {
+                    noteSubType = NoteSubType.End,
+                    angle = 0,
+                    direction = direction,
+                };
+                hasEnd = true;
+                break;
             default:
                 info = null;
                 throw new ArgumentOutOfRangeException();
@@ -488,6 +507,7 @@ public class EditorManager : MonoBehaviour
         if (noteStorage.Count == 0) return;
         NoteInfoPair pair = noteStorage[^1];
         noteStartPosition = pair.note.transform.position;
+        if (pair.info.noteSubType == NoteSubType.End) hasEnd = false;
         Destroy(pair.note);
 
         noteStorage.RemoveAt(noteStorage.Count - 1);
@@ -626,12 +646,13 @@ public class EditorManager : MonoBehaviour
             NoteSubType.Air => "A ",
             NoteSubType.Wall => "W ",
             NoteSubType.Ground => "G ",
+            NoteSubType.End => "E ",
             _ => "0 "
         };
         string angle = info is JumpNoteSpawnInfo ? "0 " : info.angle.ToString() + " ";
         string direction = info.direction == CharacterDirection.Left ? "L" : "R";
 
-        return type + spawnTime + dashCoeffOrJumpHeight + subType +  angle + direction;
+        return type + spawnTime + dashCoeffOrJumpHeight + subType + angle + direction;
     }
 }
 
