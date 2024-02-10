@@ -617,6 +617,8 @@ public class EditorManager : MonoBehaviour
         writer = new FileStream(filepath, FileMode.Create, FileAccess.Write);
         sw = new StreamWriter(writer);
 
+        sw.WriteLine("OFFSET " + musicOffset.ToString());
+
         foreach (NoteInfoPair pair in noteStorage) {
             sw.WriteLine(MakeNoteInfoString(pair.info));
         }
