@@ -41,12 +41,36 @@ public class CharacterControl : MonoBehaviour
 
         float playerMovingTime = (float)(platformNote.noteEndTime - gameTime);
         float time = 0;
-        Debug.Log("Time that managing character position: " + Time.time);
-        while (time < playerMovingTime + 0.166f) {
-            Vector3 targetPosition = platformNote.startPos * (playerMovingTime - time) / playerMovingTime + platformNote.endPos * time / playerMovingTime;
-            gameObject.transform.position = targetPosition;
-            time += Time.deltaTime;
-            yield return null;
+
+        // 경사면 전용
+        float forwardMovingTime;
+        Vector3 stopoverPos;
+
+        if (note.angle == 0) {
+            while (time < playerMovingTime)
+            {
+                Vector3 targetPosition = platformNote.startPos * (playerMovingTime - time) / playerMovingTime + platformNote.endPos * time / playerMovingTime;
+                gameObject.transform.position = targetPosition;
+                time += Time.deltaTime;
+                yield return null;
+            }
+        }
+        else {
+            forwardMovingTime = playerMovingTime * 0.16f / (platformNote.endPos.x - platformNote.startPos.x);
+            stopoverPos = platformNote.startPos + new Vector3(0.16f, 0);
+            while (time < forwardMovingTime) {
+                Vector3 targetPosition = platformNote.startPos * (forwardMovingTime - time) / forwardMovingTime + stopoverPos * time / forwardMovingTime;
+                gameObject.transform.position = targetPosition;
+                time += Time.deltaTime;
+                yield return null;
+            }
+            while (time < playerMovingTime) {
+                Vector3 targetPosition = stopoverPos * (playerMovingTime - time) / (playerMovingTime - forwardMovingTime)
+                                       + platformNote.endPos * (time - forwardMovingTime) / (playerMovingTime - forwardMovingTime);
+                gameObject.transform.position = targetPosition;
+                time += Time.deltaTime;
+                yield return null;
+            }
         }
         characterCoroutine = null;
     }
