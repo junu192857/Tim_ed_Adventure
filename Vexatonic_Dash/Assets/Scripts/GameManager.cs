@@ -23,8 +23,10 @@ public class GameManager : MonoBehaviour
 
     public float scrollSpeed; // 카메라 이동 속도를 의미한다.
     public float noteSpeed; // 노트의 속력을 의미한다.
-    public float notePosition; // 판정선의 위치를 의미한다.
+    public float globalOffset; // 인겜에서 설정할 수 있는 음악 오프셋이다.
+    public float levelOffset; // 에디터를 통해 정한 각 레벨에서의 오프셋이다.
     public float volume; // 소리 크기를 의미한다.
+    
 
     public string filepath; // 레벨의 맵 파일 위치를 의미한다.
     // 맵 하나 추가할 때마다 업데이트는 불가능 --> filepath도 외부에 있어야 한다.
@@ -32,6 +34,7 @@ public class GameManager : MonoBehaviour
     public RhythmManager rm;
     public UIManager um;
     public InputManager im;
+    public SoundManager sm;
 
     public string selectedSongName;
     public string selectedComposerName;

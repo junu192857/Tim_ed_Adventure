@@ -85,7 +85,8 @@ public static class MetaReader
                         Debug.Log("Levels: " + lineSplit[1]);
                         break;
                     case "AUDIO":
-                        currentSongData.AudioFilePath = lineSplit[1];
+                        Debug.Log("Hello?");
+                        currentSongData.AudioFilePath = dir + Path.DirectorySeparatorChar + lineSplit[1];
                         Debug.Log("Audio file path: " + lineSplit[1]);
                         break;
                     case "EASY":
