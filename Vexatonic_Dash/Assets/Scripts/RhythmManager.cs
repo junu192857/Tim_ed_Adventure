@@ -58,9 +58,6 @@ public class RhythmManager : MonoBehaviour
     private int noteCount => LevelReader.noteCount;
     public JudgementType lastJudge;
 
-    //노트 프리팹.
-    [Header("Prefabs")]
-    [SerializeField] private GameObject player;
     [SerializeField] private List<GameObject> notePrefabs;
 
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
@@ -74,6 +71,7 @@ public class RhythmManager : MonoBehaviour
     GameObject temp = null;
 
     //캐릭터 게임오브젝트
+    [SerializeField] private GameObject player;
     private CharacterControl myPlayer;
     private Vector3 playerArrive;
     private Vector3 playerDest;

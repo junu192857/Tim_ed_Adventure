@@ -93,9 +93,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 657871927803377088}
-  - component: {fileID: 8138063225454940052}
+  - component: {fileID: -796455341735690084}
   m_Layer: 0
-  m_Name: CharacterPivot
+  m_Name: CharacterAfterImage
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -117,7 +117,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8138063225454940052
+--- !u!114 &-796455341735690084
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,7 +126,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 657871927803377089}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 125da916f9e6d56498ee1b400850862f, type: 3}
+  m_Script: {fileID: 11500000, guid: 295e172a81e8dfb4cabb011d68db1700, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  afterimage: {fileID: 657871927803377089, guid: 272e9f5988ca19040bd7e13785bb518b, type: 3}
