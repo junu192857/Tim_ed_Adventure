@@ -13,7 +13,7 @@ public class CharacterControl : MonoBehaviour
     [SerializeField] private GameObject afterimage;
 
     public void MoveCharacter(Note note, double gameTime) {
-        Instantiate(afterimage, transform.position, transform.rotation);
+        Instantiate(afterimage, transform.position, Quaternion.Euler(note.actualAngle, 0f, 0f));
         
         if (characterCoroutine != null) StopCoroutine(characterCoroutine);
         switch (note.noteType) {
