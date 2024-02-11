@@ -68,7 +68,6 @@ public class CharacterControl : MonoBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
-            Debug.Log(note.actualAngle);
             gameObject.transform.localEulerAngles = new Vector3(0, 0, note.actualAngle);
             Debug.Log("Hi..");
             while (time < playerMovingTime + 0.166f) {
