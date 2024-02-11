@@ -608,7 +608,7 @@ public class EditorManager : MonoBehaviour
     // =========================== Save Map File ===============================
     public void OpenMapSavePanel() {
         if (!hasEnd) {
-            Debug.LogWarning("This Map Do not have an End note");
+            Debug.LogWarning("This map do not have an End note");
             return;
         }
 
