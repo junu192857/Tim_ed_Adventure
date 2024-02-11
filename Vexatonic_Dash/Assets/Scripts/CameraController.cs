@@ -30,7 +30,7 @@ public class CameraController : MonoBehaviour
     }
     private void Update()
     {
-        if (character == null) return;
+        if (character == null || isFixed) return;
         _2DViewPointPos = Camera.main.WorldToViewportPoint(character.transform.position);
 
         switch (CheckPlayerPosition(_2DViewPointPos)) { 
@@ -121,16 +121,17 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator UnfixCamera(double term)
     {
-        Vector2 currentPosition = _camera.transform.position;
-        float localTime = 0f;
-
-        while (localTime < term)
-        {
-            yield return null;
-            localTime += Time.deltaTime;
-        }
+        // Vector2 currentPosition = _camera.transform.position;
+        // float localTime = 0f;
+        // 
+        // while (localTime < term)
+        // {
+        //     yield return null;
+        //     localTime += Time.deltaTime;
+        // }
 
         isFixed = false;
+        yield break;
     }
 
     private IEnumerator RotateCamera(int angle, double term)
