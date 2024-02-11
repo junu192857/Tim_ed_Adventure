@@ -1,0 +1,68 @@
+{
+    "name": "IngameAction",
+    "maps": [
+        {
+            "name": "IngameKeyboard",
+            "id": "975ec3a5-c8a8-4ab0-9abc-76ecaedf1dce",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "59cba770-1e48-4098-82ad-bf05e0746f23",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "PauseOrContinue",
+                    "id": "81508f64-9387-4b6d-856e-ced40c038f22",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "8d6b7b84-e33f-4876-a363-20a187036171",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "IngameKeyboard",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "5d4ce758-cb00-477c-824d-a65634ea95ee",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "IngameKeyboard",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "IngameKeyboard",
+            "bindingGroup": "IngameKeyboard",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

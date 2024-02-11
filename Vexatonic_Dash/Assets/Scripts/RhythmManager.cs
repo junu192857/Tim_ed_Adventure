@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public enum RhythmState { 
     BeforeGameStart,
     Ingame,
+    Paused,
     GameOver,
     GameClear
 }
@@ -142,6 +145,7 @@ public class RhythmManager : MonoBehaviour
     void Update()
     {
         gameTime += Time.deltaTime;
+
 
 
         if (state == RhythmState.BeforeGameStart && gameTime > -1f) state = RhythmState.Ingame;
@@ -532,6 +536,40 @@ public class RhythmManager : MonoBehaviour
         }
         
         return prevAngle;
+    }
+
+    public void OnPause(InputValue value) {
+        if (value.Get<float>() < 0) // Pressed Esc Button
+        { 
+            switch (state)
+            {
+                case RhythmState.BeforeGameStart:
+                case RhythmState.Ingame:
+                    Time.timeScale = 0f;
+                    song.Pause();
+                    state = RhythmState.Paused;
+                    GameManager.myManager.um.OpenPauseUI();
+                    break;
+                case RhythmState.Paused:
+                    StartCoroutine(ReturnToGame());
+                    break;
+                default:
+                    break;
+            }
+        }
+        else // Pressed Enter Button
+        {
+            if (state != RhythmState.Paused) return;
+            SceneManager.LoadScene("Select");
+        }
+    }
+
+    private IEnumerator ReturnToGame() {
+        StartCoroutine(GameManager.myManager.um.ShowCountdownUIForContinue());
+        yield return new WaitForSecondsRealtime(3f);
+        Time.timeScale = 1f;
+        song.Play();
+        state = RhythmState.Ingame;
     }
 }
 
