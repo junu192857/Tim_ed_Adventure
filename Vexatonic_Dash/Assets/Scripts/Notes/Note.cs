@@ -23,6 +23,7 @@ public class Note : MonoBehaviour
     public int angle; // 플랫폼의 기울기
     
     public GameObject parentNote = null; // 움직이는 노트의 목적지에 있는 고정된 노트.
+    public GameObject nextNote; // 이 노트의 다음 노트. 이게 뭐 LinkedList 만드는것도 아니고 뭐하는거지..
 
     public void Deactivate() {
         activated = false;
