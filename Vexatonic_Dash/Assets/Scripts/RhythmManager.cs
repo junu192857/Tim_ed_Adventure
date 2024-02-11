@@ -37,6 +37,9 @@ public class RhythmManager : MonoBehaviour
 
     private AudioSource song;
 
+    private IEnumerator pauseCoroutine;
+    private IEnumerator pauseUICoroutine;
+
     public double GameTime {
         get => gameTime;
     }
@@ -126,6 +129,8 @@ public class RhythmManager : MonoBehaviour
         progress = 0;
         health = 100;
         lastHit = -unbeatTime - 1;
+        pauseCoroutine = null;
+        pauseUICoroutine = null;
 
 
         myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity).GetComponent<CharacterControl>();
@@ -538,38 +543,48 @@ public class RhythmManager : MonoBehaviour
         return prevAngle;
     }
 
-    public void OnPause(InputValue value) {
-        if (value.Get<float>() < 0) // Pressed Esc Button
-        { 
-            switch (state)
-            {
-                case RhythmState.BeforeGameStart:
-                case RhythmState.Ingame:
-                    Time.timeScale = 0f;
-                    song.Pause();
-                    state = RhythmState.Paused;
-                    GameManager.myManager.um.OpenPauseUI();
-                    break;
-                case RhythmState.Paused:
-                    StartCoroutine(ReturnToGame());
-                    break;
-                default:
-                    break;
-            }
-        }
-        else // Pressed Enter Button
+    public void OnPause() {
+        switch (state)
         {
-            if (state != RhythmState.Paused) return;
-            SceneManager.LoadScene("Select");
+            case RhythmState.BeforeGameStart:
+            case RhythmState.Ingame:
+                Time.timeScale = 0f;
+                song.Pause();
+                state = RhythmState.Paused;
+                GameManager.myManager.um.OpenPauseUI();
+                break;
+            case RhythmState.Paused:
+                if (pauseCoroutine != null) StopCoroutine(pauseCoroutine);
+                if (pauseUICoroutine != null) StopCoroutine(pauseUICoroutine);
+                pauseCoroutine = ReturnToGame();
+                pauseUICoroutine = GameManager.myManager.um.ShowCountdownUIForContinue();
+                StartCoroutine(pauseCoroutine);
+                break;
+            default:
+                break;
         }
+    }
+    public void OnReturnToMain() {
+        if (state != RhythmState.Paused) return;
+        SceneManager.LoadScene("Select");
+    }
+
+
+    public void OnRestart() // Pressed Space Button 
+    {
+        if (state != RhythmState.Paused) return;
+        SceneManager.LoadScene("LevelTest");
     }
 
     private IEnumerator ReturnToGame() {
-        StartCoroutine(GameManager.myManager.um.ShowCountdownUIForContinue());
+        if (gameTime < -1f) state = RhythmState.BeforeGameStart;
+        else state = RhythmState.Ingame;
+        StartCoroutine(pauseUICoroutine);
         yield return new WaitForSecondsRealtime(3f);
         Time.timeScale = 1f;
         song.Play();
-        state = RhythmState.Ingame;
+        pauseCoroutine = null;
+        pauseUICoroutine = null;
     }
 }
 

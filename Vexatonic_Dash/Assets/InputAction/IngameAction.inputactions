@@ -13,41 +13,59 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "22583cab-ae7c-43ca-a189-87c99e8a8951",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ReturnToMain",
+                    "type": "Button",
+                    "id": "939e3181-63ed-419d-9b74-71644f9139b6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
-                    "name": "PauseOrContinue",
-                    "id": "81508f64-9387-4b6d-856e-ced40c038f22",
-                    "path": "1DAxis",
+                    "name": "",
+                    "id": "913a0971-8d82-424e-83ed-0b7fc6b35efb",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Pause",
-                    "isComposite": true,
+                    "action": "Restart",
+                    "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "negative",
-                    "id": "8d6b7b84-e33f-4876-a363-20a187036171",
+                    "name": "",
+                    "id": "c5f2f93d-2860-46e3-9631-72b8d11fb0f6",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "IngameKeyboard",
                     "action": "Pause",
                     "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
                 },
                 {
-                    "name": "positive",
-                    "id": "5d4ce758-cb00-477c-824d-a65634ea95ee",
+                    "name": "",
+                    "id": "d65e7b5c-cbca-4def-aa63-28c625b9a84a",
                     "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
-                    "groups": "IngameKeyboard",
-                    "action": "Pause",
+                    "groups": "",
+                    "action": "ReturnToMain",
                     "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
                 }
             ]
         }
