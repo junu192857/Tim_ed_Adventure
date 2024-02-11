@@ -898,6 +898,9 @@ MonoBehaviour:
   rm: {fileID: 0}
   um: {fileID: 0}
   im: {fileID: 0}
+  selectedSongName: 
+  selectedComposerName: 
+  gravity: 0
 --- !u!4 &416324956
 Transform:
   m_ObjectHideFlags: 0

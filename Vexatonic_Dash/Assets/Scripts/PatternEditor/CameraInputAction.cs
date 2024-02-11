@@ -25,7 +25,13 @@ public class CameraInputAction : MonoBehaviour
     }
 
     public void OnMusicOffset(InputValue value) {
+        if (em.editorState != EditorState.EditorMain) return;
         em.ChangeMusicOffset(value.Get<float>());
+    }
+
+    public void OnDirectionToggle(InputValue value) {
+        if (em.editorState != EditorState.EditorMain) return;
+        em.ChangeDirection(value.Get<float>());
     }
     private void Update()
     {
