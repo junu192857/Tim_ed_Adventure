@@ -607,6 +607,11 @@ public class EditorManager : MonoBehaviour
 
     // =========================== Save Map File ===============================
     public void OpenMapSavePanel() {
+        if (!hasEnd) {
+            Debug.LogWarning("This Map Do not have an End note");
+            return;
+        }
+
         mapSavePanel.SetActive(true);
         settingBackgroundPanel.SetActive(true);
         editorState = EditorState.OnSetting;
