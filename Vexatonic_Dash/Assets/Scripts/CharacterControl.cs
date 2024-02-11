@@ -13,7 +13,7 @@ public class CharacterControl : MonoBehaviour
     [SerializeField] private GameObject afterimage;
 
     public void MoveCharacter(Note note, double gameTime) {
-        Instantiate(afterimage, transform.position, Quaternion.Euler(note.actualAngle, 0f, 0f));
+        Instantiate(afterimage, transform.position, Quaternion.identity);
         
         if (characterCoroutine != null) StopCoroutine(characterCoroutine);
         switch (note.noteType) {
@@ -68,6 +68,9 @@ public class CharacterControl : MonoBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
+            Debug.Log(note.actualAngle);
+            gameObject.transform.localEulerAngles = new Vector3(0, 0, note.actualAngle);
+            Debug.Log("Hi..");
             while (time < playerMovingTime + 0.166f) {
                 Vector3 targetPosition = stopoverPos * (playerMovingTime - time) / (playerMovingTime - forwardMovingTime)
                                        + platformNote.endPos * (time - forwardMovingTime) / (playerMovingTime - forwardMovingTime);
@@ -121,12 +124,13 @@ public class CharacterControl : MonoBehaviour
 
     private void Start()
     {
-        UpdateGravity();
+        // Comment: temporarily disabled this code for testing character rotation over angled platforms.
+        //UpdateGravity();
     }
 
     private void Update()
     {
-        UpdateGravity();
+        //UpdateGravity();
     }
     
     private void UpdateGravity()
