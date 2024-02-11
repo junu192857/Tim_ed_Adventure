@@ -152,6 +152,7 @@ public class SelectManager : MonoBehaviour
         if (_currentIndex == 0) return;
         _currentIndex--;
         StartCoroutine(MoveSongCoroutine(true));
+        StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex));
     }
 
     private void MoveDown()
@@ -159,6 +160,7 @@ public class SelectManager : MonoBehaviour
         if (_currentIndex == _songList.Count - 1) return;
         _currentIndex++;
         StartCoroutine(MoveSongCoroutine(false));
+        StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex));
     }
 
     private IEnumerator MoveSongCoroutine(bool up)

@@ -55,7 +55,11 @@ public class LevelReader
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
             }
             */
-            if (line.StartsWith("GRAVITY")) // GRAVITY (시간) (중력 방향: 0이 아래, 90이 오른쪽)
+            if (line.StartsWith("OFFSET")) // OFFSET (시간)
+            {
+                GameManager.myManager.levelOffset = double.Parse(myList[1]);
+            }
+            else if (line.StartsWith("GRAVITY")) // GRAVITY (시간) (중력 방향: 0이 아래, 90이 오른쪽)
             {
                 GravityData prevGravityData;
                 double gravityTime = double.Parse(myList[1]);
