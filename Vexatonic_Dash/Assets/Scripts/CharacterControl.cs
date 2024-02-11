@@ -69,9 +69,7 @@ public class CharacterControl : MonoBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
-            Debug.Log(note.actualAngle);
             gameObject.transform.localEulerAngles = new Vector3(0, 0, (int)note.direction * note.actualAngle);
-            Debug.Log("Hi..");
             while (time < playerMovingTime + 0.166f) {
                 Vector3 targetPosition = stopoverPos * (playerMovingTime - time) / (playerMovingTime - forwardMovingTime)
                                        + platformNote.endPos * (time - forwardMovingTime) / (playerMovingTime - forwardMovingTime);
