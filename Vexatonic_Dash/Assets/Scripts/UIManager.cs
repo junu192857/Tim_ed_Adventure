@@ -7,37 +7,40 @@ public class UIManager : MonoBehaviour
 {
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
-    
-    [Header ("In-Game UI")]
+
+    [Header("In-Game UI")]
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
     [SerializeField] private Text fpsText;
     [SerializeField] private Text healthText;
 
-    [Header ("Level Info UI")]
+    [Header("Level Info UI")]
     [SerializeField] private GameObject levelInfo;
     [SerializeField] private Text levelInfoSongNameText;
     [SerializeField] private Text levelInfoComposerNameText;
     [SerializeField] private Animator levelInfoSongNameAnim;
     [SerializeField] private Animator levelInfoComposerNameAnim;
-    
-    [Header ("Countdown UI")]
+
+    [Header("Countdown UI")]
     [SerializeField] private GameObject countdown;
     [SerializeField] private Text countdownText;
-    
-    [Header ("Result UI")]
+
+    [Header("Result UI")]
     [SerializeField] private GameObject result;
     [SerializeField] private Text resultRankText;
     [SerializeField] private Text resultScoreText;
     [SerializeField] private Text resultSongNameText;
     [SerializeField] private Text resultComposerNameText;
-    
-    [Space (10)]
+
+    [Space(10)]
     [SerializeField] private Text resultPurePerfectText;
     [SerializeField] private Text resultPerfectText;
     [SerializeField] private Text resultGreatText;
     [SerializeField] private Text resultGoodText;
-    
+
+    [Header("Pause UI")]
+    [SerializeField] private GameObject pause;
+
     [Header ("Game Over UI")]
     [SerializeField] private GameObject gameOver;
     [SerializeField] private Text gameOverTitleText;
@@ -131,6 +134,21 @@ public class UIManager : MonoBehaviour
     {
         countdownText.text = $"{-GameTime:0.0}";
         StartCoroutine(CountdownUICoroutine());
+    }
+
+    public IEnumerator ShowCountdownUIForContinue() {
+        ClosePauseUI();
+        countdown.SetActive(true);
+        double pauseTime = -3;
+
+        while (pauseTime < 0)
+        {
+            countdownText.text = $"{-pauseTime:0.0}";
+            pauseTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        countdown.SetActive(false);
     }
 
     public void ShowResultUI(bool isNewRecord)
@@ -248,4 +266,8 @@ public class UIManager : MonoBehaviour
 
         }
     }
+
+    public void OpenPauseUI() => pause.SetActive(true);
+
+    public void ClosePauseUI() => pause.SetActive(false);
 }

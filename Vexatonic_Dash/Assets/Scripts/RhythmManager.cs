@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public enum RhythmState { 
     BeforeGameStart,
     Ingame,
+    Paused,
     GameOver,
     GameClear
 }
 
 public class RhythmManager : MonoBehaviour
 {
+
     private RhythmState state;
     // 레벨 텍스트 파일이 저장될 위치.
     [SerializeField]private string levelFilePath;
@@ -30,6 +34,11 @@ public class RhythmManager : MonoBehaviour
     private double gameTime;
     public double unbeatTime = 3.0f;
     private double lastHit;
+
+    private AudioSource song;
+
+    private IEnumerator pauseCoroutine;
+    private IEnumerator pauseUICoroutine;
 
     public double GameTime {
         get => gameTime;
@@ -49,9 +58,6 @@ public class RhythmManager : MonoBehaviour
     private int noteCount => LevelReader.noteCount;
     public JudgementType lastJudge;
 
-    //노트 프리팹.
-    [Header("Prefabs")]
-    [SerializeField] private GameObject player;
     [SerializeField] private List<GameObject> notePrefabs;
 
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
@@ -65,6 +71,7 @@ public class RhythmManager : MonoBehaviour
     GameObject temp = null;
 
     //캐릭터 게임오브젝트
+    [SerializeField] private GameObject player;
     private CharacterControl myPlayer;
     private Vector3 playerArrive;
     private Vector3 playerDest;
@@ -96,6 +103,10 @@ public class RhythmManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        song = GameManager.myManager.sm.GetComponent<AudioSource>();
+        song.Stop();
+
+
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
         gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
@@ -116,6 +127,8 @@ public class RhythmManager : MonoBehaviour
         progress = 0;
         health = 100;
         lastHit = -unbeatTime - 1;
+        pauseCoroutine = null;
+        pauseUICoroutine = null;
 
 
         myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity).GetComponent<CharacterControl>();
@@ -129,11 +142,15 @@ public class RhythmManager : MonoBehaviour
             new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
         );
         StartCoroutine(nameof(StartReceivingInput));
+        StartCoroutine(StartSong());
     }
 
     void Update()
     {
         gameTime += Time.deltaTime;
+
+
+
         if (state == RhythmState.BeforeGameStart && gameTime > -1f) state = RhythmState.Ingame;
         
         if (noteList.Any() && gameTime >= noteList[0].spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
@@ -454,6 +471,13 @@ public class RhythmManager : MonoBehaviour
         GameManager.myManager.im.Activate();
     }
 
+    private IEnumerator StartSong() {
+        double songStartTiming = -(GameManager.myManager.globalOffset + GameManager.myManager.levelOffset) / 1000;
+        while (gameTime < songStartTiming) yield return new WaitForEndOfFrame();
+        song.time = (float)(gameTime - songStartTiming);
+        song.Play();
+    }
+
     // 스코어 업데이트
     private void UpdateScore(JudgementType judgement)
     {
@@ -515,6 +539,50 @@ public class RhythmManager : MonoBehaviour
         }
         
         return prevAngle;
+    }
+
+    public void OnPause() {
+        switch (state)
+        {
+            case RhythmState.BeforeGameStart:
+            case RhythmState.Ingame:
+                Time.timeScale = 0f;
+                song.Pause();
+                state = RhythmState.Paused;
+                GameManager.myManager.um.OpenPauseUI();
+                break;
+            case RhythmState.Paused:
+                if (pauseCoroutine != null) StopCoroutine(pauseCoroutine);
+                if (pauseUICoroutine != null) StopCoroutine(pauseUICoroutine);
+                pauseCoroutine = ReturnToGame();
+                pauseUICoroutine = GameManager.myManager.um.ShowCountdownUIForContinue();
+                StartCoroutine(pauseCoroutine);
+                break;
+            default:
+                break;
+        }
+    }
+    public void OnReturnToMain() {
+        if (state != RhythmState.Paused) return;
+        SceneManager.LoadScene("Select");
+    }
+
+
+    public void OnRestart() // Pressed Space Button 
+    {
+        if (state != RhythmState.Paused) return;
+        SceneManager.LoadScene("LevelTest");
+    }
+
+    private IEnumerator ReturnToGame() {
+        if (gameTime < -1f) state = RhythmState.BeforeGameStart;
+        else state = RhythmState.Ingame;
+        StartCoroutine(pauseUICoroutine);
+        yield return new WaitForSecondsRealtime(3f);
+        Time.timeScale = 1f;
+        song.Play();
+        pauseCoroutine = null;
+        pauseUICoroutine = null;
     }
 }
 

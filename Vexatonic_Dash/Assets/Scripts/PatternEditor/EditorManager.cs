@@ -607,6 +607,11 @@ public class EditorManager : MonoBehaviour
 
     // =========================== Save Map File ===============================
     public void OpenMapSavePanel() {
+        if (!hasEnd) {
+            Debug.LogWarning("This map do not have an End note");
+            return;
+        }
+
         mapSavePanel.SetActive(true);
         settingBackgroundPanel.SetActive(true);
         editorState = EditorState.OnSetting;
@@ -616,6 +621,8 @@ public class EditorManager : MonoBehaviour
         filepath = Application.dataPath + "/SavedLevels/" + mapNameInputField.text + ".txt";
         writer = new FileStream(filepath, FileMode.Create, FileAccess.Write);
         sw = new StreamWriter(writer);
+
+        sw.WriteLine("OFFSET " + musicOffset.ToString());
 
         foreach (NoteInfoPair pair in noteStorage) {
             sw.WriteLine(MakeNoteInfoString(pair.info));

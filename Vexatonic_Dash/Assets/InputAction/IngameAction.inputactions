@@ -1,0 +1,86 @@
+{
+    "name": "IngameAction",
+    "maps": [
+        {
+            "name": "IngameKeyboard",
+            "id": "975ec3a5-c8a8-4ab0-9abc-76ecaedf1dce",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "59cba770-1e48-4098-82ad-bf05e0746f23",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "22583cab-ae7c-43ca-a189-87c99e8a8951",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ReturnToMain",
+                    "type": "Button",
+                    "id": "939e3181-63ed-419d-9b74-71644f9139b6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "913a0971-8d82-424e-83ed-0b7fc6b35efb",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c5f2f93d-2860-46e3-9631-72b8d11fb0f6",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "IngameKeyboard",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d65e7b5c-cbca-4def-aa63-28c625b9a84a",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReturnToMain",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "IngameKeyboard",
+            "bindingGroup": "IngameKeyboard",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

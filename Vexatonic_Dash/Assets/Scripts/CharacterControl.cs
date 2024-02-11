@@ -10,7 +10,11 @@ public class CharacterControl : MonoBehaviour
     private float g => GameManager.g;
     private int gravityAngle;
 
+    [SerializeField] private GameObject afterimage;
+
     public void MoveCharacter(Note note, double gameTime) {
+        Instantiate(afterimage, transform.position, transform.rotation);
+        
         if (characterCoroutine != null) StopCoroutine(characterCoroutine);
         switch (note.noteType) {
             case NoteType.Normal:
@@ -47,7 +51,7 @@ public class CharacterControl : MonoBehaviour
         Vector3 stopoverPos;
 
         if (note.angle == 0) {
-            while (time < playerMovingTime)
+            while (time < playerMovingTime + 0.166f)
             {
                 Vector3 targetPosition = platformNote.startPos * (playerMovingTime - time) / playerMovingTime + platformNote.endPos * time / playerMovingTime;
                 gameObject.transform.position = targetPosition;
@@ -64,7 +68,7 @@ public class CharacterControl : MonoBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
-            while (time < playerMovingTime) {
+            while (time < playerMovingTime + 0.166f) {
                 Vector3 targetPosition = stopoverPos * (playerMovingTime - time) / (playerMovingTime - forwardMovingTime)
                                        + platformNote.endPos * (time - forwardMovingTime) / (playerMovingTime - forwardMovingTime);
                 gameObject.transform.position = targetPosition;
