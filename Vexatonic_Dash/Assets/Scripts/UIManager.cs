@@ -123,7 +123,7 @@ public class UIManager : MonoBehaviour
     public void UpdateInGameUI()
     {
         scoreText.text = Score.ToString();
-        healthSlider.value = Health;
+        healthSlider.value = Health / 100f;
         healthImage.color = Health switch
         {
             <= 20 => new Color(1f, 0.5f, 0.5f),
