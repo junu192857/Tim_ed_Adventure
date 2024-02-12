@@ -7,6 +7,7 @@ enum PlayerPositionState {
     OutsideBorder,
     CriticallyOutsideBorder
 }
+
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
@@ -16,29 +17,53 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator cameraCoroutine;
 
-    private bool isFixed;
+    private bool isBeingControlled;
+    private Vector2 CameraVelocity;
+
+    private IEnumerator zoomCoroutine;
+    private IEnumerator rotateCoroutine;
+    private IEnumerator moveCoroutine;
 
     private void Start()
     {
-        isFixed = false;
+        isBeingControlled = false;
         StartCoroutine(LateStart());
+        CameraVelocity = new Vector2();
     }
 
-    private IEnumerator LateStart() {
+    private IEnumerator LateStart()
+    {
         yield return null;
         character = GameObject.FindGameObjectWithTag("Player");
     }
+
     private void Update()
     {
-        if (character == null || isFixed) return;
+        if (character == null) return;
+
+        if (isBeingControlled) ControlledMove();
+        else AutoMove();
+    }
+
+    private void ControlledMove()
+    {
+        if (moveCoroutine != null) return;
+        
+        Vector3 currentCamPos = _camera.transform.position;
+        Vector3 newCamPos = currentCamPos + (Vector3) (Time.deltaTime * CameraVelocity);
+        _camera.transform.position = newCamPos;
+    }
+
+    private void AutoMove()
+    {
         _2DViewPointPos = Camera.main.WorldToViewportPoint(character.transform.position);
 
         switch (CheckPlayerPosition(_2DViewPointPos)) { 
             case PlayerPositionState.InsideBorder:
                 break;
             case PlayerPositionState.OutsideBorder:
-                InstantlyMoveCamera(_2DViewPointPos);
-                break;
+                // InstantlyMoveCamera(_2DViewPointPos);
+                // break;
             case PlayerPositionState.CriticallyOutsideBorder:
                 ContinuouslyMoveCamera(_2DViewPointPos);
                 break;
@@ -101,9 +126,24 @@ public class CameraController : MonoBehaviour
         return newCameraPos;
     }
 
-    private IEnumerator FixCamera(Vector2 fixPivot, double term)
+    /// <summary>
+    /// Moves camera to given position and fixes camera.
+    /// The usage of this method will have the camera enter the controlled mode.
+    /// To exit it, see this: <see cref="FollowPlayer"/>
+    /// </summary>
+    /// <param name="fixPivot">The position you want to fix camera.</param>
+    /// <param name="term">The time you want to let this operation take.</param>
+    public void FixCamera(Vector2 fixPivot, double term)
     {
-        isFixed = true;
+        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+
+        moveCoroutine = FixCameraCoroutine(fixPivot, term);
+        StartCoroutine(moveCoroutine);
+    }
+    
+    private IEnumerator FixCameraCoroutine(Vector2 fixPivot, double term)
+    {
+        isBeingControlled = true;
 
         Vector2 currentPosition = _camera.transform.position;
         float localTime = 0f;
@@ -117,9 +157,22 @@ public class CameraController : MonoBehaviour
         }
 
         _camera.transform.position = fixPivot;
+        moveCoroutine = null;
     }
 
-    private IEnumerator UnfixCamera(double term)
+    /// <summary>
+    /// Restores camera to position of player, and exit controlled mode.
+    /// </summary>
+    /// <param name="term">The time you want to let this operation take.</param>
+    public void FollowPlayer(double term)
+    {
+        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+
+        moveCoroutine = FollowPlayerCoroutine(term);
+        StartCoroutine(moveCoroutine);
+    }
+    
+    private IEnumerator FollowPlayerCoroutine(double term)
     {
         // Vector2 currentPosition = _camera.transform.position;
         // float localTime = 0f;
@@ -130,11 +183,25 @@ public class CameraController : MonoBehaviour
         //     localTime += Time.deltaTime;
         // }
 
-        isFixed = false;
+        isBeingControlled = false;
+        moveCoroutine = null;
         yield break;
     }
 
-    private IEnumerator RotateCamera(int angle, double term)
+    /// <summary>
+    /// Sets the angle of camera to given angle.
+    /// </summary>
+    /// <param name="angle">The angle of camera(in degrees) you want to set</param>
+    /// <param name="term">The time you want to let this operation take</param>
+    public void RotateCamera(int angle, double term)
+    {
+        if (rotateCoroutine != null) StopCoroutine(rotateCoroutine);
+
+        rotateCoroutine = RotateCameraCoroutine(angle, term);
+        StartCoroutine(rotateCoroutine);
+    }
+    
+    private IEnumerator RotateCameraCoroutine(int angle, double term)
     {
         int currentAngle = (int) _camera.transform.rotation.eulerAngles.z;
         float localTime = 0f;
@@ -148,9 +215,23 @@ public class CameraController : MonoBehaviour
         }
 
         _camera.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        rotateCoroutine = null;
     }
 
-    private IEnumerator ZoomCamera(double scale, double term)
+    /// <summary>
+    /// Sets the magnification scale into given scale.
+    /// </summary>
+    /// <param name="scale">The scale of camera, compared by original size.</param>
+    /// <param name="term">The time you want to let this operation take.</param>
+    private void ZoomCamera(double scale, double term)
+    {
+        if (zoomCoroutine != null) StopCoroutine(zoomCoroutine);
+
+        zoomCoroutine = ZoomCameraCoroutine(scale, term);
+        StartCoroutine(zoomCoroutine);
+    }
+    
+    private IEnumerator ZoomCameraCoroutine(double scale, double term)
     {
         float currentScale = _camera.orthographicSize;
         float destScale = 3f * (float)scale;
@@ -165,12 +246,16 @@ public class CameraController : MonoBehaviour
         }
 
         _camera.orthographicSize = destScale;
+        zoomCoroutine = null;
     }
 
-    private IEnumerator ChangeCameraVelocity(Vector2 velocity, double term)
+    /// <summary>
+    /// Sets the velocity of camera.
+    /// </summary>
+    /// <param name="velocity">The velocity of camera you want to set.</param>
+    private void ChangeCameraVelocity(Vector2 velocity)
     {
-        // TODO: Velocity Logic
-        yield return null;
+        this.CameraVelocity = velocity;
     }
 
     private float GetSineEaseValue(float startValue, float endValue, float ratio)
