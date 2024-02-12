@@ -47,6 +47,10 @@ public class CharacterControl : MonoBehaviour
         float playerMovingTime = (float)(platformNote.noteEndTime - gameTime);
         float time = 0;
 
+        if (note.noteSubType == NoteSubType.End) {
+            Destroy(gameObject);
+            yield break;
+        }
         // 경사면 전용
         float forwardMovingTime;
         Vector3 stopoverPos;

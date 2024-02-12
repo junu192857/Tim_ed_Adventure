@@ -892,12 +892,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollSpeed: 0
   noteSpeed: 0
-  notePosition: 0
+  globalOffset: 0
+  levelOffset: 0
   volume: 0
   filepath: 
   rm: {fileID: 0}
   um: {fileID: 0}
   im: {fileID: 0}
+  sm: {fileID: 0}
   selectedSongName: 
   selectedComposerName: 
   gravity: 0
