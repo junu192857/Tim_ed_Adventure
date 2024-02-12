@@ -37,6 +37,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultPerfectText;
     [SerializeField] private Text resultGreatText;
     [SerializeField] private Text resultGoodText;
+    [SerializeField] private Text resultMissText;
 
     [Header("Pause UI")]
     [SerializeField] private GameObject pause;
@@ -65,6 +66,7 @@ public class UIManager : MonoBehaviour
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
 
     private static int Health => GameManager.myManager.rm.health;
+    
     private void Awake()
     {
         GameManager.myManager.um = this;
@@ -192,6 +194,7 @@ public class UIManager : MonoBehaviour
         resultPerfectText.text = JudgementList[1].ToString();
         resultGreatText.text = JudgementList[2].ToString();
         resultGoodText.text = JudgementList[3].ToString();
+        resultMissText.text = JudgementList[4].ToString();
 
         result.SetActive(true);    // TODO: Add show animation
     }
