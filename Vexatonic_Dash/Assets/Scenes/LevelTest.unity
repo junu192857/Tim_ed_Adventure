@@ -4059,8 +4059,8 @@ MonoBehaviour:
   scoreText: {fileID: 15652164}
   progressText: {fileID: 864209694}
   fpsText: {fileID: 976191457}
-  healthSlider: {fileID: 0}
-  healthImage: {fileID: 0}
+  healthSlider: {fileID: 2019173763}
+  healthImage: {fileID: 391404063}
   levelInfo: {fileID: 1461118653}
   levelInfoSongNameText: {fileID: 598477557}
   levelInfoComposerNameText: {fileID: 1905431352}
