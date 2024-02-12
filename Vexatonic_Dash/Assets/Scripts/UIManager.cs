@@ -12,7 +12,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
     [SerializeField] private Text fpsText;
-    [SerializeField] private Text healthText;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Image healthImage;
 
     [Header("Level Info UI")]
     [SerializeField] private GameObject levelInfo;
@@ -37,6 +38,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultPerfectText;
     [SerializeField] private Text resultGreatText;
     [SerializeField] private Text resultGoodText;
+    [SerializeField] private Text resultMissText;
 
     [Header("Pause UI")]
     [SerializeField] private GameObject pause;
@@ -65,6 +67,7 @@ public class UIManager : MonoBehaviour
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
 
     private static int Health => GameManager.myManager.rm.health;
+    
     private void Awake()
     {
         GameManager.myManager.um = this;
@@ -79,7 +82,8 @@ public class UIManager : MonoBehaviour
     private void InitializeUI()
     {
         scoreText.text = "0";
-        healthText.text = "health : 100";
+        healthSlider.value = 100;
+        healthImage.color = new Color(0.5f, 1f, 0.5f);
         progressText.text = "0 %";
         StartCoroutine(ShowFPSCoroutine());
     }
@@ -119,7 +123,13 @@ public class UIManager : MonoBehaviour
     public void UpdateInGameUI()
     {
         scoreText.text = Score.ToString();
-        healthText.text = "health : " + Health.ToString();
+        healthSlider.value = Health;
+        healthImage.color = Health switch
+        {
+            <= 20 => new Color(1f, 0.5f, 0.5f),
+            <= 40 => new Color(1f, 0.75f, 0.5f),
+            _ => new Color(0.5f, 1f, 0.5f)
+        };
         progressText.text = Progress + " %";
     }
 
@@ -192,6 +202,7 @@ public class UIManager : MonoBehaviour
         resultPerfectText.text = JudgementList[1].ToString();
         resultGreatText.text = JudgementList[2].ToString();
         resultGoodText.text = JudgementList[3].ToString();
+        resultMissText.text = JudgementList[4].ToString();
 
         result.SetActive(true);    // TODO: Add show animation
     }
