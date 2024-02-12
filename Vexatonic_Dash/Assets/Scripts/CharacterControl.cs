@@ -11,6 +11,7 @@ public class CharacterControl : MonoBehaviour
     private int gravityAngle;
 
     [SerializeField] private GameObject afterimage;
+    [SerializeField] private ParticleSystem particleSystem;
 
     public void MoveCharacter(Note note, double gameTime) {
         Instantiate(afterimage, transform.position, transform.rotation);
@@ -123,6 +124,12 @@ public class CharacterControl : MonoBehaviour
     private Vector3 CalculateJumpPosition(Vector3 v, float time, Vector3 startPos)
     {
         return startPos + (v * time) + (0.5f * time * time * GameManager.myManager.GravityAsVector);
+    }
+
+    public void HurtPlayer(float health) {
+        SpriteRenderer sr = gameObject.GetComponentInChildren<SpriteRenderer>();
+        Color c = new Color(1, health / 100, health / 100);
+        sr.color = c;
     }
 
     private void Start()
