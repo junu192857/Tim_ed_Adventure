@@ -14,6 +14,7 @@ public class CharacterControl : MonoBehaviour
 
     public void MoveCharacter(Note note, double gameTime) {
         Instantiate(afterimage, transform.position, transform.rotation);
+        transform.localScale = new Vector3((int)note.direction, 1, 1);
         
         if (characterCoroutine != null) StopCoroutine(characterCoroutine);
         switch (note.noteType) {
@@ -68,6 +69,7 @@ public class CharacterControl : MonoBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
+            gameObject.transform.localEulerAngles = new Vector3(0, 0, (int)note.direction * note.actualAngle);
             while (time < playerMovingTime + 0.166f) {
                 Vector3 targetPosition = stopoverPos * (playerMovingTime - time) / (playerMovingTime - forwardMovingTime)
                                        + platformNote.endPos * (time - forwardMovingTime) / (playerMovingTime - forwardMovingTime);
@@ -121,12 +123,13 @@ public class CharacterControl : MonoBehaviour
 
     private void Start()
     {
-        UpdateGravity();
+        // Comment: temporarily disabled this code for testing character rotation over angled platforms.
+        //UpdateGravity();
     }
 
     private void Update()
     {
-        UpdateGravity();
+        //UpdateGravity();
     }
     
     private void UpdateGravity()
