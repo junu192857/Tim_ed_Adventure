@@ -98,6 +98,12 @@ public class SelectManager : MonoBehaviour
         {
             SwitchDifficulty();
         }
+        
+        // Start game
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            StartGame();
+        }
     }
 
     private void SetSongListText()
@@ -212,7 +218,7 @@ public class SelectManager : MonoBehaviour
         SwitchDifficulty();
     }
 
-    public void OnClickStartButton()
+    public void StartGame()
     {
         // TODO: Start game
         SongData selectedSong = _songList[_currentIndex];
