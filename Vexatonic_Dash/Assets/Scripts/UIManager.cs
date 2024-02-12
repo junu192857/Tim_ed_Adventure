@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class UIManager : MonoBehaviour
 {
@@ -32,6 +35,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultScoreText;
     [SerializeField] private Text resultSongNameText;
     [SerializeField] private Text resultComposerNameText;
+    [SerializeField] private Button musicSelectButton;
 
     [Space(10)]
     [SerializeField] private Text resultPurePerfectText;
@@ -276,6 +280,13 @@ public class UIManager : MonoBehaviour
             yield return null;
 
         }
+    }
+
+    public void OnClickMusicSelectButton()
+    {
+        GameManager.myManager.im.Deactivate();
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Scenes/Select");
     }
 
     public void OpenPauseUI() => pause.SetActive(true);
