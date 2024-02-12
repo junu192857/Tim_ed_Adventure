@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 430312153372299710}
   - component: {fileID: 4748399827073027832}
   m_Layer: 5
-  m_Name: JudgeText
+  m_Name: Judge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

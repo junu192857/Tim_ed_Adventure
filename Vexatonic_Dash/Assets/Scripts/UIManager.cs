@@ -53,8 +53,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text gameOverProgressText;
     
     [Header ("Judge Text")]
-    [SerializeField] private GameObject judgeTextParent;
-    [SerializeField] private GameObject judgeTextPrefab;
+    [SerializeField] private GameObject judgeParent;
+    [SerializeField] private GameObject judgePrefab;
 
     [Header ("Song Info")]
     public string songName;
@@ -232,7 +232,7 @@ public class UIManager : MonoBehaviour
     // Displays judge when note is hit or missed
     public void DisplayJudge()
     {
-        var instance = Instantiate(judgeTextPrefab, judgeTextParent.transform);
+        var instance = Instantiate(judgePrefab, judgeParent.transform);
         var text = instance.GetComponent<Text>();
 
         switch (LastJudge)
