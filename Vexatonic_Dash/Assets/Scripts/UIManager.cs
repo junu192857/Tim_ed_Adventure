@@ -82,7 +82,7 @@ public class UIManager : MonoBehaviour
     private void InitializeUI()
     {
         scoreText.text = "0";
-        healthSlider.value = 100;
+        healthSlider.value = 1f;
         healthImage.color = new Color(0.5f, 1f, 0.5f);
         progressText.text = "0 %";
         StartCoroutine(ShowFPSCoroutine());
@@ -123,7 +123,7 @@ public class UIManager : MonoBehaviour
     public void UpdateInGameUI()
     {
         scoreText.text = Score.ToString();
-        healthSlider.value = Health;
+        healthSlider.value = Health / 100f;
         healthImage.color = Health switch
         {
             <= 20 => new Color(1f, 0.5f, 0.5f),
