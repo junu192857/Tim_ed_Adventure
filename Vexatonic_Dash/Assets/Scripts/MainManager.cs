@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour
 {
@@ -16,6 +15,7 @@ public class MainManager : MonoBehaviour
 
     [Space(10)]
     [SerializeField] private GameObject audioSettingsParent;
+    [SerializeField] private Text offsetValueText;
     
     [Space(10)]
     [SerializeField] private GameObject inputSettingsParent;
@@ -69,6 +69,8 @@ public class MainManager : MonoBehaviour
     {
         audioSettingsParent.SetActive(true);
         settingsParent.SetActive(false);
+        
+        UpdateAudioOffsetValueText();
         // TODO: Add animations
     }
 
@@ -120,4 +122,25 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
+    
+    #region Audio Settings
+
+    private void UpdateAudioOffsetValueText()
+    {
+        offsetValueText.text = GameManager.myManager.globalOffset.ToString("+##0;-##0;0");
+    }
+    
+    public void OnClickAudioOffsetUpButton()
+    {
+        GameManager.myManager.globalOffset += 1;
+        UpdateAudioOffsetValueText();
+    }
+    
+    public void OnClickAudioOffsetDownButton()
+    {
+        GameManager.myManager.globalOffset -= 1;
+        UpdateAudioOffsetValueText();
+    }
+    
+    #endregion
 }
