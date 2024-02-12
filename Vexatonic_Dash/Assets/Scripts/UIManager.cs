@@ -12,7 +12,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
     [SerializeField] private Text fpsText;
-    [SerializeField] private Text healthText;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Image healthImage;
 
     [Header("Level Info UI")]
     [SerializeField] private GameObject levelInfo;
@@ -81,7 +82,8 @@ public class UIManager : MonoBehaviour
     private void InitializeUI()
     {
         scoreText.text = "0";
-        healthText.text = "health : 100";
+        healthSlider.value = 100;
+        healthImage.color = new Color(0.5f, 1f, 0.5f);
         progressText.text = "0 %";
         StartCoroutine(ShowFPSCoroutine());
     }
@@ -121,7 +123,13 @@ public class UIManager : MonoBehaviour
     public void UpdateInGameUI()
     {
         scoreText.text = Score.ToString();
-        healthText.text = "health : " + Health.ToString();
+        healthSlider.value = Health;
+        healthImage.color = Health switch
+        {
+            <= 20 => new Color(1f, 0.5f, 0.5f),
+            <= 40 => new Color(1f, 0.75f, 0.5f),
+            _ => new Color(0.5f, 1f, 0.5f)
+        };
         progressText.text = Progress + " %";
     }
 
