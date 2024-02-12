@@ -289,6 +289,7 @@ public class RhythmManager : MonoBehaviour
             if (gameTime - lastHit >= unbeatTime) {
                 lastHit = gameTime;
                 health -= 20;
+                myPlayer.HurtPlayer(health);
             }
         }
 

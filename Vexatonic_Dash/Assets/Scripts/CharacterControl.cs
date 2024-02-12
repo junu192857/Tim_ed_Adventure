@@ -125,6 +125,12 @@ public class CharacterControl : MonoBehaviour
         return startPos + (v * time) + (0.5f * time * time * GameManager.myManager.GravityAsVector);
     }
 
+    public void HurtPlayer(float health) {
+        SpriteRenderer sr = gameObject.GetComponentInChildren<SpriteRenderer>();
+        Color c = new Color(1, health / 100, health / 100);
+        sr.color = c;
+    }
+
     private void Start()
     {
         // Comment: temporarily disabled this code for testing character rotation over angled platforms.
