@@ -220,7 +220,8 @@ public class SelectManager : MonoBehaviour
 
     public void StartGame()
     {
-        // TODO: Start game
+        if (_songMoving) return;
+        
         SongData selectedSong = _songList[_currentIndex];
 
         GameManager.myManager.filepath = selectedSong.PatternFilePath[(int)_currentDifficulty];
