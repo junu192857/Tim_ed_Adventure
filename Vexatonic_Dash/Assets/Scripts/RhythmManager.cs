@@ -29,6 +29,7 @@ public class RhythmManager : MonoBehaviour
     private const double p = 0.075;
     private const double gr = 0.100;
     private const double g = 0.166;
+    private const double l = 0.3;
 
     //게임 진행 시간. -5초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
     private double gameTime;
@@ -223,23 +224,28 @@ public class RhythmManager : MonoBehaviour
                     >= -p and <= p => JudgementType.Perfect,
                     >= -gr and <= gr => JudgementType.Great,
                     >= -g and <= g => JudgementType.Good,
-                    // > l => JudgementType.Invalid,
+                    >= l => JudgementType.Invalid,
                     _ => JudgementType.Miss,
                 };
 
-                // if (judgement != JudgementType.Invalid) {
-                AddJudgement(judgement);
-                
-                // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
-                inputs.Remove(list[0]);
-                list.RemoveAt(0);
+                if (judgement != JudgementType.Invalid) 
+                {
+                    AddJudgement(judgement);
 
+                    // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
+                    inputs.Remove(list[0]);
+                    list.RemoveAt(0);
 
-                spawnedNotes.Dequeue();
-                note.FixNote();
-                myPlayer.MoveCharacter(note, gameTime);
-                
-                // }
+                    spawnedNotes.Dequeue();
+                    note.FixNote();
+                    myPlayer.MoveCharacter(note, gameTime);
+                }else
+                {
+                    //유효하지 않은 입력 -> 입력만 제거
+                    inputs.Remove(list[0]);
+                    list.RemoveAt(0);
+                }
+
 
                 // Comment from Vexatone: Early Miss 안 쓸 거면 코드처럼 생겨먹은 주석들 체크 해제하셈
             } 
