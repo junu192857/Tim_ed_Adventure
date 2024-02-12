@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -41,6 +42,8 @@ public class SelectManager : MonoBehaviour
     private bool _songMoving;
 
     private bool _songListInvalid;
+
+    private List<Coroutine> coroutines = new();
     
     private void Start()
     {
@@ -78,7 +81,7 @@ public class SelectManager : MonoBehaviour
     private void Update()
     {
         if (_songListInvalid) return;
-
+        /*
         // Song scroll
         if (!_songMoving)
         {
@@ -98,6 +101,26 @@ public class SelectManager : MonoBehaviour
         {
             SwitchDifficulty();
         }
+        */
+    }
+
+    public void OnChangeSong(InputValue inputValue)
+    {
+        float input = inputValue.Get<float>();
+        Debug.Log(_songList.Count);
+        if (input < 0)
+        {
+            MoveUp();
+        }
+        else
+        {
+            MoveDown();
+        }
+    }
+
+    public void OnSwitchDifficulty()
+    {
+        SwitchDifficulty();
     }
 
     private void SetSongListText()
@@ -151,16 +174,18 @@ public class SelectManager : MonoBehaviour
     {
         if (_currentIndex == 0) return;
         _currentIndex--;
-        StartCoroutine(MoveSongCoroutine(true));
-        StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex));
+        Debug.Log("current Index" + _currentIndex.ToString());
+        coroutines.Add(StartCoroutine(MoveSongCoroutine(true)));
+        coroutines.Add(StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex)));
     }
 
     private void MoveDown()
     {
         if (_currentIndex == _songList.Count - 1) return;
         _currentIndex++;
-        StartCoroutine(MoveSongCoroutine(false));
-        StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex));
+        Debug.Log("current Index" + _currentIndex.ToString());
+        coroutines.Add(StartCoroutine(MoveSongCoroutine(false)));
+        coroutines.Add(StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex)));
     }
 
     private IEnumerator MoveSongCoroutine(bool up)
@@ -220,6 +245,12 @@ public class SelectManager : MonoBehaviour
         GameManager.myManager.filepath = selectedSong.PatternFilePath[(int)_currentDifficulty];
         GameManager.myManager.selectedComposerName = selectedSong.ComposerName;
         GameManager.myManager.selectedSongName = selectedSong.SongName;
+
+        foreach (var c in coroutines)
+        {
+            StopCoroutine(c);
+        }
+        coroutines.Clear();
         SceneManager.LoadScene("Scenes/LevelTest");
     }
 
