@@ -98,6 +98,12 @@ public class SelectManager : MonoBehaviour
         {
             SwitchDifficulty();
         }
+        
+        // Start game
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            StartGame();
+        }
     }
 
     private void SetSongListText()
@@ -212,9 +218,10 @@ public class SelectManager : MonoBehaviour
         SwitchDifficulty();
     }
 
-    public void OnClickStartButton()
+    public void StartGame()
     {
-        // TODO: Start game
+        if (_songMoving) return;
+        
         SongData selectedSong = _songList[_currentIndex];
 
         GameManager.myManager.filepath = selectedSong.PatternFilePath[(int)_currentDifficulty];
