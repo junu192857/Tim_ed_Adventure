@@ -11,6 +11,7 @@ public class CharacterControl : MonoBehaviour
     private int gravityAngle;
 
     [SerializeField] private GameObject afterimage;
+    [SerializeField] private ParticleSystem particleSystem;
 
     public void MoveCharacter(Note note, double gameTime) {
         Instantiate(afterimage, transform.position, transform.rotation);

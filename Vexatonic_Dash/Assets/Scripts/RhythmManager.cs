@@ -73,7 +73,11 @@ public class RhythmManager : MonoBehaviour
 
     //캐릭터 게임오브젝트
     [SerializeField] private GameObject player;
-    private CharacterControl myPlayer;
+    [SerializeField] private CharacterControl myPlayer;
+    [SerializeField] private GameObject particlePrefab;
+
+    private readonly Vector3 particleLocalPos = new(-0.177f, 0f, 0f);
+
     private Vector3 playerArrive;
     private Vector3 playerDest;
     private bool playerCoroutineRunning;
@@ -132,8 +136,6 @@ public class RhythmManager : MonoBehaviour
         pauseUICoroutine = null;
 
 
-        myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity).GetComponent<CharacterControl>();
-
         (highProgress, highScore) =
             GameManager.GetScore(GameManager.myManager.um.songName, GameManager.myManager.um.difficulty);
 
@@ -144,6 +146,7 @@ public class RhythmManager : MonoBehaviour
         );
         StartCoroutine(nameof(StartReceivingInput));
         StartCoroutine(StartSong());
+
     }
 
     void Update()
@@ -152,7 +155,10 @@ public class RhythmManager : MonoBehaviour
 
 
 
-        if (state == RhythmState.BeforeGameStart && gameTime > -1f) state = RhythmState.Ingame;
+        if (state == RhythmState.BeforeGameStart && gameTime > -1f) { 
+            state = RhythmState.Ingame;
+            StartCoroutine(StartParticle());
+        }
         
         if (noteList.Any() && gameTime >= noteList[0].spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
             GameObject nextNote = preSpawnedNotes.Dequeue();
@@ -590,6 +596,25 @@ public class RhythmManager : MonoBehaviour
         song.Play();
         pauseCoroutine = null;
         pauseUICoroutine = null;
+    }
+
+    private IEnumerator StartParticle() {
+        GameObject particle;
+        while (true) {
+            Debug.Log("Generating Particle..");
+            if (state == RhythmState.Ingame && gameTime > 0f)
+            {
+                particle = Instantiate(particlePrefab, Vector3.zero, Quaternion.identity, player.transform);
+                particle.transform.localPosition = particleLocalPos;
+                particle.transform.localRotation = Quaternion.identity;
+                particle.GetComponent<ParticleSystem>().Play();
+                particle.transform.parent = null;
+                yield return new WaitForSeconds(0.03f);
+            }
+            else {
+                yield return new WaitUntil(() => state == RhythmState.Ingame && gameTime > 0f);
+            }
+        }
     }
 }
 
