@@ -2199,8 +2199,8 @@ Camera:
   m_GameObject: {fileID: 1025689649}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3868,7 +3868,6 @@ MonoBehaviour:
   highProgress: 0
   highScore: 0
   lastJudge: 0
-  player: {fileID: 657871927803377089, guid: 61855e68254911f468c7cba30cfbaa7c, type: 3}
   notePrefabs:
   - {fileID: 583682281927100959, guid: 912cc5a44e0bf4e49ab659bc50ec4a64, type: 3}
   - {fileID: 4780835758759157808, guid: 5f37f44c20cb4dd4ea68d214dfc0d603, type: 3}
@@ -3889,6 +3888,7 @@ MonoBehaviour:
   - {fileID: 4025377695504220162, guid: afe98c34ff174214fbe228ac24172c17, type: 3}
   - {fileID: 2608520025944236846, guid: 59f52e12cc0bf2f4eb054ebdbc88e4ec, type: 3}
   - {fileID: 1867009198593522743, guid: 7a3bd803b3206a74d92c0bb5dc0102e1, type: 3}
+  player: {fileID: 657871927803377089, guid: 61855e68254911f468c7cba30cfbaa7c, type: 3}
   judgementList: 0000000000000000000000000000000000000000
 --- !u!4 &1818378587
 Transform:
