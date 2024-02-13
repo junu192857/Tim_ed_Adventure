@@ -243,19 +243,19 @@ public class UIManager : MonoBehaviour
         }
 
         switch (combo) {
-            case int i when i < 10:
+            case < 10:
                 Instantiate(numbers[combo], transformPosition + Vector3.up * 0.7f, Quaternion.identity);
                 break;
-            case int i when i >= 10 && i < 100:
+            case >= 10 and < 100:
                 Instantiate(numbers[combo / 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
                 Instantiate(numbers[combo % 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
                 break;
-            case int i when i >= 100 && i < 1000:
+            case >= 100 and < 1000:
                 Instantiate(numbers[combo / 100], transformPosition + new Vector3(-0.2f, 0.7f), Quaternion.identity);
                 Instantiate(numbers[combo / 10 % 10], transformPosition + new Vector3(0, 0.7f), Quaternion.identity);
                 Instantiate(numbers[combo % 10], transformPosition + new Vector3(0.2f, 0.7f), Quaternion.identity);
                 break;
-            case int i when i >= 1000 && i < 10000:
+            case >= 1000 and < 10000:
                 Instantiate(numbers[combo / 1000], transformPosition + new Vector3(-0.3f, 0.7f), Quaternion.identity);
                 Instantiate(numbers[combo / 100 % 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
                 Instantiate(numbers[combo / 10 % 10], transformPosition + new Vector3(0.1f, 0.7f), Quaternion.identity);
