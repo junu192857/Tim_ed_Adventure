@@ -1,11 +1,19 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour
 {
+    private static readonly int AnimShowHash = Animator.StringToHash("Show");
+    private static readonly int AnimHideHash = Animator.StringToHash("Hide");
+    
     [Header("Main")]
     [SerializeField] private GameObject mainParent;
+    [SerializeField] private Animator mainTitleTextAnim;
+    [SerializeField] private Animator mainPlayButtonAnim;
+    [SerializeField] private Animator mainSettingsButtonAnim;
+    [SerializeField] private Animator mainQuitButtonAnim;
     
     [Header("Settings")]
     [SerializeField] private GameObject settingsParent;
@@ -32,14 +40,41 @@ public class MainManager : MonoBehaviour
         audioSettingsParent.SetActive(false);
         inputSettingsParent.SetActive(false);
         playSettingsParent.SetActive(false);
-        // TODO: Add animations
+
+        StartCoroutine(MainShowAnimation());
+    }
+
+    private IEnumerator MainShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+        
+        mainTitleTextAnim.SetTrigger(AnimShowHash);
+        mainPlayButtonAnim.SetTrigger(AnimShowHash);
+        mainSettingsButtonAnim.SetTrigger(AnimShowHash);
+        mainQuitButtonAnim.SetTrigger(AnimShowHash);
+    }
+
+    private IEnumerator MainHideAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+        
+        mainTitleTextAnim.SetTrigger(AnimHideHash);
+        mainPlayButtonAnim.SetTrigger(AnimHideHash);
+        mainSettingsButtonAnim.SetTrigger(AnimHideHash);
+        mainQuitButtonAnim.SetTrigger(AnimHideHash);
+
+        yield return new WaitUntil(() => mainTitleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
+    }
+
+    private IEnumerator MainPlay()
+    {
+        yield return StartCoroutine(MainHideAnimation());
+        SceneManager.LoadScene("Scenes/Select");
     }
 
     public void OnClickMainPlayButton()
     {
-        mainParent.SetActive(false);
-        SceneManager.LoadScene("Scenes/Select");
-        // TODO: Add animations
+        StartCoroutine(MainPlay());
     }
     
     public void OnClickMainSettingsButton()
@@ -92,7 +127,7 @@ public class MainManager : MonoBehaviour
     {
         settingsParent.SetActive(false);
         mainParent.SetActive(true);
-        // TODO: Add animations
+        StartCoroutine(MainShowAnimation());
     }
 
     public void OnClickVideoSettingsBackButton()

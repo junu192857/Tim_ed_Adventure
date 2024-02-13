@@ -1323,6 +1323,7 @@ MonoBehaviour:
   globalOffset: 0
   levelOffset: 0
   volume: 0
+  isMetaLoaded: 0
   filepath: 
   rm: {fileID: 0}
   um: {fileID: 0}
@@ -1330,6 +1331,7 @@ MonoBehaviour:
   sm: {fileID: 0}
   selectedSongName: 
   selectedComposerName: 
+  selectedDifficulty: 0
   gravity: 0
 --- !u!4 &416324956
 Transform:

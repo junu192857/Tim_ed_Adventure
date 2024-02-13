@@ -2212,6 +2212,7 @@ GameObject:
   - component: {fileID: 446698058}
   - component: {fileID: 446698057}
   - component: {fileID: 446698056}
+  - component: {fileID: 446698059}
   m_Layer: 5
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -2334,6 +2335,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 446698054}
   m_CullTransparentMesh: 1
+--- !u!95 &446698059
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446698054}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 401500d8c4062b2468f0ee2457f9c8eb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &559177081
 GameObject:
   m_ObjectHideFlags: 0
@@ -2565,6 +2586,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainParent: {fileID: 416315823}
+  mainTitleTextAnim: {fileID: 2143597329}
+  mainPlayButtonAnim: {fileID: 874165163}
+  mainSettingsButtonAnim: {fileID: 446698059}
+  mainQuitButtonAnim: {fileID: 1951927965}
   settingsParent: {fileID: 80439201}
   videoSettingsParent: {fileID: 1109053188}
   audioSettingsParent: {fileID: 706789395}
@@ -3079,6 +3104,7 @@ GameObject:
   - component: {fileID: 874165162}
   - component: {fileID: 874165161}
   - component: {fileID: 874165160}
+  - component: {fileID: 874165163}
   m_Layer: 5
   m_Name: PlayButton
   m_TagString: Untagged
@@ -3201,6 +3227,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 874165158}
   m_CullTransparentMesh: 1
+--- !u!95 &874165163
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874165158}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 401500d8c4062b2468f0ee2457f9c8eb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &915359829
 GameObject:
   m_ObjectHideFlags: 0
@@ -5764,6 +5810,7 @@ MonoBehaviour:
   sm: {fileID: 2034243023}
   selectedSongName: 
   selectedComposerName: 
+  selectedDifficulty: 0
   gravity: 0
 --- !u!4 &1611857184
 Transform:
@@ -6874,6 +6921,7 @@ GameObject:
   - component: {fileID: 1951927964}
   - component: {fileID: 1951927963}
   - component: {fileID: 1951927962}
+  - component: {fileID: 1951927965}
   m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
@@ -6996,6 +7044,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1951927960}
   m_CullTransparentMesh: 1
+--- !u!95 &1951927965
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951927960}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 401500d8c4062b2468f0ee2457f9c8eb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &1958436129
 GameObject:
   m_ObjectHideFlags: 0
@@ -7738,6 +7806,7 @@ GameObject:
   - component: {fileID: 2143597326}
   - component: {fileID: 2143597328}
   - component: {fileID: 2143597327}
+  - component: {fileID: 2143597329}
   m_Layer: 5
   m_Name: TitleText
   m_TagString: Untagged
@@ -7807,3 +7876,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2143597325}
   m_CullTransparentMesh: 1
+--- !u!95 &2143597329
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143597325}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ca7ff6be6a57d714a9c156b4ac80d4ab, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0

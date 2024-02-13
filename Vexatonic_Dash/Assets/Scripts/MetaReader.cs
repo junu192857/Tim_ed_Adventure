@@ -111,5 +111,6 @@ public static class MetaReader
         }
         
         Debug.Log($"End searching all {SongMetaList.Count} directories");
+        GameManager.myManager.isMetaLoaded = true;
     }
 }
