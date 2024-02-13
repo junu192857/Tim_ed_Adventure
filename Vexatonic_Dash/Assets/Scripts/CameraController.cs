@@ -88,24 +88,18 @@ public class CameraController : MonoBehaviour
     {
         Vector3 currentCamPos = _camera.transform.position;
         Vector3 currentEndPos = currentPlayingNote.endPos + new Vector3(0, 0, -5);
-        Debug.LogFormat("CurrentCamPos: {0}", currentCamPos);
-        Debug.LogFormat("CurrentEndPos: {0}", currentEndPos);
 
         double endTime = currentPlayingNote.noteEndTime;
-        double partialProgress = 0;
+        
+        Vector3 cameraVelocity = (currentEndPos - currentCamPos) / (float) (endTime - gameTime);
 
-        while (partialProgress < 1)
+        while (!isBeingControlled)
         {
-            if (isBeingControlled) StopCameraCoroutine();
-
-            Vector3 tempCamPos = currentEndPos * (float) partialProgress + currentCamPos * (float) (1 - partialProgress);
+            Vector3 tempCamPos = _camera.transform.position + Time.deltaTime * cameraVelocity;
             _camera.transform.position = tempCamPos;
-            
-            partialProgress = (gameTime - lastNoteTime) / (endTime - lastNoteTime);
             yield return null;
         }
 
-        _camera.transform.position = currentEndPos;
         StopCameraCoroutine();
     }
 
