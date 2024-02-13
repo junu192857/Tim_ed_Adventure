@@ -241,6 +241,8 @@ public class CameraController : MonoBehaviour
     
     private IEnumerator FollowPlayerCoroutine(double term)
     {
+        cameraVelocity = new Vector2();
+        
         Vector3 currentPosition = _camera.transform.position;
         float localTime = 0f;
             
