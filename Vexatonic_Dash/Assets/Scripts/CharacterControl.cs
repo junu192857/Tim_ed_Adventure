@@ -11,9 +11,11 @@ public class CharacterControl : MonoBehaviour
     private int gravityAngle;
 
     [SerializeField] private GameObject afterimage;
+    [SerializeField] private ParticleSystem particleSystem;
 
     public void MoveCharacter(Note note, double gameTime) {
         Instantiate(afterimage, transform.position, transform.rotation);
+        transform.localScale = new Vector3((int)note.direction, 1, 1);
         
         if (characterCoroutine != null) StopCoroutine(characterCoroutine);
         switch (note.noteType) {
@@ -46,6 +48,10 @@ public class CharacterControl : MonoBehaviour
         float playerMovingTime = (float)(platformNote.noteEndTime - gameTime);
         float time = 0;
 
+        if (note.noteSubType == NoteSubType.End) {
+            Destroy(gameObject);
+            yield break;
+        }
         // 경사면 전용
         float forwardMovingTime;
         Vector3 stopoverPos;
@@ -68,6 +74,7 @@ public class CharacterControl : MonoBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
+            gameObject.transform.localEulerAngles = new Vector3(0, 0, (int)note.direction * note.actualAngle);
             while (time < playerMovingTime + 0.166f) {
                 Vector3 targetPosition = stopoverPos * (playerMovingTime - time) / (playerMovingTime - forwardMovingTime)
                                        + platformNote.endPos * (time - forwardMovingTime) / (playerMovingTime - forwardMovingTime);
@@ -119,14 +126,21 @@ public class CharacterControl : MonoBehaviour
         return startPos + (v * time) + (0.5f * time * time * GameManager.myManager.GravityAsVector);
     }
 
+    public void HurtPlayer(float health) {
+        SpriteRenderer sr = gameObject.GetComponentInChildren<SpriteRenderer>();
+        Color c = new Color(1, health / 100, health / 100);
+        sr.color = c;
+    }
+
     private void Start()
     {
-        UpdateGravity();
+        // Comment: temporarily disabled this code for testing character rotation over angled platforms.
+        //UpdateGravity();
     }
 
     private void Update()
     {
-        UpdateGravity();
+        //UpdateGravity();
     }
     
     private void UpdateGravity()

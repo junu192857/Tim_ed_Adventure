@@ -29,6 +29,7 @@ public class RhythmManager : MonoBehaviour
     private const double p = 0.075;
     private const double gr = 0.100;
     private const double g = 0.166;
+    private const double l = 0.3;
 
     //게임 진행 시간. -5초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
     public double gameTime;
@@ -72,7 +73,11 @@ public class RhythmManager : MonoBehaviour
 
     //캐릭터 게임오브젝트
     [SerializeField] private GameObject player;
-    private CharacterControl myPlayer;
+    [SerializeField] private CharacterControl myPlayer;
+    [SerializeField] private GameObject particlePrefab;
+
+    private readonly Vector3 particleLocalPos = new(-0.177f, 0f, 0f);
+
     private Vector3 playerArrive;
     private Vector3 playerDest;
     private bool playerCoroutineRunning;
@@ -144,8 +149,6 @@ public class RhythmManager : MonoBehaviour
         pauseUICoroutine = null;
 
 
-        myPlayer = Instantiate(player, Vector3.zero, Quaternion.identity).GetComponent<CharacterControl>();
-
         (highProgress, highScore) =
             GameManager.GetScore(GameManager.myManager.um.songName, GameManager.myManager.um.difficulty);
 
@@ -156,6 +159,7 @@ public class RhythmManager : MonoBehaviour
         );
         StartCoroutine(nameof(StartReceivingInput));
         StartCoroutine(StartSong());
+
     }
 
     void Update()
@@ -164,7 +168,10 @@ public class RhythmManager : MonoBehaviour
 
 
 
-        if (state == RhythmState.BeforeGameStart && gameTime > -1f) state = RhythmState.Ingame;
+        if (state == RhythmState.BeforeGameStart && gameTime > -1f) { 
+            state = RhythmState.Ingame;
+            StartCoroutine(StartParticle());
+        }
         
         if (noteList.Any() && gameTime >= noteList[0].spawnTime - 1) { // 노트의 정확한 타이밍보다 1초 일찍 스폰되어야만 한다.
             GameObject nextNote = preSpawnedNotes.Dequeue();
@@ -206,7 +213,7 @@ public class RhythmManager : MonoBehaviour
             {
                 input.inputLifeTime -= Time.deltaTime;
                 if (input.inputLifeTime < 0) inputsToBeRemoved.Add(input);
-                if (input.inputLifeTime < 0) AddJudgement(JudgementType.Miss);
+                //if (input.inputLifeTime < 0) AddJudgement(JudgementType.Miss);
             }
 
             // 제거할 input을 따로 빼놓고 나중에 처리
@@ -236,24 +243,27 @@ public class RhythmManager : MonoBehaviour
                     >= -p and <= p => JudgementType.Perfect,
                     >= -gr and <= gr => JudgementType.Great,
                     >= -g and <= g => JudgementType.Good,
-                    // > l => JudgementType.Invalid,
+                    >= l => JudgementType.Invalid,
                     _ => JudgementType.Miss,
                 };
 
-                // if (judgement != JudgementType.Invalid) {
-                AddJudgement(judgement);
-                
-                // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
-                inputs.Remove(list[0]);
-                list.RemoveAt(0);
+                if (judgement != JudgementType.Invalid) 
+                {
+                    AddJudgement(judgement);
 
+                    // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
+                    inputs.Remove(list[0]);
+                    list.RemoveAt(0);
 
-                // spawnedNotes.Dequeue();
-                DequeueNoteFromQueue();
-                note.FixNote();
-                myPlayer.MoveCharacter(note, gameTime);
-                
-                // }
+                    DequeueNoteFromQueue();
+                    note.FixNote();
+                    myPlayer.MoveCharacter(note, gameTime);
+                }else
+                {
+                    //유효하지 않은 입력 -> 입력만 제거
+                    inputs.Remove(list[0]);
+                    list.RemoveAt(0);
+                }
 
                 // Comment from Vexatone: Early Miss 안 쓸 거면 코드처럼 생겨먹은 주석들 체크 해제하셈
             } 
@@ -266,7 +276,7 @@ public class RhythmManager : MonoBehaviour
             Note note = temp.GetComponent<Note>();
             if (note.lifetime < -0.166f)
             {
-                spawnedNotes.Dequeue();
+                DequeueNoteFromQueue();
                 note.FixNote();
                 myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
@@ -297,6 +307,7 @@ public class RhythmManager : MonoBehaviour
             if (gameTime - lastHit >= unbeatTime) {
                 lastHit = gameTime;
                 health -= 20;
+                myPlayer.HurtPlayer(health);
             }
         }
 
@@ -606,6 +617,25 @@ public class RhythmManager : MonoBehaviour
         CurrentPlayingNote = dequeuedNote.GetComponent<Note>();
 
         return dequeuedNote;
+    }
+
+    private IEnumerator StartParticle() {
+        GameObject particle;
+        while (true) {
+            Debug.Log("Generating Particle..");
+            if (state == RhythmState.Ingame && gameTime > 0f)
+            {
+                particle = Instantiate(particlePrefab, Vector3.zero, Quaternion.identity, player.transform);
+                particle.transform.localPosition = particleLocalPos;
+                particle.transform.localRotation = Quaternion.identity;
+                particle.GetComponent<ParticleSystem>().Play();
+                particle.transform.parent = null;
+                yield return new WaitForSeconds(0.03f);
+            }
+            else {
+                yield return new WaitUntil(() => state == RhythmState.Ingame && gameTime > 0f);
+            }
+        }
     }
 }
 

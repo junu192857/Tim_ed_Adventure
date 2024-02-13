@@ -1,0 +1,88 @@
+{
+    "name": "SelectAction",
+    "maps": [
+        {
+            "name": "action",
+            "id": "2780c479-6526-4fbc-94a1-4b8f9742af8b",
+            "actions": [
+                {
+                    "name": "ChangeSong",
+                    "type": "Button",
+                    "id": "e05fe983-6460-42bf-9e5f-9e73476ff89a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchDifficulty",
+                    "type": "Button",
+                    "id": "61b4af58-b74b-47da-acf1-cfc4010b04d5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "1D Axis",
+                    "id": "5d41b0dd-2615-4a31-a364-7e87fadab142",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeSong",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "4e399cc5-de04-4c6b-876a-c67048107615",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "control",
+                    "action": "ChangeSong",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "f09786a9-46ca-465d-a624-59e54b1b5670",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "control",
+                    "action": "ChangeSong",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "0a874c07-a4d4-4ebb-bc15-7f7ad7c83bff",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "control",
+                    "action": "SwitchDifficulty",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "control",
+            "bindingGroup": "control",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

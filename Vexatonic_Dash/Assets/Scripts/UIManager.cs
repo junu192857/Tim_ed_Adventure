@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class UIManager : MonoBehaviour
 {
@@ -12,7 +15,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
     [SerializeField] private Text fpsText;
-    [SerializeField] private Text healthText;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Image healthImage;
 
     [Header("Level Info UI")]
     [SerializeField] private GameObject levelInfo;
@@ -31,12 +35,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultScoreText;
     [SerializeField] private Text resultSongNameText;
     [SerializeField] private Text resultComposerNameText;
+    [SerializeField] private Button musicSelectButton;
 
     [Space(10)]
     [SerializeField] private Text resultPurePerfectText;
     [SerializeField] private Text resultPerfectText;
     [SerializeField] private Text resultGreatText;
     [SerializeField] private Text resultGoodText;
+    [SerializeField] private Text resultMissText;
 
     [Header("Pause UI")]
     [SerializeField] private GameObject pause;
@@ -47,8 +53,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text gameOverProgressText;
     
     [Header ("Judge Text")]
-    [SerializeField] private GameObject judgeTextParent;
-    [SerializeField] private GameObject judgeTextPrefab;
+    [SerializeField] private GameObject judgeParent;
+    [SerializeField] private GameObject judgePrefab;
 
     [Header ("Song Info")]
     public string songName;
@@ -65,6 +71,7 @@ public class UIManager : MonoBehaviour
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
 
     private static int Health => GameManager.myManager.rm.health;
+    
     private void Awake()
     {
         GameManager.myManager.um = this;
@@ -79,7 +86,8 @@ public class UIManager : MonoBehaviour
     private void InitializeUI()
     {
         scoreText.text = "0";
-        healthText.text = "health : 100";
+        healthSlider.value = 1f;
+        healthImage.color = new Color(0.5f, 1f, 0.5f);
         progressText.text = "0 %";
         StartCoroutine(ShowFPSCoroutine());
     }
@@ -119,7 +127,13 @@ public class UIManager : MonoBehaviour
     public void UpdateInGameUI()
     {
         scoreText.text = Score.ToString();
-        healthText.text = "health : " + Health.ToString();
+        healthSlider.value = Health / 100f;
+        healthImage.color = Health switch
+        {
+            <= 20 => new Color(1f, 0.5f, 0.5f),
+            <= 40 => new Color(1f, 0.75f, 0.5f),
+            _ => new Color(0.5f, 1f, 0.5f)
+        };
         progressText.text = Progress + " %";
     }
 
@@ -192,6 +206,7 @@ public class UIManager : MonoBehaviour
         resultPerfectText.text = JudgementList[1].ToString();
         resultGreatText.text = JudgementList[2].ToString();
         resultGoodText.text = JudgementList[3].ToString();
+        resultMissText.text = JudgementList[4].ToString();
 
         result.SetActive(true);    // TODO: Add show animation
     }
@@ -217,7 +232,7 @@ public class UIManager : MonoBehaviour
     // Displays judge when note is hit or missed
     public void DisplayJudge()
     {
-        var instance = Instantiate(judgeTextPrefab, judgeTextParent.transform);
+        var instance = Instantiate(judgePrefab, judgeParent.transform);
         var text = instance.GetComponent<Text>();
 
         switch (LastJudge)
@@ -265,6 +280,13 @@ public class UIManager : MonoBehaviour
             yield return null;
 
         }
+    }
+
+    public void OnClickMusicSelectButton()
+    {
+        GameManager.myManager.im.Deactivate();
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Scenes/Select");
     }
 
     public void OpenPauseUI() => pause.SetActive(true);
