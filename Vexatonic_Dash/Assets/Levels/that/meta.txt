@@ -1,0 +1,7 @@
+SONG dat
+COMPOSER someone
+LEVEL 4 4 4
+AUDIO audio.mp3
+EASY Test.txt
+HARD Test.txt
+VEX Test.txt

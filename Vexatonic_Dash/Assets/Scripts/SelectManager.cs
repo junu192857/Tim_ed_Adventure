@@ -86,6 +86,21 @@ public class SelectManager : MonoBehaviour
             return;
         }
         
+        // Select last played pattern
+        _currentIndex = _songList.FindIndex(s =>
+            s.SongName == GameManager.myManager.selectedSongName &&
+            s.ComposerName == GameManager.myManager.selectedComposerName);
+        
+        if (_currentIndex != -1)
+        {
+            _currentDifficulty = GameManager.myManager.selectedDifficulty;
+            Debug.Log($"Last played song index: {_currentIndex}, difficulty: {_currentDifficulty}");
+        }
+        else
+        {
+            _currentIndex = 0;
+        }
+        
         SetSongListText();
         SetCurrentSongUI();
         SetCurrentPatternUI();
