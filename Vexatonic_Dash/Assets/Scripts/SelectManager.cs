@@ -107,7 +107,6 @@ public class SelectManager : MonoBehaviour
     public void OnChangeSong(InputValue inputValue)
     {
         float input = inputValue.Get<float>();
-        Debug.Log(_songList.Count);
         if (input < 0)
         {
             MoveUp();
@@ -160,13 +159,13 @@ public class SelectManager : MonoBehaviour
         
         if (progress == 100)
         {
-            highScoreDescriptionText.text = "Progress";
-            highScoreValueText.text = $"{progress} %";
+            highScoreDescriptionText.text = "Score";
+            highScoreValueText.text = $"{score}";
         }
         else
         {
-            highScoreDescriptionText.text = "Score";
-            highScoreValueText.text = $"{score}";
+            highScoreDescriptionText.text = "Progress";
+            highScoreValueText.text = $"{progress} %";
         }
     }
 
@@ -246,6 +245,7 @@ public class SelectManager : MonoBehaviour
         GameManager.myManager.filepath = selectedSong.PatternFilePath[(int)_currentDifficulty];
         GameManager.myManager.selectedComposerName = selectedSong.ComposerName;
         GameManager.myManager.selectedSongName = selectedSong.SongName;
+        GameManager.myManager.selectedDifficulty = _currentDifficulty;
 
         foreach (var c in coroutines)
         {

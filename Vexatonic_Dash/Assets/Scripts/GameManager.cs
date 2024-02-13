@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
 
     public string selectedSongName;
     public string selectedComposerName;
+    public Difficulty selectedDifficulty;
 
     public void Awake()
     {

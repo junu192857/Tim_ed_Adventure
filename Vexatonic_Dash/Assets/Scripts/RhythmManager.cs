@@ -137,8 +137,10 @@ public class RhythmManager : MonoBehaviour
 
 
         (highProgress, highScore) =
-            GameManager.GetScore(GameManager.myManager.um.songName, GameManager.myManager.um.difficulty);
+            GameManager.GetScore(GameManager.myManager.selectedSongName, GameManager.myManager.selectedDifficulty);
 
+        Debug.Log($"High Progress: {highProgress}, High Score: {highScore}");
+        
         // InputManager 세팅
         GameManager.myManager.im.StartLoop(
             new List<KeyCode> { KeyCode.F, KeyCode.J, KeyCode.D, KeyCode.K, KeyCode.Space },
@@ -316,12 +318,13 @@ public class RhythmManager : MonoBehaviour
         state = RhythmState.GameOver;
         Time.timeScale = 0f;
 
-        if (score > highScore)
+        if (progress > highProgress)
         {
-            highScore = score;
-            PlayerPrefs.SetInt(GameManager.myManager.um.songName + '_' + GameManager.myManager.um.difficulty + "Score",
-                highScore);
+            var patternKey = GameManager.myManager.selectedSongName + '_' + GameManager.myManager.selectedDifficulty;
+            highProgress = progress;
+            PlayerPrefs.SetInt(patternKey + "Progress", highProgress);
             GameManager.myManager.um.ShowGameOverUI(true);
+            Debug.Log($"Saved progress {highProgress} for {patternKey}");
         }
         else
         {
@@ -335,10 +338,13 @@ public class RhythmManager : MonoBehaviour
 
         if (score > highScore)
         {
+            var patternKey = GameManager.myManager.selectedSongName + '_' + GameManager.myManager.selectedDifficulty;
+            highProgress = 100;
             highScore = score;
-            PlayerPrefs.SetInt(GameManager.myManager.um.songName + '_' + GameManager.myManager.um.difficulty + "Score",
-                highScore);
+            PlayerPrefs.SetInt(patternKey + "Progress", highProgress);
+            PlayerPrefs.SetInt(patternKey + "Score", highScore);
             GameManager.myManager.um.ShowResultUI(true);
+            Debug.Log($"Saved score {highScore} for {patternKey}");
         }
         else
         {
