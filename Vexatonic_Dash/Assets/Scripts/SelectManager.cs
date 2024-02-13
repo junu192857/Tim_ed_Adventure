@@ -30,6 +30,9 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private RankIcon rankIcon;
     [SerializeField] private Text highScoreDescriptionText;
     [SerializeField] private Text highScoreValueText;
+
+    [Space(10)]
+    [SerializeField] private Image patternInfoImage;
     [SerializeField] private Text patternInfoText;
 
     private readonly List<SongData> _songList = new();
@@ -113,18 +116,6 @@ public class SelectManager : MonoBehaviour
         
         _currentPatternLevel = _songList[_currentIndex].Levels[(int)_currentDifficulty];
         
-        var patternText = _currentDifficulty switch
-        {
-            Difficulty.Easy => "Easy",
-            Difficulty.Hard => "Hard",
-            Difficulty.Vex  => "Vex",
-            _ => throw new System.ArgumentException()
-        };
-
-        patternText += " " + _currentPatternLevel;
-        
-        patternInfoText.text = patternText;
-        
         rankIcon.SetRank(GameManager.GetRank(score));
         
         if (progress == 100)
@@ -137,6 +128,15 @@ public class SelectManager : MonoBehaviour
             highScoreDescriptionText.text = "Progress";
             highScoreValueText.text = $"{progress} %";
         }
+
+        patternInfoImage.color = _currentDifficulty switch
+        {
+            Difficulty.Easy => new Color(0.75f, 1.00f, 0.75f),
+            Difficulty.Hard => new Color(1.00f, 1.00f, 0.75f),
+            Difficulty.Vex  => new Color(1.00f, 0.75f, 0.75f),
+            _ => throw new System.ArgumentException()
+        };
+        patternInfoText.text = _currentDifficulty + " " + _currentPatternLevel;
     }
 
     private void MoveUp()
