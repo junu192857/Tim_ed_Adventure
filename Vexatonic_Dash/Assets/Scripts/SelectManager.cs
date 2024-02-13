@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class SelectManager : MonoBehaviour
 {
     private const float SongListSpace = 180f;
-    private const float SongScrollTime = 0.1f;
+    private const float SongScrollTime = 0.05f;
 
     [Space(10)]
     [SerializeField] private Text highlightedSongNameText;
@@ -27,7 +27,6 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private Text nextSong2Text;
     
     [Space(10)]
-    [SerializeField] private Sprite[] rankImages;   // TODO: Add rank images
     [SerializeField] private RankIcon rankIcon;
     [SerializeField] private Text highScoreDescriptionText;
     [SerializeField] private Text highScoreValueText;
@@ -78,34 +77,10 @@ public class SelectManager : MonoBehaviour
         SetCurrentPatternUI();
     }
 
-    private void Update()
-    {
-        if (_songListInvalid) return;
-        /*
-        // Song scroll
-        if (!_songMoving)
-        {
-            switch (Input.GetKeyDown(KeyCode.UpArrow), Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                case (true, false):
-                    MoveUp();
-                    break;
-                case (false, true):
-                    MoveDown();
-                    break;
-            }
-        }
-        
-        // Pattern type select
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            SwitchDifficulty();
-        }
-        */
-    }
-
     public void OnChangeSong(InputValue inputValue)
     {
+        if (_songListInvalid) return;
+        
         float input = inputValue.Get<float>();
         if (input < 0)
         {
@@ -115,11 +90,6 @@ public class SelectManager : MonoBehaviour
         {
             MoveDown();
         }
-    }
-
-    public void OnSwitchDifficulty()
-    {
-        SwitchDifficulty();
     }
 
     private void SetSongListText()
@@ -231,12 +201,7 @@ public class SelectManager : MonoBehaviour
         SetCurrentPatternUI();
     }
 
-    public void OnClickPatternSelectButton()
-    {
-        SwitchDifficulty();
-    }
-
-    public void StartGame()
+    private void StartGame()
     {
         if (_songMoving) return;
         
@@ -258,5 +223,15 @@ public class SelectManager : MonoBehaviour
     public void OnClickBackButton()
     {
         SceneManager.LoadScene("Scenes/Main");
+    }
+
+    public void OnSwitchDifficulty()
+    {
+        SwitchDifficulty();
+    }
+
+    public void OnStartGame()
+    {
+        StartGame();
     }
 }
