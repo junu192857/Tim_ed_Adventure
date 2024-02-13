@@ -10,6 +10,8 @@ public class CharacterControl : MonoBehaviour
     private float g => GameManager.g;
     private int gravityAngle;
 
+    private delegate float timeFunc(float time, float playerMovingTime);
+
     [SerializeField] private GameObject afterimage;
     [SerializeField] private ParticleSystem particleSystem;
 
@@ -147,5 +149,11 @@ public class CharacterControl : MonoBehaviour
     {
         gravityAngle = GameManager.myManager.gravity;
         transform.rotation = Quaternion.Euler(0f, 0f, gravityAngle);
+    }
+
+    private float CalculateTimeForNormal(float time, float playerMovingTime) => time;
+
+    private float CalculateTimeForDash(float time, float playerMovingTime) { 
+        
     }
 }
