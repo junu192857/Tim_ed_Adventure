@@ -31,7 +31,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Result UI")]
     [SerializeField] private GameObject result;
-    [SerializeField] private Text resultRankText;
+    [SerializeField] private RankIcon rankIcon;
     [SerializeField] private Text resultScoreText;
     [SerializeField] private Text resultSongNameText;
     [SerializeField] private Text resultComposerNameText;
@@ -167,35 +167,7 @@ public class UIManager : MonoBehaviour
 
     public void ShowResultUI(bool isNewRecord)
     {
-        switch (GameManager.GetRank(Score))  // Set rank text, TODO: Set color or image of rank
-        {
-            case RankType.V:
-                resultRankText.text = "V";
-                resultRankText.color = new Color(1f, 0.75f, 0f);
-                break;
-            case RankType.S:
-                resultRankText.text = "S";
-                resultRankText.color = new Color(1f, 0.75f, 0f);
-                break;
-            case RankType.A:
-                resultRankText.text = "A";
-                resultRankText.color = new Color(1f, 0.75f, 0f);
-                break;
-            case RankType.B:
-                resultRankText.text = "B";
-                resultRankText.color = new Color(0.75f, 1f, 0.25f);
-                break;
-            case RankType.C:
-                resultRankText.text = "C";
-                resultRankText.color = new Color(0.5f, 0.75f, 0.5f);
-                break;
-            case RankType.D:
-                resultRankText.text = "D";
-                resultRankText.color = new Color(0.25f, 0.5f, 0.75f);
-                break;
-            default:
-                throw new ArgumentException();
-        }
+        rankIcon.SetRank(GameManager.GetRank(Score));
         
         resultScoreText.text = Score.ToString();
         resultSongNameText.text = songName;

@@ -28,7 +28,7 @@ public class SelectManager : MonoBehaviour
     
     [Space(10)]
     [SerializeField] private Sprite[] rankImages;   // TODO: Add rank images
-    [SerializeField] private Image rankImage;
+    [SerializeField] private RankIcon rankIcon;
     [SerializeField] private Text highScoreDescriptionText;
     [SerializeField] private Text highScoreValueText;
     [SerializeField] private Text patternInfoText;
@@ -156,7 +156,7 @@ public class SelectManager : MonoBehaviour
         
         patternInfoText.text = patternText;
         
-        rankImage.sprite = rankImages[(int)GameManager.GetRank(score)];
+        rankIcon.SetRank(GameManager.GetRank(score));
         
         if (progress == 100)
         {
