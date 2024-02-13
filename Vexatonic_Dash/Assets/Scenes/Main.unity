@@ -7321,6 +7321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainBgm: {fileID: 0}
+  song: {fileID: 0}
 --- !u!4 &2034243024
 Transform:
   m_ObjectHideFlags: 0

@@ -695,7 +695,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5, g: 0.75, b: 0.75, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1580,7 +1580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.75, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1821,7 +1821,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.75, g: 0.5, b: 0.75, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2499,7 +2499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.75, g: 1, b: 0.25, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2720,42 +2720,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1045871444}
   m_CullTransparentMesh: 1
---- !u!1 &1094685488
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1094685489}
-  m_Layer: 5
-  m_Name: JudgeParent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1094685489
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1094685488}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1865527481}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1191932103
 GameObject:
   m_ObjectHideFlags: 0
@@ -3334,7 +3298,7 @@ RectTransform:
   - {fileID: 469852814}
   - {fileID: 1722297916}
   m_Father: {fileID: 1865527481}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -4243,7 +4207,7 @@ RectTransform:
   - {fileID: 1755902878}
   - {fileID: 571764373}
   m_Father: {fileID: 1865527481}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4595,11 +4559,27 @@ MonoBehaviour:
   resultGreatText: {fileID: 837743112}
   resultGoodText: {fileID: 2072956701}
   resultMissText: {fileID: 337181508}
+  resultPurePerfect: {fileID: 800572279180568169, guid: 1a82db01fca3b45fd890e1f6981d468e, type: 3}
+  resultPerfect: {fileID: 1257529318613028128, guid: 80db24fa693ce084586c5489c2f1555c, type: 3}
+  resultGreat: {fileID: 1125051480700811945, guid: 377277229138f514da19a8321bf24d72, type: 3}
+  resultGood: {fileID: 245403302770030032, guid: df4e18336ca0d6940a6487ed6ddecd80, type: 3}
+  resultMiss: {fileID: 4037350851928357874, guid: f589672c5f4f17543a33cf6466b46339, type: 3}
+  numbers:
+  - {fileID: 7453775552426606691, guid: 6fa20b30974424940bfd3d985c8390c3, type: 3}
+  - {fileID: 9149304294726941115, guid: 57c0e6ff937719c48a245a30421787d6, type: 3}
+  - {fileID: 6406260170102075590, guid: af0440c44ce6cb24997fcf3a49a439a3, type: 3}
+  - {fileID: 7873172599725544722, guid: a77fd4eca657b8147bde3f9721a1a03b, type: 3}
+  - {fileID: 274195829488570696, guid: bcb03ab0495fb5642886a5af641b6787, type: 3}
+  - {fileID: 6180354247746219515, guid: c0a4af8adc1f19749ac1ce00991ba402, type: 3}
+  - {fileID: 1143293396832095508, guid: 7b9ad6ad221ad2e408d518ab25026df3, type: 3}
+  - {fileID: 3571447935704100506, guid: bbace1c7e35672341bc9ab63daa10d98, type: 3}
+  - {fileID: 262252564821091841, guid: efc2d9dc650ba0944b1a44a9baae7c87, type: 3}
+  - {fileID: 6328499211537947147, guid: 7c36eede7bcabc34aaaa7c9c75bb4367, type: 3}
   pause: {fileID: 1708171754}
   gameOver: {fileID: 55384509}
   gameOverTitleText: {fileID: 1045871446}
   gameOverProgressText: {fileID: 1314664709}
-  judgeParent: {fileID: 1094685488}
+  judgeParent: {fileID: 0}
   judgePrefab: {fileID: 3475141772924465932, guid: 1a82db01fca3b45fd890e1f6981d468e, type: 3}
   songName: SongName
   composerName: Various Artist
@@ -4750,7 +4730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.75, g: 0.25, b: 0.25, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4984,7 +4964,6 @@ RectTransform:
   - {fileID: 2016398626}
   - {fileID: 744554358}
   - {fileID: 55384510}
-  - {fileID: 1094685489}
   - {fileID: 1360974338}
   - {fileID: 1708171755}
   m_Father: {fileID: 0}
