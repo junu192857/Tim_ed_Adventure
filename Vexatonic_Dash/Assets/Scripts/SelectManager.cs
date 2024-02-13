@@ -197,6 +197,7 @@ public class SelectManager : MonoBehaviour
         patternInfoText.text = patternText;
         
         rankIcon.SetRank(GameManager.GetRank(score));
+        rankIcon.ShowAnimation();
         
         if (progress == 100)
         {

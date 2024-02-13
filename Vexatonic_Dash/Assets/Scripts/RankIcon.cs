@@ -1,8 +1,11 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RankIcon : MonoBehaviour
 {
+    private static readonly int AnimShowHash = Animator.StringToHash("Show");
+    
     private static readonly Color[] RankColors =
     {
         new(0.9f, 0.7f, 0.1f),  // V Rank
@@ -15,12 +18,17 @@ public class RankIcon : MonoBehaviour
     
     [SerializeField] private Image image;
     [SerializeField] private Text text;
-    private Animator _animator;
+    [SerializeField] private Animator animator;
 
     public void SetRank(RankType rank)
     {
         image.color = RankColors[(int)rank];
         text.text = rank.ToString();
+    }
+
+    public void ShowAnimation()
+    {
+        animator.SetTrigger(AnimShowHash);
     }
 
     // Temporary method for testing
