@@ -9,7 +9,7 @@ public class SoundManager : MonoBehaviour
 {
 
     [SerializeField] private AudioClip mainBgm;
-    [SerializeField] private AudioSource song;
+    private AudioSource song;
 
 
 
