@@ -242,8 +242,8 @@ public class LevelReader
                 break;
             case "FIX":
                 info = new CameraFixInfo(time, term, new Vector2(
-                    float.Parse(infoList[5]),
-                    float.Parse(infoList[6])
+                    float.Parse(infoList[4]),
+                    float.Parse(infoList[5])
                 ));
                 break;
             case "RETURN":

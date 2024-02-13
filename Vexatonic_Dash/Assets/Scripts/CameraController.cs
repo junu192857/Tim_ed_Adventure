@@ -21,6 +21,7 @@ public class CameraController : MonoBehaviour
     private bool isBeingControlled;
     private Vector2 cameraVelocity;
     private Note currentPlayingNote;
+    private int currentAngle;
 
     private Queue<CameraControlInfo> cameraInfoQueue => GameManager.myManager.rm.cameraInfoQueue;
 
@@ -38,6 +39,7 @@ public class CameraController : MonoBehaviour
         cameraVelocity = new Vector2();
 
         lastNoteTime = 0;
+        currentAngle = 0;
     }
 
     private IEnumerator LateStart()
@@ -51,7 +53,7 @@ public class CameraController : MonoBehaviour
         if (character == null) return;
         ChangeCurrentPlayingNote();
 
-        if (cameraInfoQueue.TryPeek(out CameraControlInfo info) && (info.time <= gameTime))
+        while (cameraInfoQueue.TryPeek(out CameraControlInfo info) && (info.time <= gameTime))
         {
             ProcessCameraInfo(info);
             cameraInfoQueue.Dequeue();
@@ -273,18 +275,20 @@ public class CameraController : MonoBehaviour
     
     private IEnumerator RotateCameraCoroutine(int angle, double term)
     {
-        int currentAngle = (int) _camera.transform.rotation.eulerAngles.z;
+        int startAngle = currentAngle;
         float localTime = 0f;
 
         while (localTime < term)
         {
-            float tempAngle = GetSineEaseValue(currentAngle, angle, (float)(localTime / term));
+            float tempAngle = GetSineEaseValue(startAngle, angle, (float)(localTime / term));
             _camera.transform.rotation = Quaternion.AngleAxis(tempAngle, Vector3.forward);
+            currentAngle = (int)tempAngle;
             yield return null;
             localTime += Time.deltaTime;
         }
 
         _camera.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        currentAngle = angle;
         rotateCoroutine = null;
     }
 
@@ -304,7 +308,7 @@ public class CameraController : MonoBehaviour
     private IEnumerator ZoomCameraCoroutine(double scale, double term)
     {
         float currentScale = _camera.orthographicSize;
-        float destScale = 3f * (float)scale;
+        float destScale = 3f / (float)scale;
         float localTime = 0f;
 
         while (localTime < term)
@@ -385,7 +389,7 @@ public class CameraController : MonoBehaviour
         return new Vector3(
             position.x,
             position.y,
-            5.0f
+            -5.0f
             );
     }
 }
