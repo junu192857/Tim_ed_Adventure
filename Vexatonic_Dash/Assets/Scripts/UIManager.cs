@@ -193,6 +193,8 @@ public class UIManager : MonoBehaviour
         resultMissText.text = JudgementList[4].ToString();
 
         result.SetActive(true);    // TODO: Add show animation
+        
+        StartCoroutine(rankIcon.ShowAnimationCoroutine());
     }
     
     public void ShowGameOverUI(bool isNewRecord)

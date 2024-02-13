@@ -620,7 +620,7 @@ Animator:
   m_GameObject: {fileID: 228079849}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d72b6e036e6648e42873f832eecfe993, type: 2}
+  m_Controller: {fileID: 9100000, guid: 5962f6e00c79d5245a7e7fa12bfad399, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -644,6 +644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 1586338638}
   text: {fileID: 1489727796}
+  animator: {fileID: 228079851}
 --- !u!1 &275099942
 GameObject:
   m_ObjectHideFlags: 0
@@ -3741,6 +3742,7 @@ MonoBehaviour:
   globalOffset: 0
   levelOffset: 0
   volume: 0
+  isMetaLoaded: 0
   filepath: 
   rm: {fileID: 1818378586}
   um: {fileID: 1773674259}
