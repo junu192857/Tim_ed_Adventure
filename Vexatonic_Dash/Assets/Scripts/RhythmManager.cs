@@ -585,12 +585,14 @@ public class RhythmManager : MonoBehaviour
         {
             case RhythmState.BeforeGameStart:
             case RhythmState.Ingame:
+                GameManager.myManager.sm.PlaySFX("Button");
                 Time.timeScale = 0f;
                 song.Pause();
                 state = RhythmState.Paused;
                 GameManager.myManager.um.OpenPauseUI();
                 break;
             case RhythmState.Paused:
+                GameManager.myManager.sm.PlaySFX("Button");
                 if (pauseCoroutine != null) StopCoroutine(pauseCoroutine);
                 if (pauseUICoroutine != null) StopCoroutine(pauseUICoroutine);
                 pauseCoroutine = ReturnToGame();
@@ -602,7 +604,9 @@ public class RhythmManager : MonoBehaviour
         }
     }
     public void OnReturnToMain() {
-        if (state != RhythmState.Paused) return;
+        if (state != RhythmState.Paused && state != RhythmState.GameClear) return;
+        Time.timeScale = 1f;
+        GameManager.myManager.sm.PlaySFX("Button");
         SceneManager.LoadScene("Select");
     }
 
@@ -610,6 +614,7 @@ public class RhythmManager : MonoBehaviour
     public void OnRestart() // Pressed Space Button 
     {
         if (state != RhythmState.Paused) return;
+        GameManager.myManager.sm.PlaySFX("Button");
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
         SceneManager.LoadScene("LevelTest");
