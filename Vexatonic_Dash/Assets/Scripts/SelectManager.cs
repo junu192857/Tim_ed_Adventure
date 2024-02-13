@@ -7,14 +7,17 @@ using UnityEngine.UI;
 
 public class SelectManager : MonoBehaviour
 {
+    private static readonly int AnimShowHash = Animator.StringToHash("Show");
+    private static readonly int AnimHideHash = Animator.StringToHash("Hide");
+    
     private const float SongListSpace = 180f;
     private const float SongScrollTime = 0.05f;
 
-    [Space(10)]
+    [Header("Highlighted Song")]
     [SerializeField] private Text highlightedSongNameText;
     [SerializeField] private Text highlightedSongComposerText;
 
-    [Space(10)]
+    [Header("Song List")]
     [SerializeField] private RectTransform currentSongRect;
     [SerializeField] private RectTransform prevSong1Rect;
     [SerializeField] private RectTransform prevSong2Rect;
@@ -26,11 +29,21 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private Text nextSong1Text;
     [SerializeField] private Text nextSong2Text;
     
-    [Space(10)]
+    [Header("Pattern Info")]
     [SerializeField] private RankIcon rankIcon;
     [SerializeField] private Text highScoreDescriptionText;
     [SerializeField] private Text highScoreValueText;
     [SerializeField] private Text patternInfoText;
+
+    [Header("Animator")]
+    [SerializeField] private Animator titleTextAnim;
+    [SerializeField] private Animator songsParentAnim;
+    [SerializeField] private Animator highlightedSongAnim;
+    [SerializeField] private Animator rankIconAnim;
+    [SerializeField] private Animator highScoreAnim;
+    [SerializeField] private Animator patternInfoAnim;
+    [SerializeField] private Animator startButtonAnim;
+    [SerializeField] private Animator backButtonAnim;
 
     private readonly List<SongData> _songList = new();
     private int _currentIndex;
@@ -75,6 +88,40 @@ public class SelectManager : MonoBehaviour
         SetSongListText();
         SetCurrentSongUI();
         SetCurrentPatternUI();
+
+        StartCoroutine(SelectShowAnimation());
+    }
+
+    private IEnumerator SelectShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+        
+        titleTextAnim.SetTrigger(AnimShowHash);
+        songsParentAnim.SetTrigger(AnimShowHash);
+        highlightedSongAnim.SetTrigger(AnimShowHash);
+        rankIconAnim.SetTrigger(AnimShowHash);
+        highScoreAnim.SetTrigger(AnimShowHash);
+        patternInfoAnim.SetTrigger(AnimShowHash);
+        startButtonAnim.SetTrigger(AnimShowHash);
+        backButtonAnim.SetTrigger(AnimShowHash);
+        
+        yield return new WaitUntil(() => titleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle"));
+    }
+
+    private IEnumerator SelectHideAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+        
+        titleTextAnim.SetTrigger(AnimHideHash);
+        songsParentAnim.SetTrigger(AnimHideHash);
+        highlightedSongAnim.SetTrigger(AnimHideHash);
+        rankIconAnim.SetTrigger(AnimHideHash);
+        highScoreAnim.SetTrigger(AnimHideHash);
+        patternInfoAnim.SetTrigger(AnimHideHash);
+        startButtonAnim.SetTrigger(AnimHideHash);
+        backButtonAnim.SetTrigger(AnimHideHash);
+        
+        yield return new WaitUntil(() => titleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
     }
 
     public void OnChangeSong(InputValue inputValue)
