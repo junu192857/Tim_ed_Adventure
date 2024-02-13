@@ -317,7 +317,6 @@ public class RhythmManager : MonoBehaviour
 
         if (type == JudgementType.Miss) combo = 0;
         else combo++;
-        Debug.Log($"Combo: + {combo}");
 
         UpdateScore(type);
         UpdatePercentage();
@@ -386,7 +385,6 @@ public class RhythmManager : MonoBehaviour
     // 노트 찍고 다음 AnchorPosition 돌려주는 역할
     private Vector3 SpawnNote(NoteSpawnInfo info, Vector3 AnchorPosition)
     {
-        Debug.Log($"Anchor Position: {AnchorPosition}");
         
         // Local variable declaration area
         float inputWidth = GameManager.myManager.CalculateInputWidthFromTime((float) info.noteLastingTime);
@@ -470,7 +468,6 @@ public class RhythmManager : MonoBehaviour
         note.noteType = type;
         note.noteEndTime = info.spawnTime + info.noteLastingTime;
         // note.noteEndTime = noteList.IndexOf(note) == noteList.Count - 1 ? note.spawnTime + 1 : noteList[noteList.IndexOf(note) + 1].spawnTime;
-        Debug.Log($"noteEndTime: {note.noteEndTime}");
 
         note.spawnPos = info.spawnPosition;
         note.destPos = AnchorPosition;
@@ -530,7 +527,6 @@ public class RhythmManager : MonoBehaviour
             _ => 0
         };
 
-        Debug.Log("Updating Score..");
         realScore += rate * scorePerNotes;
         score = (int) (realScore + 0.5);
     }
@@ -610,6 +606,8 @@ public class RhythmManager : MonoBehaviour
     public void OnRestart() // Pressed Space Button 
     {
         if (state != RhythmState.Paused) return;
+        GameManager.myManager.im.Deactivate();
+        Time.timeScale = 1f;
         SceneManager.LoadScene("LevelTest");
     }
 
