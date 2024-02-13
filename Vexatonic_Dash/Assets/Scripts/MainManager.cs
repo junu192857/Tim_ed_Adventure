@@ -74,12 +74,14 @@ public class MainManager : MonoBehaviour
 
     public void OnClickMainPlayButton()
     {
+        GameManager.myManager.sm.PlaySFX("Button");
         StartCoroutine(MainPlay());
     }
     
     public void OnClickMainSettingsButton()
     {
         mainParent.SetActive(false);
+        GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
@@ -96,6 +98,7 @@ public class MainManager : MonoBehaviour
     public void OnClickSettingsVideoButton()
     {
         videoSettingsParent.SetActive(true);
+        GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(false);
         // TODO: Add animations
     }
@@ -103,6 +106,7 @@ public class MainManager : MonoBehaviour
     public void OnClickSettingsAudioButton()
     {
         audioSettingsParent.SetActive(true);
+        GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(false);
         
         UpdateAudioOffsetValueText();
@@ -112,6 +116,7 @@ public class MainManager : MonoBehaviour
     public void OnClickSettingsInputButton()
     {
         inputSettingsParent.SetActive(true);
+        GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(false);
         // TODO: Add animations
     }
@@ -119,6 +124,7 @@ public class MainManager : MonoBehaviour
     public void OnClickSettingsPlayButton()
     {
         playSettingsParent.SetActive(true);
+        GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(false);
         // TODO: Add animations
     }
@@ -126,6 +132,7 @@ public class MainManager : MonoBehaviour
     public void OnClickSettingsBackButton()
     {
         settingsParent.SetActive(false);
+        GameManager.myManager.sm.PlaySFX("Button");
         mainParent.SetActive(true);
         StartCoroutine(MainShowAnimation());
     }
@@ -133,6 +140,7 @@ public class MainManager : MonoBehaviour
     public void OnClickVideoSettingsBackButton()
     {
         videoSettingsParent.SetActive(false);
+        GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
@@ -140,6 +148,7 @@ public class MainManager : MonoBehaviour
     public void OnClickAudioSettingsBackButton()
     {
         audioSettingsParent.SetActive(false);
+        GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
@@ -147,6 +156,7 @@ public class MainManager : MonoBehaviour
     public void OnClickInputSettingsBackButton()
     {
         inputSettingsParent.SetActive(false);
+        GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
@@ -154,6 +164,7 @@ public class MainManager : MonoBehaviour
     public void OnClickPlaySettingsBackButton()
     {
         playSettingsParent.SetActive(false);
+        GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(true);
         // TODO: Add animations
     }

@@ -65,8 +65,11 @@ public class RhythmManager : MonoBehaviour
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
     private List<NoteSpawnInfo> noteList;
     private List<GravityData> gravityDataList;
-    private Queue<GravityData> gravityQueue;
+    private List<CameraControlInfo> cameraInfoList;
 
+    private Queue<GravityData> gravityQueue;
+    public Queue<CameraControlInfo> cameraInfoQueue;
+    
     private Queue<GameObject> preSpawnedNotes = new Queue<GameObject>();
     //게임오브젝트가 활성화된 노트들.
     private Queue<GameObject> spawnedNotes = new Queue<GameObject>();
@@ -129,10 +132,11 @@ public class RhythmManager : MonoBehaviour
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
         gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
-        noteList = lr.ParseFile(levelFilePath, out gravityDataList);
+        noteList = lr.ParseFile(levelFilePath, out gravityDataList, out cameraInfoList);
         scorePerNotes = (double)1000000 / noteCount;
 
         gravityQueue = new Queue<GravityData>(gravityDataList);
+        cameraInfoQueue = new Queue<CameraControlInfo>(cameraInfoList);
 
         GenerateMap();
         Time.timeScale = 1f;
@@ -317,7 +321,6 @@ public class RhythmManager : MonoBehaviour
 
         if (type == JudgementType.Miss) combo = 0;
         else combo++;
-        Debug.Log($"Combo: + {combo}");
 
         UpdateScore(type);
         UpdatePercentage();
@@ -335,6 +338,7 @@ public class RhythmManager : MonoBehaviour
     private void GameOver() {
         state = RhythmState.GameOver;
         Time.timeScale = 0f;
+        GameManager.myManager.sm.PlaySFX("Game Over");
 
         if (progress > highProgress)
         {
@@ -353,6 +357,7 @@ public class RhythmManager : MonoBehaviour
     private void GameClear() {
         state = RhythmState.GameClear;
         Time.timeScale = 0f;
+        GameManager.myManager.sm.PlaySFX("Game Clear");
 
         if (score > highScore)
         {
@@ -384,7 +389,6 @@ public class RhythmManager : MonoBehaviour
     // 노트 찍고 다음 AnchorPosition 돌려주는 역할
     private Vector3 SpawnNote(NoteSpawnInfo info, Vector3 AnchorPosition)
     {
-        Debug.Log($"Anchor Position: {AnchorPosition}");
         
         // Local variable declaration area
         float inputWidth = GameManager.myManager.CalculateInputWidthFromTime((float) info.noteLastingTime);
@@ -468,7 +472,6 @@ public class RhythmManager : MonoBehaviour
         note.noteType = type;
         note.noteEndTime = info.spawnTime + info.noteLastingTime;
         // note.noteEndTime = noteList.IndexOf(note) == noteList.Count - 1 ? note.spawnTime + 1 : noteList[noteList.IndexOf(note) + 1].spawnTime;
-        Debug.Log($"noteEndTime: {note.noteEndTime}");
 
         note.spawnPos = info.spawnPosition;
         note.destPos = AnchorPosition;
@@ -528,7 +531,6 @@ public class RhythmManager : MonoBehaviour
             _ => 0
         };
 
-        Debug.Log("Updating Score..");
         realScore += rate * scorePerNotes;
         score = (int) (realScore + 0.5);
     }
@@ -608,6 +610,8 @@ public class RhythmManager : MonoBehaviour
     public void OnRestart() // Pressed Space Button 
     {
         if (state != RhythmState.Paused) return;
+        GameManager.myManager.im.Deactivate();
+        Time.timeScale = 1f;
         SceneManager.LoadScene("LevelTest");
     }
 

@@ -258,7 +258,6 @@ public class EditorManager : MonoBehaviour
     private IEnumerator StartSongCoroutine(float startX) {
         if (startX < 0) startX = 0;
         float musicTime = (float)GameManager.myManager.CalculateTimeFromInputWidth(startX) + musicOffset / 1000;
-        Debug.Log(musicTime);
         if (musicTime >= 0f) {
             song.time = musicTime;
             song.Play();
@@ -266,7 +265,6 @@ public class EditorManager : MonoBehaviour
         }
         else {
             yield return new WaitForSeconds(-musicTime);
-            Debug.Log("Hello?");
             song.time = 0f;
             song.Play();
         }
@@ -530,11 +528,9 @@ public class EditorManager : MonoBehaviour
     }
     public void HideWriteLengthSetting() => noteLengthInputField.gameObject.SetActive(false);
     public void SetNotePreviewByWriteLength() {
-        Debug.Log("Hello from start");
         string inputText = noteLengthInputField.text;
         double time;
         float noteWidth;
-        Debug.Log(inputText);
         if (inputText.EndsWith('s') && double.TryParse(inputText.Substring(0, inputText.Length - 1), out time))
         {
             noteWidth = GameManager.myManager.CalculateInputWidthFromTime(time);
@@ -548,7 +544,6 @@ public class EditorManager : MonoBehaviour
             }
             else return;
         }
-        Debug.Log("Hello?");
         noteEndPosition.x = noteStartPosition.x + noteWidth;
     }
 

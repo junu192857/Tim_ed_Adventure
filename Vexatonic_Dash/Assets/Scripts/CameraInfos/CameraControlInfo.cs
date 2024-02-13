@@ -4,11 +4,23 @@ using UnityEngine;
 
 public class CameraControlInfo
 {
-    public bool isDefault = true;
+    public CameraControlType type = CameraControlType.None;
     public double time;
     public double term;
 
-    public CameraControlInfo(double time, double term, bool isDefault)
+    public CameraControlInfo(double time, double term)
     {
+        this.time = time;
+        this.term = term;
     }
+}
+
+public enum CameraControlType
+{
+    None,
+    Zoom,
+    Fix,
+    Rotate,
+    Velocity,
+    Return,
 }
