@@ -606,6 +606,8 @@ public class RhythmManager : MonoBehaviour
     public void OnRestart() // Pressed Space Button 
     {
         if (state != RhythmState.Paused) return;
+        GameManager.myManager.im.Deactivate();
+        Time.timeScale = 1f;
         SceneManager.LoadScene("LevelTest");
     }
 
