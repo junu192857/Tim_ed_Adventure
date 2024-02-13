@@ -317,6 +317,7 @@ public class RhythmManager : MonoBehaviour
     private void GameOver() {
         state = RhythmState.GameOver;
         Time.timeScale = 0f;
+        GameManager.myManager.sm.PlaySFX("Game Over");
 
         if (progress > highProgress)
         {
@@ -335,6 +336,7 @@ public class RhythmManager : MonoBehaviour
     private void GameClear() {
         state = RhythmState.GameClear;
         Time.timeScale = 0f;
+        GameManager.myManager.sm.PlaySFX("Game Clear");
 
         if (score > highScore)
         {
