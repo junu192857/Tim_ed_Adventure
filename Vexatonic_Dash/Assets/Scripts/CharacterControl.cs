@@ -10,6 +10,9 @@ public class CharacterControl : MonoBehaviour
     private float g => GameManager.g;
     private int gravityAngle;
 
+    private delegate float TimeFunc(float time, float playerMovingTime);
+    TimeFunc func;
+
     [SerializeField] private GameObject afterimage;
     [SerializeField] private ParticleSystem particleSystem;
 
@@ -45,8 +48,16 @@ public class CharacterControl : MonoBehaviour
         PlatformNote platformNote = note as PlatformNote;
         gameObject.transform.position = platformNote.startPos;
 
+        func = note.noteType switch
+        {
+            NoteType.Normal => CalculateTimeForNormal,
+            NoteType.Dash => CalculateTimeForDash,
+            _ => throw new ArgumentException()
+        };
+
         float playerMovingTime = (float)(platformNote.noteEndTime - gameTime);
         float time = 0;
+        float adjustedTime = 0;
 
         if (note.noteSubType == NoteSubType.End) {
             Destroy(gameObject);
@@ -57,29 +68,32 @@ public class CharacterControl : MonoBehaviour
         Vector3 stopoverPos;
 
         if (note.angle == 0) {
-            while (time < playerMovingTime + 0.166f)
+            while (adjustedTime < playerMovingTime + 0.166f)
             {
-                Vector3 targetPosition = platformNote.startPos * (playerMovingTime - time) / playerMovingTime + platformNote.endPos * time / playerMovingTime;
+                Vector3 targetPosition = platformNote.startPos * (playerMovingTime - adjustedTime) / playerMovingTime + platformNote.endPos * adjustedTime / playerMovingTime;
                 gameObject.transform.position = targetPosition;
                 time += Time.deltaTime;
+                adjustedTime = func(time, playerMovingTime);
                 yield return null;
             }
         }
         else {
             forwardMovingTime = playerMovingTime * 0.16f / (platformNote.endPos.x - platformNote.startPos.x);
             stopoverPos = platformNote.startPos + new Vector3(0.16f, 0);
-            while (time < forwardMovingTime) {
-                Vector3 targetPosition = platformNote.startPos * (forwardMovingTime - time) / forwardMovingTime + stopoverPos * time / forwardMovingTime;
+            while (adjustedTime < forwardMovingTime) {
+                Vector3 targetPosition = platformNote.startPos * (forwardMovingTime - adjustedTime) / forwardMovingTime + stopoverPos * adjustedTime / forwardMovingTime;
                 gameObject.transform.position = targetPosition;
                 time += Time.deltaTime;
+                adjustedTime = func(time, playerMovingTime);
                 yield return null;
             }
             gameObject.transform.localEulerAngles = new Vector3(0, 0, (int)note.direction * note.actualAngle);
-            while (time < playerMovingTime + 0.166f) {
-                Vector3 targetPosition = stopoverPos * (playerMovingTime - time) / (playerMovingTime - forwardMovingTime)
-                                       + platformNote.endPos * (time - forwardMovingTime) / (playerMovingTime - forwardMovingTime);
+            while (adjustedTime < playerMovingTime + 0.166f) {
+                Vector3 targetPosition = stopoverPos * (playerMovingTime - adjustedTime) / (playerMovingTime - forwardMovingTime)
+                                       + platformNote.endPos * (adjustedTime - forwardMovingTime) / (playerMovingTime - forwardMovingTime);
                 gameObject.transform.position = targetPosition;
                 time += Time.deltaTime;
+                adjustedTime = func(time, playerMovingTime);
                 yield return null;
             }
         }
@@ -147,5 +161,12 @@ public class CharacterControl : MonoBehaviour
     {
         gravityAngle = GameManager.myManager.gravity;
         transform.rotation = Quaternion.Euler(0f, 0f, gravityAngle);
+    }
+
+    private float CalculateTimeForNormal(float time, float playerMovingTime) => time;
+
+    private float CalculateTimeForDash(float time, float playerMovingTime) {
+        if (time <= playerMovingTime) return Mathf.Sqrt(time * playerMovingTime);
+        else return time;
     }
 }
