@@ -222,16 +222,19 @@ public class SelectManager : MonoBehaviour
 
     public void OnClickBackButton()
     {
+        GameManager.myManager.sm.PlaySFX("Button");
         SceneManager.LoadScene("Scenes/Main");
     }
 
     public void OnSwitchDifficulty()
     {
+        GameManager.myManager.sm.PlaySFX("Button");
         SwitchDifficulty();
     }
 
     public void OnStartGame()
     {
+        GameManager.myManager.sm.PlaySFX("Button");
         StartGame();
     }
 }
