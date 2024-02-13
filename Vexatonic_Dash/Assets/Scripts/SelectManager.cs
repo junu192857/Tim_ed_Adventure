@@ -82,7 +82,6 @@ public class SelectManager : MonoBehaviour
         if (_songListInvalid) return;
         
         float input = inputValue.Get<float>();
-        Debug.Log(_songList.Count);
         if (input < 0)
         {
             MoveUp();
