@@ -32,7 +32,7 @@ public class RhythmManager : MonoBehaviour
     private const double l = 0.3;
 
     //게임 진행 시간. -5초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
-    private double gameTime;
+    public double gameTime;
     public double unbeatTime = 3.0f;
     private double lastHit;
 
@@ -53,6 +53,7 @@ public class RhythmManager : MonoBehaviour
     private double scorePerNotes;    // 노트당 만점
     public int progress;
     private int playedNotes;
+    private int combo;
     public int health;
     public int highProgress;
     public int highScore;
@@ -88,6 +89,19 @@ public class RhythmManager : MonoBehaviour
 
     //어떤 판정이 몇 개씩 나왔는지를 다 저장해두는 곳.
     public int[] judgementList = new int[5]; // 0부터 pure perfect, perfect, great, good, miss
+
+    private Note currentPlayingNote;
+
+    public Note CurrentPlayingNote
+    {
+        get
+        {
+            Note ret = currentPlayingNote;
+            currentPlayingNote = null;
+            return ret;
+        }
+        set => currentPlayingNote = value;
+    }
 
     // 게임에 활용되는 리듬게임적 요소를 다룬다.
     // 조작은 다양해도 판정은 같으므로 판정에 해당하는 공통적인 요소를 여기서 다루면 된다.
@@ -129,6 +143,7 @@ public class RhythmManager : MonoBehaviour
         score = 0;
         realScore = 0;
         minusScore = 1010000;
+        combo = 0;
         progress = 0;
         health = 100;
         lastHit = -unbeatTime - 1;
@@ -238,22 +253,21 @@ public class RhythmManager : MonoBehaviour
 
                 if (judgement != JudgementType.Invalid) 
                 {
-                    AddJudgement(judgement);
-
                     // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
                     inputs.Remove(list[0]);
                     list.RemoveAt(0);
 
-                    spawnedNotes.Dequeue();
+                    DequeueNoteFromQueue();
                     note.FixNote();
                     myPlayer.MoveCharacter(note, gameTime);
-                }else
+                    AddJudgement(judgement);
+                }
+                else
                 {
                     //유효하지 않은 입력 -> 입력만 제거
                     inputs.Remove(list[0]);
                     list.RemoveAt(0);
                 }
-
 
                 // Comment from Vexatone: Early Miss 안 쓸 거면 코드처럼 생겨먹은 주석들 체크 해제하셈
             } 
@@ -266,7 +280,7 @@ public class RhythmManager : MonoBehaviour
             Note note = temp.GetComponent<Note>();
             if (note.lifetime < -0.166f)
             {
-                spawnedNotes.Dequeue();
+                DequeueNoteFromQueue();
                 note.FixNote();
                 myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
@@ -301,9 +315,13 @@ public class RhythmManager : MonoBehaviour
             }
         }
 
+        if (type == JudgementType.Miss) combo = 0;
+        else combo++;
+        Debug.Log($"Combo: + {combo}");
 
         UpdateScore(type);
         UpdatePercentage();
+        GameManager.myManager.um.DisplayJudge(myPlayer.transform.position, combo);
         GameManager.myManager.um.UpdateInGameUI();
         
         if (health <= 0) {
@@ -604,6 +622,15 @@ public class RhythmManager : MonoBehaviour
         song.Play();
         pauseCoroutine = null;
         pauseUICoroutine = null;
+    }
+
+    public GameObject DequeueNoteFromQueue()
+    {
+        GameObject dequeuedNote = spawnedNotes.Dequeue();
+
+        CurrentPlayingNote = dequeuedNote.GetComponent<Note>();
+
+        return dequeuedNote;
     }
 
     private IEnumerator StartParticle() {
