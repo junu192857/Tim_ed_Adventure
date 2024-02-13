@@ -659,6 +659,7 @@ GameObject:
   - component: {fileID: 226863710}
   - component: {fileID: 226863709}
   - component: {fileID: 226863708}
+  - component: {fileID: 226863711}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -781,6 +782,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 226863706}
   m_CullTransparentMesh: 1
+--- !u!114 &226863711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 226863706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &240780380
 GameObject:
   m_ObjectHideFlags: 0
@@ -2970,6 +2986,7 @@ GameObject:
   - component: {fileID: 1517497905}
   - component: {fileID: 1517497904}
   - component: {fileID: 1517497903}
+  - component: {fileID: 1517497906}
   m_Layer: 5
   m_Name: PatternSelectButton
   m_TagString: Untagged
@@ -3092,6 +3109,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1517497901}
   m_CullTransparentMesh: 1
+--- !u!114 &1517497906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517497901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 15, y: -15}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1535103899
 GameObject:
   m_ObjectHideFlags: 0
@@ -3583,6 +3615,7 @@ GameObject:
   - component: {fileID: 1909301135}
   - component: {fileID: 1909301137}
   - component: {fileID: 1909301136}
+  - component: {fileID: 1909301138}
   m_Layer: 5
   m_Name: HighlightedSong
   m_TagString: Untagged
@@ -3609,8 +3642,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1080, y: 200}
+  m_AnchoredPosition: {x: -40, y: 0}
+  m_SizeDelta: {x: 1120, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1909301136
 MonoBehaviour:
@@ -3650,6 +3683,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1909301134}
   m_CullTransparentMesh: 1
+--- !u!114 &1909301138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909301134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 20, y: -20}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1957516797
 GameObject:
   m_ObjectHideFlags: 0
