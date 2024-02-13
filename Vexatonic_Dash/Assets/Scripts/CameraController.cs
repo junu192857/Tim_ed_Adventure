@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,9 @@ public class CameraController : MonoBehaviour
     private bool isBeingControlled;
     private Vector2 cameraVelocity;
     private Note currentPlayingNote;
+    private int currentAngle;
+
+    private Queue<CameraControlInfo> cameraInfoQueue => GameManager.myManager.rm.cameraInfoQueue;
 
     private double gameTime => GameManager.myManager.rm.gameTime;
     private double lastNoteTime;
@@ -35,6 +39,7 @@ public class CameraController : MonoBehaviour
         cameraVelocity = new Vector2();
 
         lastNoteTime = 0;
+        currentAngle = 0;
     }
 
     private IEnumerator LateStart()
@@ -47,6 +52,12 @@ public class CameraController : MonoBehaviour
     {
         if (character == null) return;
         ChangeCurrentPlayingNote();
+
+        while (cameraInfoQueue.TryPeek(out CameraControlInfo info) && (info.time <= gameTime))
+        {
+            ProcessCameraInfo(info);
+            cameraInfoQueue.Dequeue();
+        }
 
         if (isBeingControlled) ControlledMove();
         else AutoMove();
@@ -87,7 +98,7 @@ public class CameraController : MonoBehaviour
     private IEnumerator AutoMoveCoroutine()
     {
         Vector3 currentCamPos = _camera.transform.position;
-        Vector3 currentEndPos = currentPlayingNote.endPos + new Vector3(0, 0, -5);
+        Vector3 currentEndPos = ConvertToCameraPos(currentPlayingNote.endPos);
 
         double endTime = currentPlayingNote.noteEndTime;
         
@@ -101,6 +112,30 @@ public class CameraController : MonoBehaviour
         }
 
         StopCameraCoroutine();
+    }
+
+    private void ProcessCameraInfo(CameraControlInfo info)
+    {
+        switch (info.type)
+        {
+            case CameraControlType.Zoom:
+                ZoomCamera((info as CameraZoomInfo).scale, info.term);
+                break;
+            case CameraControlType.Rotate:
+                RotateCamera((info as CameraRotateInfo).angle, info.term);
+                break;
+            case CameraControlType.Velocity:
+                ChangeCameraVelocity((info as CameraVelocityInfo).cameraVelocity);
+                break;
+            case CameraControlType.Fix:
+                FixCamera((info as CameraFixInfo).fixPivot, info.term);
+                break;
+            case CameraControlType.Return:
+                FollowPlayer(info.term);
+                break;
+            default:
+                throw new ArgumentException("Camera control type not supported");
+        }
     }
 
     private PlayerPositionState CheckPlayerPosition(Vector2 viewpointPos) {
@@ -176,18 +211,19 @@ public class CameraController : MonoBehaviour
     {
         isBeingControlled = true;
 
-        Vector2 currentPosition = _camera.transform.position;
+        Vector3 currentPosition = _camera.transform.position;
+        Vector3 fixPivot3D = ConvertToCameraPos(fixPivot);
         float localTime = 0f;
 
         while (localTime < term)
         {
-            Vector2 tempPos = GetSineEaseValue(currentPosition, fixPivot, (float)(localTime / term));
+            Vector3 tempPos = GetSineEaseValue(currentPosition, fixPivot3D, (float)(localTime / term));
             _camera.transform.position = tempPos;
             yield return null;
             localTime += Time.deltaTime;
         }
 
-        _camera.transform.position = fixPivot;
+        _camera.transform.position = fixPivot3D;
         moveCoroutine = null;
     }
 
@@ -205,18 +241,25 @@ public class CameraController : MonoBehaviour
     
     private IEnumerator FollowPlayerCoroutine(double term)
     {
-        // Vector2 currentPosition = _camera.transform.position;
-        // float localTime = 0f;
-        // 
-        // while (localTime < term)
-        // {
-        //     yield return null;
-        //     localTime += Time.deltaTime;
-        // }
+        cameraVelocity = new Vector2();
+        
+        Vector3 currentPosition = _camera.transform.position;
+        float localTime = 0f;
+            
+        while (localTime < term)
+        {
+            Vector3 currentCharacterPos = ConvertToCameraPos(character.transform.position);
+            Vector3 tempPos = GetSineOutValue(currentPosition, currentCharacterPos, (float)(localTime / term));
+            _camera.transform.position = tempPos;
+            
+            yield return null;
+            localTime += Time.deltaTime;
+        }
 
+        _camera.transform.position = ConvertToCameraPos(character.transform.position);
+        
         isBeingControlled = false;
         moveCoroutine = null;
-        yield break;
     }
 
     /// <summary>
@@ -234,18 +277,20 @@ public class CameraController : MonoBehaviour
     
     private IEnumerator RotateCameraCoroutine(int angle, double term)
     {
-        int currentAngle = (int) _camera.transform.rotation.eulerAngles.z;
+        int startAngle = currentAngle;
         float localTime = 0f;
 
         while (localTime < term)
         {
-            float tempAngle = GetSineEaseValue(currentAngle, angle, (float)(localTime / term));
+            float tempAngle = GetSineEaseValue(startAngle, angle, (float)(localTime / term));
             _camera.transform.rotation = Quaternion.AngleAxis(tempAngle, Vector3.forward);
+            currentAngle = (int)tempAngle;
             yield return null;
             localTime += Time.deltaTime;
         }
 
         _camera.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        currentAngle = angle;
         rotateCoroutine = null;
     }
 
@@ -265,7 +310,7 @@ public class CameraController : MonoBehaviour
     private IEnumerator ZoomCameraCoroutine(double scale, double term)
     {
         float currentScale = _camera.orthographicSize;
-        float destScale = 3f * (float)scale;
+        float destScale = 3f / (float)scale;
         float localTime = 0f;
 
         while (localTime < term)
@@ -291,18 +336,36 @@ public class CameraController : MonoBehaviour
 
     private float GetSineEaseValue(float startValue, float endValue, float ratio)
     {
-        float x = 2 * Mathf.PI * ratio;
+        float x = Mathf.PI * ratio;
         float scale = (endValue - startValue) / 2.0f;
         float pivot = (endValue + startValue) / 2.0f;
 
         return pivot - scale * Mathf.Cos(x);
     }
 
-    private Vector2 GetSineEaseValue(Vector2 startValue, Vector2 endValue, float ratio)
+    private Vector3 GetSineEaseValue(Vector3 startValue, Vector3 endValue, float ratio)
     {
-        return new Vector2(
+        return new Vector3(
             GetSineEaseValue(startValue.x, endValue.x, ratio),
-            GetSineEaseValue(startValue.y, endValue.y, ratio)
+            GetSineEaseValue(startValue.y, endValue.y, ratio),
+            GetSineEaseValue(startValue.z, endValue.z, ratio)
+        );
+    }
+
+    private float GetSineOutValue(float startValue, float endValue, float ratio)
+    {
+        float x = Mathf.PI / 2.0f * ratio;
+        float scale = endValue - startValue;
+
+        return startValue + scale * Mathf.Sin(x);
+    }
+
+    private Vector3 GetSineOutValue(Vector3 startValue, Vector3 endValue, float ratio)
+    {
+        return new Vector3(
+            GetSineOutValue(startValue.x, endValue.x, ratio),
+            GetSineOutValue(startValue.y, endValue.y, ratio),
+            GetSineOutValue(startValue.z, endValue.z, ratio)
         );
     }
 
@@ -321,5 +384,14 @@ public class CameraController : MonoBehaviour
     {
         if (cameraCoroutine != null) StopCoroutine(cameraCoroutine);
         cameraCoroutine = null;
+    }
+
+    private Vector3 ConvertToCameraPos(Vector3 position)
+    {
+        return new Vector3(
+            position.x,
+            position.y,
+            -5.0f
+            );
     }
 }

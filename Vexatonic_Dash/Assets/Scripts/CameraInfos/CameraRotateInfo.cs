@@ -2,8 +2,9 @@ public class CameraRotateInfo : CameraControlInfo
 {
     public int angle;
     
-    public CameraRotateInfo(double time, double term, int angle) : base(time, term, false)
+    public CameraRotateInfo(double time, double term, int angle) : base(time, term)
     {
-        this.angle = angle;
+        this.type = CameraControlType.Rotate;
+        this.angle = -angle;
     }
 }

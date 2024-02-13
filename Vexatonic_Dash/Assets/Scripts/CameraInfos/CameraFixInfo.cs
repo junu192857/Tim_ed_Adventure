@@ -2,12 +2,11 @@ using UnityEngine;
 
 public class CameraFixInfo : CameraControlInfo
 {
-    public bool isFixActivation;
     public Vector2 fixPivot;
     
-    public CameraFixInfo(double time, double term, bool isDefault, bool isFixActivation, Vector2 fixPivot) : base(time, term, isDefault)
+    public CameraFixInfo(double time, double term, Vector2 fixPivot) : base(time, term)
     {
-        this.isFixActivation = isFixActivation;
+        this.type = CameraControlType.Fix;
         this.fixPivot = fixPivot;
     }
 }
