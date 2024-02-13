@@ -50,7 +50,7 @@ public class CharacterControl : MonoBehaviour
 
         func = note.noteType switch
         {
-            NoteType.Normal => CalculateTimeForNormal,
+            NoteType.Normal or NoteType.Jump => CalculateTimeForNormal,
             NoteType.Dash => CalculateTimeForDash,
             _ => throw new ArgumentException()
         };
