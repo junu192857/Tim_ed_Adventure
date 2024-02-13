@@ -288,6 +288,7 @@ public class UIManager : MonoBehaviour
     {
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
+        GameManager.myManager.sm.PlaySFX("Button");
         SceneManager.LoadScene("Scenes/Select");
     }
 
