@@ -52,8 +52,8 @@ public class SelectManager : MonoBehaviour
     private int _currentPatternLevel;
 
     private bool _songMoving;
-
     private bool _songListInvalid;
+    private bool _isAnimationPlaying;
 
     private List<Coroutine> coroutines = new();
     
@@ -63,6 +63,7 @@ public class SelectManager : MonoBehaviour
         _currentDifficulty = Difficulty.Easy;
         _songMoving = false;
         _songListInvalid = false;
+        _isAnimationPlaying = true;
         
         // Song list initialization
         _songList.Clear();
@@ -94,6 +95,8 @@ public class SelectManager : MonoBehaviour
 
     private IEnumerator SelectShowAnimation()
     {
+        _isAnimationPlaying = true;
+        
         yield return new WaitForEndOfFrame();
         
         titleTextAnim.SetTrigger(AnimShowHash);
@@ -106,10 +109,14 @@ public class SelectManager : MonoBehaviour
         backButtonAnim.SetTrigger(AnimShowHash);
         
         yield return new WaitUntil(() => titleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle"));
+        
+        _isAnimationPlaying = false;
     }
 
     private IEnumerator SelectHideAnimation()
     {
+        _isAnimationPlaying = true;
+        
         yield return new WaitForEndOfFrame();
         
         titleTextAnim.SetTrigger(AnimHideHash);
@@ -122,6 +129,8 @@ public class SelectManager : MonoBehaviour
         backButtonAnim.SetTrigger(AnimHideHash);
         
         yield return new WaitUntil(() => titleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
+        
+        _isAnimationPlaying = false;
     }
 
     public void OnChangeSong(InputValue inputValue)
@@ -250,7 +259,7 @@ public class SelectManager : MonoBehaviour
 
     private void StartGame()
     {
-        if (_songMoving) return;
+        if (_songMoving || _isAnimationPlaying) return;
         
         SongData selectedSong = _songList[_currentIndex];
 
@@ -269,6 +278,12 @@ public class SelectManager : MonoBehaviour
 
     public void OnClickBackButton()
     {
+        StartCoroutine(SelectBack());
+    }
+
+    private IEnumerator SelectBack()
+    {
+        yield return StartCoroutine(SelectHideAnimation());
         SceneManager.LoadScene("Scenes/Main");
     }
 
