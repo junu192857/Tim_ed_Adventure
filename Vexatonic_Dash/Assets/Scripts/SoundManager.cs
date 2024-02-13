@@ -30,6 +30,9 @@ public class SoundManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             //song = GetComponent<AudioSource>();
         }
+        if (GameManager.myManager.sm != null && GameManager.myManager.sm != this) {
+            Destroy(gameObject);
+        }
     }
 
     //For Main Scene
