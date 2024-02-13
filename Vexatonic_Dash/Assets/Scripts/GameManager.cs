@@ -26,7 +26,8 @@ public class GameManager : MonoBehaviour
     public double globalOffset = 0; // 인겜 setting에서 설정할 수 있는 음악 오프셋이다.
     public double levelOffset; // 에디터를 통해 정한 각 레벨에서의 오프셋이다.
     public float volume; // 소리 크기를 의미한다.
-    
+
+    [HideInInspector] public bool isMetaLoaded = false;
 
     public string filepath; // 레벨의 맵 파일 위치를 의미한다.
     // 맵 하나 추가할 때마다 업데이트는 불가능 --> filepath도 외부에 있어야 한다.
