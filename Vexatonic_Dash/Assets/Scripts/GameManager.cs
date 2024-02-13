@@ -107,10 +107,10 @@ public class GameManager : MonoBehaviour
     {
         1010000                  => RankType.V,
         >= 1000000 and < 1010000 => RankType.S,
-        >= 950000  and < 1000000 => RankType.A,
-        >= 900000  and < 950000  => RankType.B,
-        >= 800000  and < 900000  => RankType.C,
-        >= 0       and < 800000  => RankType.D,
+        >= 900000  and < 1000000 => RankType.A,
+        >= 800000  and < 900000  => RankType.B,
+        >= 700000  and < 800000  => RankType.C,
+        >= 0       and < 700000  => RankType.D,
         _ => throw new ArgumentOutOfRangeException()
     };
 
