@@ -26,9 +26,8 @@ public class RankIcon : MonoBehaviour
         text.text = rank.ToString();
     }
 
-    public IEnumerator ShowAnimationCoroutine()
+    public void ShowAnimation()
     {
-        yield return new WaitForEndOfFrame();
         animator.SetTrigger(AnimShowHash);
     }
 
