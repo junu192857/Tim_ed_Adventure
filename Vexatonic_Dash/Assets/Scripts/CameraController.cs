@@ -46,11 +46,10 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         if (character == null) return;
+        ChangeCurrentPlayingNote();
 
         if (isBeingControlled) ControlledMove();
         else AutoMove();
-
-        ChangeCurrentPlayingNote();
     }
 
     private void ControlledMove()
@@ -87,16 +86,18 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator AutoMoveCoroutine()
     {
-        if (isBeingControlled) yield break;
-        
         Vector3 currentCamPos = _camera.transform.position;
-        Vector3 currentEndPos = currentPlayingNote.endPos;
+        Vector3 currentEndPos = currentPlayingNote.endPos + new Vector3(0, 0, -5);
+        Debug.LogFormat("CurrentCamPos: {0}", currentCamPos);
+        Debug.LogFormat("CurrentEndPos: {0}", currentEndPos);
 
         double endTime = currentPlayingNote.noteEndTime;
         double partialProgress = 0;
 
         while (partialProgress < 1)
         {
+            if (isBeingControlled) StopCameraCoroutine();
+
             Vector3 tempCamPos = currentEndPos * (float) partialProgress + currentCamPos * (float) (1 - partialProgress);
             _camera.transform.position = tempCamPos;
             
@@ -105,6 +106,7 @@ public class CameraController : MonoBehaviour
         }
 
         _camera.transform.position = currentEndPos;
+        StopCameraCoroutine();
     }
 
     private PlayerPositionState CheckPlayerPosition(Vector2 viewpointPos) {
@@ -315,9 +317,15 @@ public class CameraController : MonoBehaviour
         Note note = GameManager.myManager.rm.CurrentPlayingNote;
         if (note == null) return;
         
-        StopCoroutine(cameraCoroutine);
+        StopCameraCoroutine();
 
         lastNoteTime = gameTime;
         currentPlayingNote = note;
+    }
+
+    private void StopCameraCoroutine()
+    {
+        if (cameraCoroutine != null) StopCoroutine(cameraCoroutine);
+        cameraCoroutine = null;
     }
 }
