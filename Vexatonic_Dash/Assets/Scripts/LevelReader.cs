@@ -18,10 +18,10 @@ public class LevelReader
     [Obsolete("Gravity data added. Please use the newer one.")]
     public List<NoteSpawnInfo> ParseFile(string filepath)
     {
-        return ParseFile(filepath, out List<GravityData> dummy);
+        return ParseFile(filepath, out List<GravityData> dummy, out List<CameraControlInfo> dummy2);
     }
     
-    public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList) {
+    public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList, out List<CameraControlInfo> cameraControlList) {
         noteCount = 0;
 
         NoteSpawnInfo cur;
@@ -30,7 +30,9 @@ public class LevelReader
 
         Stack<NoteSpawnInfo> list = new Stack<NoteSpawnInfo>();
         Stack<GravityData> gravityInfoStack = new Stack<GravityData>();
+        Stack<CameraControlInfo> cameraInfoStack = new Stack<CameraControlInfo>();
         gravityDataList = new List<GravityData>();
+        cameraControlList = new List<CameraControlInfo>();
 
         string line;
 
@@ -76,6 +78,14 @@ public class LevelReader
             else if (line.StartsWith("CAM"))
             {
                 CameraControlInfo camInfo = generateCamControlInfo(myList);
+
+                if (cameraInfoStack.TryPeek(out CameraControlInfo prevCamData) && prevCamData.time > camInfo.time)
+                {
+                    sr.Close();
+                    throw new ArgumentException("Camera control data does not entered in right order");
+                }
+
+                cameraInfoStack.Push(camInfo);
             }
             else {
                 if (myList[0].Length != 1) {
@@ -112,6 +122,9 @@ public class LevelReader
 
                     gravityDataList = gravityInfoStack.ToList();
                     gravityDataList.Reverse();
+
+                    cameraControlList = cameraInfoStack.ToList();
+                    cameraControlList.Reverse();
 
                     sr.Close();
                     return returnList;
@@ -207,9 +220,10 @@ public class LevelReader
 
         // Subcommand Process
         // CAM ZOOM (time) (term) (scale)
-        // CAM VELOCITY (time) 0 (x) (y) | CAM VELOCITY (time) 0 DEFAULT
+        // CAM VELOCITY (time) 0 (x) (y)
         // CAM ROTATE (time) (term) (angle)
-        // CAM FIX (time) (term) 0/1 (x) (y) | CAM FIX (time) (term) 0 DEFAULT
+        // CAM FIX (time) (term) (x) (y)
+        // CAM RETURN (time) (term)
         switch (subCommand)
         {
             case "ZOOM":
@@ -217,28 +231,23 @@ public class LevelReader
                 info = new CameraZoomInfo(time, term, zoomScale);
                 break;
             case "VELOCITY":
-                if (infoList[4].Equals("DEFAULT")) info = new CameraVelocityInfo(time, true, new Vector2());
-                else if (infoList.Length == 6)
-                    info = new CameraVelocityInfo(time, false, new Vector2(
-                        float.Parse(infoList[4]),
-                        float.Parse(infoList[5])
-                    ));
-                else throw new ArgumentException("Invalid line detected while parsing velocity info");
+                info = new CameraVelocityInfo(time, false, new Vector2(
+                    float.Parse(infoList[4]),
+                    float.Parse(infoList[5])
+                ));
                 break;
             case "ROTATE":
                 int rotateAngle = int.Parse(infoList[4]);
                 info = new CameraRotateInfo(time, term, rotateAngle);
                 break;
             case "FIX":
-                bool isFixActivation = !infoList[4].Equals("0");
-                if (infoList[5].Equals("DEFAULT"))
-                    info = new CameraFixInfo(time, term, true, isFixActivation, new Vector2());
-                else if (infoList.Length == 7)
-                    info = new CameraFixInfo(time, term, false, isFixActivation, new Vector2(
-                        float.Parse(infoList[5]),
-                        float.Parse(infoList[6])
-                    ));
-                else throw new ArgumentException("Invalid lien detected while parsing fix info");
+                info = new CameraFixInfo(time, term, new Vector2(
+                    float.Parse(infoList[5]),
+                    float.Parse(infoList[6])
+                ));
+                break;
+            case "RETURN":
+                info = new CameraReturnInfo(time, term);
                 break;
             default:
                 throw new ArgumentException("Unknown camera control subcommand");

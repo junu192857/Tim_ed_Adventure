@@ -64,8 +64,11 @@ public class RhythmManager : MonoBehaviour
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
     private List<NoteSpawnInfo> noteList;
     private List<GravityData> gravityDataList;
-    private Queue<GravityData> gravityQueue;
+    private List<CameraControlInfo> cameraInfoList;
 
+    private Queue<GravityData> gravityQueue;
+    public Queue<CameraControlInfo> cameraInfoQueue;
+    
     private Queue<GameObject> preSpawnedNotes = new Queue<GameObject>();
     //게임오브젝트가 활성화된 노트들.
     private Queue<GameObject> spawnedNotes = new Queue<GameObject>();
@@ -128,10 +131,11 @@ public class RhythmManager : MonoBehaviour
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
         gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
-        noteList = lr.ParseFile(levelFilePath, out gravityDataList);
+        noteList = lr.ParseFile(levelFilePath, out gravityDataList, out cameraInfoList);
         scorePerNotes = (double)1000000 / noteCount;
 
         gravityQueue = new Queue<GravityData>(gravityDataList);
+        cameraInfoQueue = new Queue<CameraControlInfo>(cameraInfoList);
 
         GenerateMap();
         Time.timeScale = 1f;
