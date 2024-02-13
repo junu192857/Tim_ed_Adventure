@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Windows;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
@@ -43,6 +44,15 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultGreatText;
     [SerializeField] private Text resultGoodText;
     [SerializeField] private Text resultMissText;
+
+    [Header("Judgement & Combo")]
+    [SerializeField] private GameObject resultPurePerfect;
+    [SerializeField] private GameObject resultPerfect;
+    [SerializeField] private GameObject resultGreat;
+    [SerializeField] private GameObject resultGood;
+    [SerializeField] private GameObject resultMiss;
+    [SerializeField] private List<GameObject> numbers;
+    private readonly Vector3 distFromPlayer =  Vector3.up * 0.5f;
 
     [Header("Pause UI")]
     [SerializeField] private GameObject pause;
@@ -230,39 +240,61 @@ public class UIManager : MonoBehaviour
     }
 
     // Displays judge when note is hit or missed
-    public void DisplayJudge()
+    public void DisplayJudge(Vector3 transformPosition, int combo)
     {
-        var instance = Instantiate(judgePrefab, judgeParent.transform);
-        var text = instance.GetComponent<Text>();
+        GameObject judgeObject;
 
         switch (LastJudge)
         {
             case JudgementType.PurePerfect:
-                text.text = "Perfect";
-                text.color = new Color(1f, 0.75f, 0f);
+                judgeObject = Instantiate(resultPurePerfect, transformPosition + distFromPlayer, Quaternion.identity);
                 break;
             case JudgementType.Perfect:
-                text.text = "Perfect";
-                text.color = new Color(0.75f, 0.5f, 0.75f);
+                judgeObject = Instantiate(resultPerfect, transformPosition + distFromPlayer, Quaternion.identity);
                 break;
             case JudgementType.Great:
-                text.text = "Great";
-                text.color = new Color(0.75f, 1f, 0.25f);
+                judgeObject = Instantiate(resultGreat, transformPosition + distFromPlayer, Quaternion.identity);
                 break;
             case JudgementType.Good:
-                text.text = "Good";
-                text.color = new Color(0.5f, 0.75f, 0.75f);
+                judgeObject = Instantiate(resultGood, transformPosition + distFromPlayer, Quaternion.identity);
                 break;
             case JudgementType.Miss:
-                text.text = "Miss";
-                text.color = new Color(0.75f, 0.25f, 0.25f);
+                judgeObject = Instantiate(resultMiss, transformPosition + distFromPlayer, Quaternion.identity);
                 break;
             case JudgementType.Invalid:
-                text.text = "Invalid";
-                text.color = new Color(1f, 1f, 1f);
+                Debug.LogError("Invalid note should not be dealed with");
                 break;
             default:
                 throw new ArgumentException();
+        }
+
+        switch (combo) {
+            case int i when i < 10:
+                Debug.Log("hello1");
+                Instantiate(numbers[combo], transformPosition + Vector3.up * 0.7f, Quaternion.identity);
+                break;
+            case int i when i >= 10 && i < 100:
+                Debug.Log("hello2");
+                Instantiate(numbers[combo / 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo % 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
+                break;
+            case int i when i >= 100 && i < 1000:
+                Debug.Log("hello3");
+                Instantiate(numbers[combo / 100], transformPosition + new Vector3(-0.2f, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo / 10 % 10], transformPosition + new Vector3(0, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo % 10], transformPosition + new Vector3(0.2f, 0.7f), Quaternion.identity);
+                break;
+            case int i when i >= 1000 && i < 10000:
+                Debug.Log("hello4");
+                Instantiate(numbers[combo / 1000], transformPosition + new Vector3(-0.3f, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo / 100 % 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo / 10 % 10], transformPosition + new Vector3(0.1f, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo % 10], transformPosition + new Vector3(0.3f, 0.7f), Quaternion.identity);
+                break;
+            default:
+                Debug.Log("More than 10000 combo? Really?");
+                break;
+
         }
     }
 

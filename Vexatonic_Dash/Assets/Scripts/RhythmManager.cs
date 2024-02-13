@@ -53,6 +53,7 @@ public class RhythmManager : MonoBehaviour
     private double scorePerNotes;    // 노트당 만점
     public int progress;
     private int playedNotes;
+    private int combo;
     public int health;
     public int highProgress;
     public int highScore;
@@ -129,6 +130,7 @@ public class RhythmManager : MonoBehaviour
         score = 0;
         realScore = 0;
         minusScore = 1010000;
+        combo = 0;
         progress = 0;
         health = 100;
         lastHit = -unbeatTime - 1;
@@ -236,8 +238,6 @@ public class RhythmManager : MonoBehaviour
 
                 if (judgement != JudgementType.Invalid) 
                 {
-                    AddJudgement(judgement);
-
                     // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
                     inputs.Remove(list[0]);
                     list.RemoveAt(0);
@@ -245,7 +245,9 @@ public class RhythmManager : MonoBehaviour
                     spawnedNotes.Dequeue();
                     note.FixNote();
                     myPlayer.MoveCharacter(note, gameTime);
-                }else
+                    AddJudgement(judgement);
+                }
+                else
                 {
                     //유효하지 않은 입력 -> 입력만 제거
                     inputs.Remove(list[0]);
@@ -299,9 +301,13 @@ public class RhythmManager : MonoBehaviour
             }
         }
 
+        if (type == JudgementType.Miss) combo = 0;
+        else combo++;
+        Debug.Log($"Combo: + {combo}");
 
         UpdateScore(type);
         UpdatePercentage();
+        GameManager.myManager.um.DisplayJudge(myPlayer.transform.position, combo);
         GameManager.myManager.um.UpdateInGameUI();
         
         if (health <= 0) {
