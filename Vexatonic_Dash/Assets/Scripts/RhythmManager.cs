@@ -31,7 +31,7 @@ public class RhythmManager : MonoBehaviour
     private const double g = 0.166;
 
     //게임 진행 시간. -5초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
-    private double gameTime;
+    public double gameTime;
     public double unbeatTime = 3.0f;
     private double lastHit;
 
@@ -83,6 +83,19 @@ public class RhythmManager : MonoBehaviour
 
     //어떤 판정이 몇 개씩 나왔는지를 다 저장해두는 곳.
     public int[] judgementList = new int[5]; // 0부터 pure perfect, perfect, great, good, miss
+
+    private Note currentPlayingNote;
+
+    public Note CurrentPlayingNote
+    {
+        get
+        {
+            Note ret = currentPlayingNote;
+            currentPlayingNote = null;
+            return ret;
+        }
+        set => currentPlayingNote = value;
+    }
 
     // 게임에 활용되는 리듬게임적 요소를 다룬다.
     // 조작은 다양해도 판정은 같으므로 판정에 해당하는 공통적인 요소를 여기서 다루면 된다.
@@ -235,7 +248,8 @@ public class RhythmManager : MonoBehaviour
                 list.RemoveAt(0);
 
 
-                spawnedNotes.Dequeue();
+                // spawnedNotes.Dequeue();
+                DequeueNoteFromQueue();
                 note.FixNote();
                 myPlayer.MoveCharacter(note, gameTime);
                 
@@ -583,6 +597,15 @@ public class RhythmManager : MonoBehaviour
         song.Play();
         pauseCoroutine = null;
         pauseUICoroutine = null;
+    }
+
+    public GameObject DequeueNoteFromQueue()
+    {
+        GameObject dequeuedNote = spawnedNotes.Dequeue();
+
+        CurrentPlayingNote = dequeuedNote.GetComponent<Note>();
+
+        return dequeuedNote;
     }
 }
 

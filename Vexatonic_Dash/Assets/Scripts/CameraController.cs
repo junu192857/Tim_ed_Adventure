@@ -18,7 +18,11 @@ public class CameraController : MonoBehaviour
     private IEnumerator cameraCoroutine;
 
     private bool isBeingControlled;
-    private Vector2 CameraVelocity;
+    private Vector2 cameraVelocity;
+    private Note currentPlayingNote;
+
+    private double gameTime => GameManager.myManager.rm.gameTime;
+    private double lastNoteTime;
 
     private IEnumerator zoomCoroutine;
     private IEnumerator rotateCoroutine;
@@ -28,7 +32,9 @@ public class CameraController : MonoBehaviour
     {
         isBeingControlled = false;
         StartCoroutine(LateStart());
-        CameraVelocity = new Vector2();
+        cameraVelocity = new Vector2();
+
+        lastNoteTime = 0;
     }
 
     private IEnumerator LateStart()
@@ -43,33 +49,62 @@ public class CameraController : MonoBehaviour
 
         if (isBeingControlled) ControlledMove();
         else AutoMove();
+
+        ChangeCurrentPlayingNote();
     }
 
     private void ControlledMove()
     {
-        if (moveCoroutine != null) return;
+        if (moveCoroutine != null || !isBeingControlled) return;
         
         Vector3 currentCamPos = _camera.transform.position;
-        Vector3 newCamPos = currentCamPos + (Vector3) (Time.deltaTime * CameraVelocity);
+        Vector3 newCamPos = currentCamPos + (Vector3) (Time.deltaTime * cameraVelocity);
         _camera.transform.position = newCamPos;
     }
 
     private void AutoMove()
     {
-        _2DViewPointPos = Camera.main.WorldToViewportPoint(character.transform.position);
+        // _2DViewPointPos = Camera.main.WorldToViewportPoint(character.transform.position);
+        //
+        // switch (CheckPlayerPosition(_2DViewPointPos)) { 
+        //     case PlayerPositionState.InsideBorder:
+        //         break;
+        //     case PlayerPositionState.OutsideBorder:
+        //         InstantlyMoveCamera(_2DViewPointPos);
+        //         break;
+        //     case PlayerPositionState.CriticallyOutsideBorder:
+        //         ContinuouslyMoveCamera(_2DViewPointPos);
+        //         break;
+        //     default:
+        //         break;
+        // }
 
-        switch (CheckPlayerPosition(_2DViewPointPos)) { 
-            case PlayerPositionState.InsideBorder:
-                break;
-            case PlayerPositionState.OutsideBorder:
-                // InstantlyMoveCamera(_2DViewPointPos);
-                // break;
-            case PlayerPositionState.CriticallyOutsideBorder:
-                ContinuouslyMoveCamera(_2DViewPointPos);
-                break;
-            default:
-                break;
+        if (currentPlayingNote == null || cameraCoroutine != null || isBeingControlled) return;
+
+        cameraCoroutine = AutoMoveCoroutine();
+        StartCoroutine(cameraCoroutine);
+    }
+
+    private IEnumerator AutoMoveCoroutine()
+    {
+        if (isBeingControlled) yield break;
+        
+        Vector3 currentCamPos = _camera.transform.position;
+        Vector3 currentEndPos = currentPlayingNote.endPos;
+
+        double endTime = currentPlayingNote.noteEndTime;
+        double partialProgress = 0;
+
+        while (partialProgress < 1)
+        {
+            Vector3 tempCamPos = currentEndPos * (float) partialProgress + currentCamPos * (float) (1 - partialProgress);
+            _camera.transform.position = tempCamPos;
+            
+            partialProgress = (gameTime - lastNoteTime) / (endTime - lastNoteTime);
+            yield return null;
         }
+
+        _camera.transform.position = currentEndPos;
     }
 
     private PlayerPositionState CheckPlayerPosition(Vector2 viewpointPos) {
@@ -255,7 +290,7 @@ public class CameraController : MonoBehaviour
     /// <param name="velocity">The velocity of camera you want to set.</param>
     private void ChangeCameraVelocity(Vector2 velocity)
     {
-        this.CameraVelocity = velocity;
+        this.cameraVelocity = velocity;
     }
 
     private float GetSineEaseValue(float startValue, float endValue, float ratio)
@@ -273,5 +308,16 @@ public class CameraController : MonoBehaviour
             GetSineEaseValue(startValue.x, endValue.x, ratio),
             GetSineEaseValue(startValue.y, endValue.y, ratio)
         );
+    }
+
+    private void ChangeCurrentPlayingNote()
+    {
+        Note note = GameManager.myManager.rm.CurrentPlayingNote;
+        if (note == null) return;
+        
+        StopCoroutine(cameraCoroutine);
+
+        lastNoteTime = gameTime;
+        currentPlayingNote = note;
     }
 }
