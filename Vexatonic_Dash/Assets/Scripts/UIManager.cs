@@ -75,12 +75,14 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         GameManager.myManager.um = this;
+        songName = GameManager.myManager.selectedSongName;
+        composerName = GameManager.myManager.selectedComposerName;
+        difficulty = GameManager.myManager.selectedDifficulty;
     }
     
     private void Start()
     {
         InitializeUI();
-        
     }
     
     private void InitializeUI()
@@ -139,8 +141,8 @@ public class UIManager : MonoBehaviour
 
     public void ShowLevelInfoUI()
     {
-        levelInfoSongNameText.text = GameManager.myManager.selectedComposerName;
-        levelInfoComposerNameText.text = GameManager.myManager.selectedSongName;
+        levelInfoSongNameText.text = GameManager.myManager.selectedSongName;
+        levelInfoComposerNameText.text = GameManager.myManager.selectedComposerName;
         StartCoroutine(LevelInfoUICoroutine());
     }
 
