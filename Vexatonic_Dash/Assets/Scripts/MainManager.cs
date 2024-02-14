@@ -18,17 +18,45 @@ public class MainManager : MonoBehaviour
 
     [Header("Settings")] [SerializeField] private GameObject settingsParent;
 
+    [Space(5)]
+    [SerializeField] private Animator settingsTitleTextAnim;
+    [SerializeField] private Animator videoButtonAnim;
+    [SerializeField] private Animator audioButtonAnim;
+    [SerializeField] private Animator inputButtonAnim;
+    [SerializeField] private Animator playButtonAnim;
+    [SerializeField] private Animator settingsBackButtonAnim;
+
     [Space(10)] [SerializeField] private GameObject videoSettingsParent;
     [SerializeField] private Text speedValueText;
+
+    [Space(5)]
+    [SerializeField] private Animator videoTitleTextAnim;
+    [SerializeField] private Animator noteSpeedSettingAnim;
+    [SerializeField] private Animator videoBackButtonAnim;
 
     [Space(10)] [SerializeField] private GameObject audioSettingsParent;
     [SerializeField] private Text offsetValueText;
     [SerializeField] private Text musicVolumeText;
     [SerializeField] private Text sfxVolumeText;
 
+    [Space(5)]
+    [SerializeField] private Animator audioTitleTextAnim;
+    [SerializeField] private Animator offsetSettingAnim;
+    [SerializeField] private Animator musicVolumeSettingAnim;
+    [SerializeField] private Animator sfxVolumeSettingAnim;
+    [SerializeField] private Animator audioBackButtonAnim;
+
     [Space(10)] [SerializeField] private GameObject inputSettingsParent;
     [SerializeField] private Text[] keyTexts;
     private int currentConfiguringKeyIndex;
+    
+    [Space(5)]
+    [SerializeField] private Animator inputTitleTextAnim;
+    [SerializeField] private Animator normalButton1Anim;
+    [SerializeField] private Animator normalButton2Anim;
+    [SerializeField] private Animator dashButton1Anim;
+    [SerializeField] private Animator dashButton2Anim;
+    [SerializeField] private Animator inputBackButtonAnim;
 
     [Space(10)] [SerializeField] private GameObject playSettingsParent;
 
@@ -48,6 +76,8 @@ public class MainManager : MonoBehaviour
         StartCoroutine(MainShowAnimation());
     }
 
+    #region Main Animation
+    
     private IEnumerator MainShowAnimation()
     {
         yield return new WaitForEndOfFrame();
@@ -75,7 +105,202 @@ public class MainManager : MonoBehaviour
         yield return StartCoroutine(MainHideAnimation());
         SceneManager.LoadScene("Scenes/Select");
     }
+    
+    #endregion
+    
+    #region Settings Animation
 
+    private IEnumerator SettingsShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        settingsTitleTextAnim.SetTrigger(AnimShowHash);
+        videoButtonAnim.SetTrigger(AnimShowHash);
+        audioButtonAnim.SetTrigger(AnimShowHash);
+        inputButtonAnim.SetTrigger(AnimShowHash);
+        playButtonAnim.SetTrigger(AnimShowHash);
+        settingsBackButtonAnim.SetTrigger(AnimShowHash);
+    }
+    
+    private IEnumerator SettingsHideAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        settingsTitleTextAnim.SetTrigger(AnimHideHash);
+        videoButtonAnim.SetTrigger(AnimHideHash);
+        audioButtonAnim.SetTrigger(AnimHideHash);
+        inputButtonAnim.SetTrigger(AnimHideHash);
+        playButtonAnim.SetTrigger(AnimHideHash);
+        settingsBackButtonAnim.SetTrigger(AnimHideHash);
+
+        yield return new WaitUntil(() => settingsTitleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
+    }
+
+    private IEnumerator EnterSettings()
+    {
+        settingsParent.SetActive(true);
+        
+        yield return StartCoroutine(MainHideAnimation());
+        yield return StartCoroutine(SettingsShowAnimation());
+
+        mainParent.SetActive(false);
+    }
+
+    private IEnumerator ExitSettings()
+    {
+        mainParent.SetActive(true);
+
+        yield return StartCoroutine(SettingsHideAnimation());
+        yield return StartCoroutine(MainShowAnimation());
+
+        settingsParent.SetActive(false);
+    }
+    
+    #endregion
+    
+    #region Video Setting Animation
+
+    private IEnumerator VideoSettingShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        videoTitleTextAnim.SetTrigger(AnimShowHash);
+        noteSpeedSettingAnim.SetTrigger(AnimShowHash);
+        videoBackButtonAnim.SetTrigger(AnimShowHash);
+    }
+
+    private IEnumerator VideoSettingHideAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        videoTitleTextAnim.SetTrigger(AnimHideHash);
+        noteSpeedSettingAnim.SetTrigger(AnimHideHash);
+        videoBackButtonAnim.SetTrigger(AnimHideHash);
+
+        yield return new WaitUntil(() => videoTitleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
+    }
+
+    private IEnumerator EnterVideoSetting()
+    {
+        videoSettingsParent.SetActive(true);
+
+        yield return StartCoroutine(SettingsHideAnimation());
+        yield return StartCoroutine(VideoSettingShowAnimation());
+        
+        settingsParent.SetActive(false);
+    }
+
+    private IEnumerator ExitVideoSetting()
+    {
+        settingsParent.SetActive(true);
+
+        yield return StartCoroutine(VideoSettingHideAnimation());
+        yield return StartCoroutine(SettingsShowAnimation());
+
+        videoSettingsParent.SetActive(false);
+
+    }
+    
+    #endregion
+    
+    #region Audio Setting Animation
+
+    private IEnumerator AudioSettingShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        audioTitleTextAnim.SetTrigger(AnimShowHash);
+        offsetSettingAnim.SetTrigger(AnimShowHash);
+        musicVolumeSettingAnim.SetTrigger(AnimShowHash);
+        sfxVolumeSettingAnim.SetTrigger(AnimShowHash);
+        audioBackButtonAnim.SetTrigger(AnimShowHash);
+    }
+    
+    private IEnumerator AudioSettingHideAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        audioTitleTextAnim.SetTrigger(AnimHideHash);
+        offsetSettingAnim.SetTrigger(AnimHideHash);
+        musicVolumeSettingAnim.SetTrigger(AnimHideHash);
+        sfxVolumeSettingAnim.SetTrigger(AnimHideHash);
+        audioBackButtonAnim.SetTrigger(AnimHideHash);
+
+        yield return new WaitUntil(() => audioTitleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
+    }
+
+    private IEnumerator EnterAudioSetting()
+    {
+        audioSettingsParent.SetActive(true);
+
+        yield return StartCoroutine(SettingsHideAnimation());
+        yield return StartCoroutine(AudioSettingShowAnimation());
+        
+        settingsParent.SetActive(false);
+    }
+
+    private IEnumerator ExitAudioSetting()
+    {
+        settingsParent.SetActive(true);
+
+        yield return StartCoroutine(AudioSettingHideAnimation());
+        yield return StartCoroutine(SettingsShowAnimation());
+
+        audioSettingsParent.SetActive(false);
+    }
+    
+    #endregion
+
+    #region Input Setting Animation
+    
+    private IEnumerator InputSettingShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        inputTitleTextAnim.SetTrigger(AnimShowHash);
+        normalButton1Anim.SetTrigger(AnimShowHash);
+        normalButton2Anim.SetTrigger(AnimShowHash);
+        dashButton1Anim.SetTrigger(AnimShowHash);
+        dashButton2Anim.SetTrigger(AnimShowHash);
+        inputBackButtonAnim.SetTrigger(AnimShowHash);
+    }
+    
+    private IEnumerator InputSettingHideAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        inputTitleTextAnim.SetTrigger(AnimHideHash);
+        normalButton1Anim.SetTrigger(AnimHideHash);
+        normalButton2Anim.SetTrigger(AnimHideHash);
+        dashButton1Anim.SetTrigger(AnimHideHash);
+        dashButton2Anim.SetTrigger(AnimHideHash);
+        inputBackButtonAnim.SetTrigger(AnimHideHash);
+
+        yield return new WaitUntil(() => inputTitleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
+    }
+
+    private IEnumerator EnterInputSetting()
+    {
+        inputSettingsParent.SetActive(true);
+
+        yield return StartCoroutine(SettingsHideAnimation());
+        yield return StartCoroutine(InputSettingShowAnimation());
+        
+        settingsParent.SetActive(false);
+    }
+
+    private IEnumerator ExitInputSetting()
+    {
+        settingsParent.SetActive(true);
+
+        yield return StartCoroutine(InputSettingHideAnimation());
+        yield return StartCoroutine(SettingsShowAnimation());
+
+        inputSettingsParent.SetActive(false);
+    }
+    
+    #endregion
+    
     public void OnClickMainPlayButton()
     {
         GameManager.myManager.sm.PlaySFX("Button");
@@ -84,10 +309,8 @@ public class MainManager : MonoBehaviour
 
     public void OnClickMainSettingsButton()
     {
-        mainParent.SetActive(false);
         GameManager.myManager.sm.PlaySFX("Button");
-        settingsParent.SetActive(true);
-        // TODO: Add animations
+        StartCoroutine(EnterSettings());
     }
 
     public void OnClickMainQuitButton()
@@ -101,32 +324,26 @@ public class MainManager : MonoBehaviour
 
     public void OnClickSettingsVideoButton()
     {
-        videoSettingsParent.SetActive(true);
         GameManager.myManager.sm.PlaySFX("Button");
-        settingsParent.SetActive(false);
+        StartCoroutine(EnterVideoSetting());
         
         UpdateNoteSpeedValueText();
-        // TODO: Add animations
     }
 
     public void OnClickSettingsAudioButton()
     {
-        audioSettingsParent.SetActive(true);
         GameManager.myManager.sm.PlaySFX("Button");
-        settingsParent.SetActive(false);
-
+        StartCoroutine(EnterAudioSetting());
+        
         UpdateAudioOffsetValueText();
-        // TODO: Add animations
     }
 
     public void OnClickSettingsInputButton()
     {
-        inputSettingsParent.SetActive(true);
         GameManager.myManager.sm.PlaySFX("Button");
-        settingsParent.SetActive(false);
+        StartCoroutine(EnterInputSetting());
         
         InitializeKeySettingTexts();
-        // TODO: Add animations
     }
 
     public void OnClickSettingsPlayButton()
@@ -139,36 +356,28 @@ public class MainManager : MonoBehaviour
 
     public void OnClickSettingsBackButton()
     {
-        settingsParent.SetActive(false);
         GameManager.myManager.sm.PlaySFX("Button");
-        mainParent.SetActive(true);
-        StartCoroutine(MainShowAnimation());
+        StartCoroutine(ExitSettings());
     }
 
     public void OnClickVideoSettingsBackButton()
     {
-        videoSettingsParent.SetActive(false);
         GameManager.myManager.sm.PlaySFX("Button");
-        settingsParent.SetActive(true);
-        // TODO: Add animations
+        StartCoroutine(ExitVideoSetting());
     }
 
     public void OnClickAudioSettingsBackButton()
     {
-        audioSettingsParent.SetActive(false);
         GameManager.myManager.sm.PlaySFX("Button");
-        settingsParent.SetActive(true);
-        // TODO: Add animations
+        StartCoroutine(ExitAudioSetting());
     }
 
     public void OnClickInputSettingsBackButton()
     {
-        inputSettingsParent.SetActive(false);
         GameManager.myManager.sm.PlaySFX("Button");
-        settingsParent.SetActive(true);
+        StartCoroutine(ExitInputSetting());
 
         currentConfiguringKeyIndex = 0;
-        // TODO: Add animations
     }
 
     public void OnClickPlaySettingsBackButton()
