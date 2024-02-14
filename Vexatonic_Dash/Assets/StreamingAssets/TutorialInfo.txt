@@ -1,0 +1,31 @@
+0^2^안녕하세요!
+3^7^Vexatonic Dash는,\n플랫폼의 형태를 가진 노트들을 처리하며 맵을 진행해 나가는\n플랫포머형 리듬게임입니다.
+8^10^지금부터 Vexatonic Dash의 조작법을 설명하겠습니다.
+11^13^Vexatonic Dash는 크게 3가지 종류의 조작을 통해 플레이할 수 있습니다.
+14^17^첫 번째로, <color=red>빨간색</color>의 일반 이동 노트입니다.
+18^22^일반 이동 노트는 키보드의 <color=red>'F'</color> 또는 <color=red>'J'</color> 키를 눌러서 처리할 수 있습니다.
+22^26^곧 일반 이동 노트가 등장합니다!\n흐리게 보이는 플랫폼에 노트가 겹칠 때 <color=red>'F'</color> 또는 <color=red>'J'</color> 키를 눌러서 노트를 처리하세요!
+29^31^잘하셨습니다!
+32^35^일반 이동 노트는 경사를 가진 채로 등장할 수도 있습니다.
+36^39^하지만 처리하는 방법은 이전과 동일합니다.
+40^44^종류와 관계없이,\n<color=red>빨간색</color> 일반 노트는 <color=red>'F'</color> 또는 <color=red>'J'</color> 키를 눌러서 처리합니다.
+45^49^곧 노트가 등장합니다!\n<color=red>'F'</color> 또는 <color=red>'J'</color> 키를 눌러서 노트를 처리하세요!
+52^54^잘하셨습니다!
+55^58^다음으로, <color=blue>파란색</color>의 대쉬 이동 노트입니다.
+59^63^대쉬 이동 노트는 키보드의 <color=blue>'D'</color> 또는 <color=blue>'K'</color> 키를 눌러서 처리할 수 있습니다.
+64^67^곧 대쉬 이동 노트가 등장합니다!\n<color=blue>'D'</color> 또는 <color=blue>'K'</color> 키를 눌러서 노트를 처리하세요!
+70^73^대쉬 이동 노트도 일반 이동 노트처럼 경사를 가진 채로 등장할 수 있습니다.
+74^78^종류와 관계없이,\n<color=blue>파란색</color> 대쉬 노트는 <color=blue>'D'</color> 또는 <color=blue>'K'</color> 키를 눌러서 처리합니다.
+79^83^곧 노트가 등장합니다! <color=blue>'D'</color> 또는 <color=blue>'K'</color> 키를 눌러서 노트를 처리하세요!
+86^88^잘하셨습니다!
+89^92^다음으로, <color=yellow>노란색</color>의 점프 노트입니다.
+93^97^점프 노트는 키보드의  <color=yellow>'Space'</color> 키를 눌러서 처리할 수 있습니다.
+98^101^곧 점프 노트가 등장합니다!\n흐리게 보이는 플랫폼에 노트가 겹칠 때 <color=yellow>'Space'</color> 키를 눌러서 노트를 처리하세요!
+102^106^점프 노트와 대쉬 노트는 소개드린 것과 다른 종류의 노트도 존재합니다. << 공점, 벽점, 공중대쉬 보여주기
+107^111^종류와 관계없이,\n<color=yellow>노란색</color> 점프 노트는 <color=yellow>'Space</color> 키를 눌러서 처리하고,\n<color=blue>파란색</color> 대쉬 노트는 <color=blue>'D'</color> 또는 <color=blue>'K'</color> 키를 눌러서 처리합니다.
+112^115^곧 노트가 2개 연속으로 등장합니다!\n<color=yellow>'Space'</color> 키를 두 번 눌러서 노트를 처리하세요!
+118^123^곧 노트가 3개 연속으로 등장합니다!\n<color=yellow>'Space'</color> -> <color=blue>'D'</color> 또는 <color=blue>'K'</color> -> <color=yellow>'Space'</color>를 순서대로 눌러서 노트를 처리하세요!
+127^129^잘하셨습니다!
+130^134^마지막으로 소개할 노트는, 맵의 종료를 의미하는 <color=red>빨간색</color> 종료 노트입니다.
+135^139^종료 노트 역시 노트의 하나이므로, <color=red>'F'</color> 또는 <color=red>'J'</color> 키를 눌러야만 노트를 처리할 수 있습니다.
+140^144^곧 종료 노트가 등장합니다!\n<color=red>'F'</color> 또는 <color=red>'J'</color> 키를 눌러서 노트를 처리하면 튜토리얼이 끝납니다!

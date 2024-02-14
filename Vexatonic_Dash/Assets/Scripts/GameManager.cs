@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 
     public static GameManager myManager;
 
+    public bool isTutorial;
+
     public float scrollSpeed; // 카메라 이동 속도를 의미한다.
     public float noteSpeed; // 노트의 속력을 의미한다.
     public double globalOffset = 0; // 인겜 setting에서 설정할 수 있는 음악 오프셋이다.
