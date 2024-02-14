@@ -108,6 +108,10 @@ public class RhythmManager : MonoBehaviour
         set => currentPlayingNote = value;
     }
 
+    [SerializeField] private AudioClip tutorialBgm;
+    private bool isTutorial;
+
+
     // 게임에 활용되는 리듬게임적 요소를 다룬다.
     // 조작은 다양해도 판정은 같으므로 판정에 해당하는 공통적인 요소를 여기서 다루면 된다.
 
@@ -122,14 +126,20 @@ public class RhythmManager : MonoBehaviour
 
     private void Awake()
     {
+
         GameManager.myManager.rm = this;
     }
     // Start is called before the first frame update
     void Start()
     {
-        song = GameManager.myManager.sm.GetComponent<AudioSource>();
-        song.Stop();
+        if (SceneManager.GetActiveScene().name == "Tutorial") isTutorial = true;
+        else isTutorial = false;
 
+        song = GameManager.myManager.sm.GetComponent<AudioSource>();
+
+        if (isTutorial) song.clip = tutorialBgm;
+
+        song.Stop();
 
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
