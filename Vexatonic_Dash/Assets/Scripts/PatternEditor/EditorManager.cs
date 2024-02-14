@@ -50,6 +50,18 @@ public class EditorManager : MonoBehaviour
     private Vector3 noteStartPosition; // 다음에 배치할 노트의 시작점
     private Vector3 noteEndPosition; // 다음에 배치할 노트의 끝점
     private GameObject notePreview; // 노트가 어떻게 생길지 미리 알려줌
+    private Vector3 cameraPosition;
+
+    public Button putNoteButton;
+    public GameObject cameraSettingPanel;
+    public InputField cameraTimeInputField;
+    public InputField cameraTermInputField;
+    public InputField cameraScaleInputField;
+    public InputField cameraVxInputField;
+    public InputField cameraVyInputField;
+    public InputField cameraAngleInputField;
+    public CameraControlType cct;
+
     private CharacterDirection direction;
     public Text directionText;
     public List<GameObject> notePrefabs;
@@ -82,6 +94,7 @@ public class EditorManager : MonoBehaviour
 
     [Header("LevelWriter")]
     private List<NoteInfoPair> noteStorage;
+    private List<CameraControlInfo> cameraStorage;
     [SerializeField] private GameObject mapSavePanel;
     [SerializeField] private InputField mapNameInputField;
     private FileStream writer;
@@ -100,6 +113,7 @@ public class EditorManager : MonoBehaviour
         //placedNotes = new List<GameObject>();
         //noteSpawnInfos = new List<NoteSpawnInfo>();
         noteStorage = new List<NoteInfoPair>();
+        cameraStorage = new List<CameraControlInfo>();
     }
 
     //TODO: 특정 부분부터 bpm 바꾸는 옵션. 일단은 매우귀찮다
@@ -313,37 +327,44 @@ public class EditorManager : MonoBehaviour
     {
         // 아래는 노트의 미리보기를 생성하는 부분
         if (editorState != EditorState.EditorMain || selectedNote == null || hasEnd) return;
-
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //NoteEndPosition x좌표 변경하기. NoteWriteSetting이 WriteLength라면 별개의 함수를 통해 변경 << WriteLength는 기술력 문제로 삭제
-        if (noteWriteSetting != NoteWriteSetting.WriteLength)
-        {
-            if (noteWriteSetting == NoteWriteSetting.MouseDiscrete)
-            {
-                double lineGap = GameManager.myManager.CalculateInputWidthFromTime(240 / (bpm * bit));
-                int bitCount = (int)(mousePosition.x / lineGap);
-                noteEndPosition = new Vector3((float)(lineGap * bitCount), noteStartPosition.y, 0);
-            }
-            else noteEndPosition = new Vector3(mousePosition.x, noteStartPosition.y, 0);
+        if (notePrefabs.IndexOf(selectedNote) == 19) {
+            cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            ShowNotePreviewForCamera(cameraPosition);
         }
-        //노트 y좌표 변경하기.
-        //Index 30인 위치에 있는 EndNote 이후로 추가 노트는 등장하지 않을 예정이라 대충 구현함
-        //if (notePrefabs.IndexOf(selectedNote) >= 15 && notePrefabs.IndexOf(selectedNote) != 30) noteEndPosition.y = mousePosition.y;
-        //else noteEndPosition.y = noteStartPosition.y + Mathf.Tan(Mathf.Deg2Rad * angleArray[notePrefabs.IndexOf(selectedNote)]);
+        else
+        {
+            //NoteEndPosition x좌표 변경하기. NoteWriteSetting이 WriteLength라면 별개의 함수를 통해 변경 << WriteLength는 기술력 문제로 삭제
+            if (noteWriteSetting != NoteWriteSetting.WriteLength)
+            {
+                if (noteWriteSetting == NoteWriteSetting.MouseDiscrete)
+                {
+                    double lineGap = GameManager.myManager.CalculateInputWidthFromTime(240 / (bpm * bit));
+                    int bitCount = (int)(mousePosition.x / lineGap);
+                    noteEndPosition = new Vector3((float)(lineGap * bitCount), noteStartPosition.y, 0);
+                }
+                else noteEndPosition = new Vector3(mousePosition.x, noteStartPosition.y, 0);
+            }
+            //노트 y좌표 변경하기.
+            //Index 30인 위치에 있는 EndNote 이후로 추가 노트는 등장하지 않을 예정이라 대충 구현함
+            //if (notePrefabs.IndexOf(selectedNote) >= 15 && notePrefabs.IndexOf(selectedNote) != 30) noteEndPosition.y = mousePosition.y;
+            //else noteEndPosition.y = noteStartPosition.y + Mathf.Tan(Mathf.Deg2Rad * angleArray[notePrefabs.IndexOf(selectedNote)]);
 
-        noteEndPosition.y = notePrefabs.IndexOf(selectedNote) switch {
-            30 => noteStartPosition.y,
-            <= 14 => noteStartPosition.y + Mathf.Tan(Mathf.Deg2Rad * angleArray[notePrefabs.IndexOf(selectedNote)]),
-            >= 15 and < 30 => mousePosition.y,
-            _ => throw new ArgumentOutOfRangeException()
-        };
+            noteEndPosition.y = notePrefabs.IndexOf(selectedNote) switch
+            {
+                30 => noteStartPosition.y,
+                <= 14 => noteStartPosition.y + Mathf.Tan(Mathf.Deg2Rad * angleArray[notePrefabs.IndexOf(selectedNote)]),
+                >= 15 and < 30 => mousePosition.y,
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
 
-        if (noteStartPosition.x >= noteEndPosition.x) return;
-        ShowNotePreview(noteEndPosition);
+            if (noteStartPosition.x >= noteEndPosition.x) return;
+            ShowNotePreview(noteEndPosition);
+        }
     }
 
-    public void ShowNotePreview(Vector3 noteEndPosition) {
+    private void ShowNotePreview(Vector3 noteEndPosition) {
         if (notePreview != null) Destroy(notePreview);
         if (jumpEndIndicator != null) Destroy(jumpEndIndicator);
         notePreview = Instantiate(selectedNote, noteStartPosition, Quaternion.identity);
@@ -392,6 +413,16 @@ public class EditorManager : MonoBehaviour
             default:
                 throw new NotImplementedException();
         }
+    }
+
+    private void ShowNotePreviewForCamera(Vector3 cameraPosition) {
+        if (notePreview != null) Destroy(notePreview);
+        if (jumpEndIndicator != null) Destroy(jumpEndIndicator);
+        notePreview = Instantiate(selectedNote, cameraPosition, Quaternion.identity);
+        noteSprite = notePreview.GetComponentInChildren<SpriteRenderer>();
+        c = noteSprite.color;
+        c.a = 0.5f;
+        noteSprite.color = c;
     }
 
     public void PutNote() {
@@ -487,7 +518,6 @@ public class EditorManager : MonoBehaviour
                 hasEnd = true;
                 break;
             default:
-                info = null;
                 throw new ArgumentOutOfRangeException();
         }
         //placedNotes.Add(notePreview);
@@ -500,6 +530,25 @@ public class EditorManager : MonoBehaviour
         jumpEndIndicator = null;
         if (noteWriteSetting == NoteWriteSetting.WriteLength) SetNotePreviewByWriteLength();
     }
+
+    public void PutCameraNote() {
+        if (notePreview == null || hasEnd) return;
+
+        GameObject[] previousJumpIndicator = GameObject.FindGameObjectsWithTag("JumpIndicator");
+        foreach (GameObject indicator in previousJumpIndicator)
+        {
+            if (indicator != null && indicator != jumpEndIndicator) Destroy(indicator);
+        }
+        
+        c.a = 1f;
+        noteSprite.color = c;
+        notePreview = null;
+        jumpEndIndicator = null;
+        OpenCameraSetting();
+
+        //카메라 조작 종류에 따라 info 알아서 설정하기
+    }
+
 
     public void DeleteLastNote() {
         if (noteStorage.Count == 0) return;
@@ -551,7 +600,95 @@ public class EditorManager : MonoBehaviour
         selectedNote = notePrefabs[noteIndex];
         if (noteIndex < 7) platformAngle = angleArray[noteIndex];
         else if (noteIndex < 14) dashPlatformAngle = angleArray[noteIndex];
+
+        putNoteButton.onClick.RemoveAllListeners();
+        if (noteIndex == 19) putNoteButton.onClick.AddListener(PutCameraNote);
+        else putNoteButton.onClick.AddListener(PutNote);
+
         if (noteWriteSetting == NoteWriteSetting.WriteLength) SetNotePreviewByWriteLength();
+    }
+
+    public void OpenCameraSetting() {
+        editorState = EditorState.OnSetting;
+        cameraSettingPanel.SetActive(true);
+    }
+
+    public void CloseCameraSetting() {
+        if (!CheckValidInput()) return;
+        double time = double.Parse(cameraTimeInputField.text);
+        double term = double.Parse(cameraTermInputField.text);
+
+        switch (cct)
+        {
+            case CameraControlType.Zoom:
+                CameraZoomInfo zi = new CameraZoomInfo(time, term, double.Parse(cameraScaleInputField.text))
+                {
+                    parent = notePreview
+                };
+                cameraStorage.Add(zi);
+                break;
+            case CameraControlType.Velocity:
+                CameraVelocityInfo vi = new CameraVelocityInfo(time, new Vector2(float.Parse(cameraVxInputField.text), float.Parse(cameraVyInputField.text))) {
+                    parent = notePreview
+                };
+                cameraStorage.Add(vi);
+                break;
+            case CameraControlType.Rotate:
+                CameraRotateInfo ri = new CameraRotateInfo(time, term, int.Parse(cameraAngleInputField.text))
+                {
+                    parent = notePreview
+                };
+                cameraStorage.Add(ri);
+                break;
+            case CameraControlType.Fix:
+                CameraFixInfo fi = new CameraFixInfo(time, term, new Vector2(cameraPosition.x, cameraPosition.y))
+                {
+                    parent = notePreview
+                };
+                cameraStorage.Add(fi);
+                break;
+            case CameraControlType.Return:
+                CameraReturnInfo rei = new CameraReturnInfo(time, term)
+                {
+                    parent = notePreview
+                };
+                cameraStorage.Add(rei);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();        
+        }
+        editorState = EditorState.EditorMain;
+        cameraSettingPanel.SetActive(false);
+    }
+
+    private bool CheckValidInput() {
+        if (!double.TryParse(cameraTimeInputField.text, out double d) || !double.TryParse(cameraTermInputField.text, out double t)) return false;
+        switch (cct) {
+            case CameraControlType.Zoom:
+                if (!double.TryParse(cameraScaleInputField.text, out double s)) return false;
+                break;
+            case CameraControlType.Velocity:
+                if (!float.TryParse(cameraVxInputField.text, out float x) || !float.TryParse(cameraVyInputField.text, out float y)) return false;
+                break;
+            case CameraControlType.Rotate:
+                if (!int.TryParse(cameraAngleInputField.text, out int a)) return false;
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    public void SetCameraType(int index) {
+        cct = index switch
+        {
+            0 => CameraControlType.Zoom,
+            1 => CameraControlType.Velocity,
+            2 => CameraControlType.Rotate,
+            3 => CameraControlType.Fix,
+            4 => CameraControlType.Return,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
     public void OpenNoteSetting(int noteIndex) {
@@ -667,3 +804,4 @@ class NoteInfoPair {
         this.info = info;
     }
 }
+
