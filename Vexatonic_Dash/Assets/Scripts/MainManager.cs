@@ -120,6 +120,8 @@ public class MainManager : MonoBehaviour
         inputSettingsParent.SetActive(true);
         GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(false);
+        
+        InitializeKeySettingTexts();
         // TODO: Add animations
     }
 
@@ -160,6 +162,8 @@ public class MainManager : MonoBehaviour
         inputSettingsParent.SetActive(false);
         GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(true);
+
+        currentConfiguringKeyIndex = 0;
         // TODO: Add animations
     }
 
@@ -218,6 +222,14 @@ public class MainManager : MonoBehaviour
     
     #region Key Settings
 
+    private void InitializeKeySettingTexts()
+    {
+        for (int index = 0; index < keyTexts.Length; index++)
+        {
+            keyTexts[index].text = GameManager.myManager.keyList[index].ToString();
+        }
+    }
+    
     public void OnKeySettingButton(int index)
     {
         keyTexts[index - 1].text = "--";
