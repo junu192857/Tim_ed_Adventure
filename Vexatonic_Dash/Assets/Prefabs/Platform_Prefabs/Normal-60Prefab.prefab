@@ -141,4 +141,5 @@ MonoBehaviour:
   startPos: {x: 0, y: 0, z: 0}
   endPos: {x: 0, y: 0, z: 0}
   angle: -60
+  actualAngle: 0
   parentNote: {fileID: 0}
