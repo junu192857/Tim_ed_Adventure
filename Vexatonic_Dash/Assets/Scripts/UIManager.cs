@@ -77,6 +77,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text tutorialText;
     private bool fadeinRunning = false;
     private bool fadeoutRunning = false;
+    [SerializeField] private List<GameObject> TutorialIndicators;
     
     private static int Score => GameManager.myManager.rm.score;
     private static int Progress => GameManager.myManager.rm.progress;
@@ -306,7 +307,7 @@ public class UIManager : MonoBehaviour
     public void ClosePauseUI() => pause.SetActive(false);
 
     public IEnumerator TutorialCoroutine() {
-        while (true) {
+        while (infos.Count > 0) {
             if (GameTime >= infos[0].startTime - 0.4f && !fadeinRunning) {
                 fadeinRunning = true;
                 tutorialText.text = infos[0].guide;
@@ -347,6 +348,7 @@ public class UIManager : MonoBehaviour
 
     public void ReadTutorial() {
         tutorialText.gameObject.SetActive(true);
+        foreach (var obj in TutorialIndicators) obj.SetActive(true);
         fs = new FileStream(Application.streamingAssetsPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                          + Path.DirectorySeparatorChar + "TutorialInfo.txt", FileMode.Open);
         sr = new StreamReader(fs);
@@ -358,6 +360,8 @@ public class UIManager : MonoBehaviour
         }
         sr.Close();
     }
+
+    //public void FadeoutIndicator(int index) => StartCoroutine(TutorialIndicators[index].GetComponent<TutorialIndicatroBehaviour>().Fadeout());
 }
 
 struct TutorialInfo {

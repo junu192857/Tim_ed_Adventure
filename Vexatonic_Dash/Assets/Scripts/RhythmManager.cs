@@ -31,6 +31,11 @@ public class RhythmManager : MonoBehaviour
     private const double g = 0.166;
     private const double l = 0.3;
 
+    // 튜토리얼 전용 판정 범위
+    private const double tpp = 0.100;
+    private const double tp = 0.300;
+
+    private float overtime;
     //게임 진행 시간. -5초부터 시작하며 1번째 마디 1번째 박자가 시작하는 타이밍이 0초이다.
     public double gameTime;
     public double unbeatTime = 3.0f;
@@ -58,6 +63,7 @@ public class RhythmManager : MonoBehaviour
     public int highProgress;
     public int highScore;
     private int noteCount => LevelReader.noteCount;
+    private int myNoteCount;
     public JudgementType lastJudge;
 
     [SerializeField] private List<GameObject> notePrefabs;
@@ -108,8 +114,11 @@ public class RhythmManager : MonoBehaviour
         set => currentPlayingNote = value;
     }
 
+    [Header ("Tutorial")]
     [SerializeField] private AudioClip tutorialBgm;
     private bool isTutorial => GameManager.myManager.isTutorial;
+    private int tutorialIndicatorIndex;
+    private double[] startTimeForIndex = new double[] { 0, 28, 51, 52, 69, 70, 85, 86, 103, 104, 118, 119, 120, 126, 127, 128, 129, 147 };
 
 
     // 게임에 활용되는 리듬게임적 요소를 다룬다.
@@ -136,13 +145,21 @@ public class RhythmManager : MonoBehaviour
 
         if (isTutorial) song.clip = tutorialBgm;
 
+        overtime = isTutorial ? 0.3f : 0.166f;
+        tutorialIndicatorIndex = 0;
+
         song.Stop();
 
+       
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
         gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
         noteList = lr.ParseFile(levelFilePath, out gravityDataList, out cameraInfoList);
-        scorePerNotes = (double)1000000 / noteCount;
+
+        myNoteCount = isTutorial ? noteCount - 6 : noteCount;
+
+
+        scorePerNotes = (double)1000000 / myNoteCount;
 
         gravityQueue = new Queue<GravityData>(gravityDataList);
         cameraInfoQueue = new Queue<CameraControlInfo>(cameraInfoList);
@@ -245,6 +262,19 @@ public class RhythmManager : MonoBehaviour
             inputsToBeRemoved.Clear();
         }
         // Comment: 입력시간의 정밀성 확보를 위한 방법상 이 부분을 앞으로 당김
+        if (isTutorial && spawnedNotes.TryPeek(out temp)) {
+            Note note = temp.GetComponent<Note>();
+            if (note.tutorialDisable) {
+                inputs.Clear();
+                if (gameTime > startTimeForIndex[tutorialIndicatorIndex]) {
+                    DequeueNoteFromQueue();
+                    myPlayer.MoveCharacter(note, gameTime);
+                    tutorialIndicatorIndex++;
+                }
+            }
+        }
+
+
         
         if (inputs.Any() && spawnedNotes.TryPeek(out temp))
         {
@@ -257,15 +287,26 @@ public class RhythmManager : MonoBehaviour
                 JudgementType judgement;
                 double timingOffset = note.lifetime - list[0].inputLifeTime + 0.166;
 
-                judgement = timingOffset switch
+                if (!isTutorial)
                 {
-                    >= -pp and <= pp => JudgementType.PurePerfect,
-                    >= -p and <= p => JudgementType.Perfect,
-                    >= -gr and <= gr => JudgementType.Great,
-                    >= -g and <= g => JudgementType.Good,
-                    >= l => JudgementType.Invalid,
-                    _ => JudgementType.Miss,
-                };
+                    judgement = timingOffset switch
+                    {
+                        >= -pp and <= pp => JudgementType.PurePerfect,
+                        >= -p and <= p => JudgementType.Perfect,
+                        >= -gr and <= gr => JudgementType.Great,
+                        >= -g and <= g => JudgementType.Good,
+                        >= l => JudgementType.Invalid,
+                        _ => JudgementType.Miss,
+                    };
+                }
+                else {
+                    judgement = timingOffset switch
+                    {
+                        >= -tpp and <= tpp => JudgementType.PurePerfect,
+                        >= -tp and <= tp => JudgementType.Perfect,
+                        _ => JudgementType.Invalid,
+                    };
+                }
 
                 if (judgement != JudgementType.Invalid) 
                 {
@@ -294,7 +335,7 @@ public class RhythmManager : MonoBehaviour
         if (spawnedNotes.TryPeek(out temp))
         {
             Note note = temp.GetComponent<Note>();
-            if (note.lifetime < -0.166f)
+            if (note.lifetime < -overtime)
             {
                 DequeueNoteFromQueue();
                 note.FixNote();
@@ -326,13 +367,14 @@ public class RhythmManager : MonoBehaviour
         if (type == JudgementType.Miss) { 
             if (gameTime - lastHit >= unbeatTime) {
                 lastHit = gameTime;
-                health -= 20;
+                if (!isTutorial) health -= 20;
                 myPlayer.HurtPlayer(health);
             }
         }
 
         if (type == JudgementType.Miss) combo = 0;
         else combo++;
+        if (isTutorial) tutorialIndicatorIndex++;
 
         UpdateScore(type);
         UpdatePercentage();
@@ -344,7 +386,7 @@ public class RhythmManager : MonoBehaviour
             return;
         }
 
-        if (playedNotes == noteCount && state == RhythmState.Ingame) GameClear();
+        if (playedNotes == myNoteCount && state == RhythmState.Ingame) GameClear();
     }
 
     private void GameOver() {
@@ -394,8 +436,22 @@ public class RhythmManager : MonoBehaviour
 
         Vector3 AnchorPosition = Vector3.zero;
 
-        foreach (var note in noteList)
-            AnchorPosition = SpawnNote(note, AnchorPosition);
+        foreach (var note in noteList) AnchorPosition = SpawnNote(note, AnchorPosition);
+
+        if (isTutorial) {
+            List<GameObject> list = preSpawnedNotes.ToList();
+            int[] popIndexes = new int[] { 12, 9, 7, 5, 3, 0 };
+            foreach(int index in popIndexes) {
+                GameObject deactivateNote = list[index];
+                deactivateNote.GetComponent<Note>().FixNote();
+                deactivateNote.GetComponent<Note>().tutorialDisable = true;
+                deactivateNote.SetActive(true);
+            }
+            preSpawnedNotes = new Queue<GameObject>();
+            foreach (GameObject leftNote in list) {
+                preSpawnedNotes.Enqueue(leftNote);
+            }
+        }
     }
 
     // 노트 찍고 다음 AnchorPosition 돌려주는 역할
@@ -552,7 +608,7 @@ public class RhythmManager : MonoBehaviour
     {
         UpdateScore(judgement);
 
-        double tempScore = 1.01 * scorePerNotes * (noteCount - playedNotes) + realScore;
+        double tempScore = 1.01 * scorePerNotes * (myNoteCount - playedNotes) + realScore;
         minusScore = (int)(tempScore + 0.5);
     }
 
@@ -560,7 +616,7 @@ public class RhythmManager : MonoBehaviour
     private void UpdatePercentage()
     {
         playedNotes += 1;
-        progress = 100 * playedNotes / noteCount;
+        progress = 100 * playedNotes / myNoteCount;
     }
 
     /*private IEnumerator CharacterMovementCoroutine() {
