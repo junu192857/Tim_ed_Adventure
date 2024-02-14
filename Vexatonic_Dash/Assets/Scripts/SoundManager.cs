@@ -21,20 +21,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource song;
     [SerializeField] private AudioSource[] sfxPlayer;
 
-    [SerializeField] private float musicVolume;
-    [SerializeField] private float sfxVolume;
-
-    public float MusicVolume
-    {
-        get => musicVolume;
-        set => musicVolume = Mathf.Clamp(value, 0f, 1f);
-    }
-
-    public float SFXVolume
-    {
-        get => sfxVolume;
-        set => sfxVolume = Mathf.Clamp(value, 0f, 1f);
-    }
+    private float MusicVolume => GameManager.myManager.musicVolume;
+    private float SFXVolume => GameManager.myManager.sfxVolume;
 
     private void Awake()
     {
@@ -62,9 +50,6 @@ public class SoundManager : MonoBehaviour
             default:
                 break;
         }
-
-        MusicVolume = 1f;
-        SFXVolume = 1f;
     }
 
     // Not Implemented. play song for selected music in select scene.
