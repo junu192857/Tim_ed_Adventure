@@ -62,6 +62,9 @@ public class SoundManager : MonoBehaviour
             default:
                 break;
         }
+
+        MusicVolume = 0f;
+        SFXVolume = 0f;
     }
 
     // Not Implemented. play song for selected music in select scene.
