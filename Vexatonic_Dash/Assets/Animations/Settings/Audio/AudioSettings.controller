@@ -34,7 +34,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: a811cd8c0caff8f498d7bbb875c9ec45, type: 2}
+  m_Motion: {fileID: 7400000, guid: 8f330b96a2d49ee4eb0cf19dc2da8606, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -86,7 +86,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 879e59fd5bb23e545b815fd0aff706d1, type: 2}
+  m_Motion: {fileID: 7400000, guid: 75f3e8fcf9047ba429ef0c3022232ce2, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -114,7 +114,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: ac27bf11fbc4566409a8c85cfd841f10, type: 2}
+  m_Motion: {fileID: 7400000, guid: 0c312a9dc1abdf04b80dc098cee4b7e9, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -166,7 +166,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 94965140556d3d1468ed0e0cf0953328, type: 2}
+  m_Motion: {fileID: 7400000, guid: 2636ae3ba018f614b8f78f3711fa8993, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -178,7 +178,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MainButton
+  m_Name: AudioSettings
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Show
