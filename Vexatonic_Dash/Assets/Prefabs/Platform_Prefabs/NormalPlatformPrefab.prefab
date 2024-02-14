@@ -57,6 +57,7 @@ MonoBehaviour:
   startPos: {x: 0, y: 0, z: 0}
   endPos: {x: 0, y: 0, z: 0}
   angle: 0
+  actualAngle: 0
   parentNote: {fileID: 0}
 --- !u!1 &583682282139914259
 GameObject:
@@ -131,7 +132,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a3bd67917f2c5f046b7e669e7e91e895, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6891ffd43c58bf94a9ef37d893d4d34a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
