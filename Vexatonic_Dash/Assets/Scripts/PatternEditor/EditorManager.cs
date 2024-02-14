@@ -54,7 +54,6 @@ public class EditorManager : MonoBehaviour
 
     public Button putNoteButton;
     public GameObject cameraSettingPanel;
-    public InputField cameraTimeInputField;
     public InputField cameraTermInputField;
     public InputField cameraScaleInputField;
     public InputField cameraVxInputField;
@@ -615,40 +614,39 @@ public class EditorManager : MonoBehaviour
 
     public void CloseCameraSetting() {
         if (!CheckValidInput()) return;
-        double time = double.Parse(cameraTimeInputField.text);
         double term = double.Parse(cameraTermInputField.text);
 
         switch (cct)
         {
             case CameraControlType.Zoom:
-                CameraZoomInfo zi = new CameraZoomInfo(time, term, double.Parse(cameraScaleInputField.text))
+                CameraZoomInfo zi = new CameraZoomInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, double.Parse(cameraScaleInputField.text))
                 {
                     parent = notePreview
                 };
                 cameraStorage.Add(zi);
                 break;
             case CameraControlType.Velocity:
-                CameraVelocityInfo vi = new CameraVelocityInfo(time, new Vector2(float.Parse(cameraVxInputField.text), float.Parse(cameraVyInputField.text))) {
+                CameraVelocityInfo vi = new CameraVelocityInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), new Vector2(float.Parse(cameraVxInputField.text), float.Parse(cameraVyInputField.text))) {
                     parent = notePreview
                 };
                 cameraStorage.Add(vi);
                 break;
             case CameraControlType.Rotate:
-                CameraRotateInfo ri = new CameraRotateInfo(time, term, int.Parse(cameraAngleInputField.text))
+                CameraRotateInfo ri = new CameraRotateInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, int.Parse(cameraAngleInputField.text))
                 {
                     parent = notePreview
                 };
                 cameraStorage.Add(ri);
                 break;
             case CameraControlType.Fix:
-                CameraFixInfo fi = new CameraFixInfo(time, term, new Vector2(cameraPosition.x, cameraPosition.y))
+                CameraFixInfo fi = new CameraFixInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, new Vector2(cameraPosition.x, cameraPosition.y))
                 {
                     parent = notePreview
                 };
                 cameraStorage.Add(fi);
                 break;
             case CameraControlType.Return:
-                CameraReturnInfo rei = new CameraReturnInfo(time, term)
+                CameraReturnInfo rei = new CameraReturnInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term)
                 {
                     parent = notePreview
                 };
@@ -662,7 +660,7 @@ public class EditorManager : MonoBehaviour
     }
 
     private bool CheckValidInput() {
-        if (!double.TryParse(cameraTimeInputField.text, out double d) || !double.TryParse(cameraTermInputField.text, out double t)) return false;
+        if (!double.TryParse(cameraTermInputField.text, out double t)) return false;
         switch (cct) {
             case CameraControlType.Zoom:
                 if (!double.TryParse(cameraScaleInputField.text, out double s)) return false;
