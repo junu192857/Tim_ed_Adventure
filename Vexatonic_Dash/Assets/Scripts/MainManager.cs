@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,6 +21,8 @@ public class MainManager : MonoBehaviour
 
     [Space(10)] [SerializeField] private GameObject audioSettingsParent;
     [SerializeField] private Text offsetValueText;
+    [SerializeField] private Text musicVolumeText;
+    [SerializeField] private Text sfxVolumeText;
 
     [Space(10)] [SerializeField] private GameObject inputSettingsParent;
 
@@ -182,14 +185,28 @@ public class MainManager : MonoBehaviour
         UpdateAudioOffsetValueText();
     }
 
+    private void UpdateMusicVolumeText()
+    {
+        int percentageVolume = Mathf.RoundToInt(GameManager.myManager.musicVolume * 100);
+        musicVolumeText.text = percentageVolume.ToString();
+    }
+    
     public void OnMusicVolumeSliderChanged(Slider slider)
     {
         GameManager.myManager.musicVolume = slider.value;
+        UpdateMusicVolumeText();
+    }
+
+    private void UpdateSFXVolumeText()
+    {
+        int percentageVolume = Mathf.RoundToInt(GameManager.myManager.sfxVolume * 100);
+        sfxVolumeText.text = percentageVolume.ToString();
     }
 
     public void OnSFXVolumeSliderChanged(Slider slider)
     {
         GameManager.myManager.sfxVolume = slider.value;
+        UpdateSFXVolumeText();
     }
 
 #endregion
