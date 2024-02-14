@@ -45,7 +45,7 @@ public class RhythmManager : MonoBehaviour
         get => gameTime;
     }
 
-    private float notePositiondelta = 3;
+    public float notePositiondelta => GameManager.myManager.noteSpeed;
 
     public int score;   // 반올림된 스코어
     private double realScore;   // 실제 스코어
@@ -61,6 +61,8 @@ public class RhythmManager : MonoBehaviour
     public JudgementType lastJudge;
 
     [SerializeField] private List<GameObject> notePrefabs;
+
+    public List<KeyCode> keyList => GameManager.myManager.keyList;
 
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
     private List<NoteSpawnInfo> noteList;
@@ -162,7 +164,7 @@ public class RhythmManager : MonoBehaviour
         
         // InputManager 세팅
         GameManager.myManager.im.StartLoop(
-            new List<KeyCode> { KeyCode.F, KeyCode.J, KeyCode.D, KeyCode.K, KeyCode.Space },
+            keyList,
             new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
         );
         StartCoroutine(nameof(StartReceivingInput));
