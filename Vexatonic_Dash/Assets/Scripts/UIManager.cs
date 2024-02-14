@@ -46,13 +46,15 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultMissText;
 
     [Header("Judgement & Combo")]
+    private GameObject myParent;
+    [SerializeField] private GameObject judgeParent;
     [SerializeField] private GameObject resultPurePerfect;
     [SerializeField] private GameObject resultPerfect;
     [SerializeField] private GameObject resultGreat;
     [SerializeField] private GameObject resultGood;
     [SerializeField] private GameObject resultMiss;
     [SerializeField] private List<GameObject> numbers;
-    private readonly Vector3 distFromPlayer =  Vector3.up * 0.5f;
+    private readonly Vector3 distFromParent =  Vector3.up * 0.1f;
 
     [Header("Pause UI")]
     [SerializeField] private GameObject pause;
@@ -61,10 +63,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject gameOver;
     [SerializeField] private Text gameOverTitleText;
     [SerializeField] private Text gameOverProgressText;
-    
-    [Header ("Judge Text")]
-    [SerializeField] private GameObject judgeParent;
-    [SerializeField] private GameObject judgePrefab;
 
     [Header ("Song Info")]
     public string songName;
@@ -216,24 +214,27 @@ public class UIManager : MonoBehaviour
     // Displays judge when note is hit or missed
     public void DisplayJudge(Vector3 transformPosition, int combo)
     {
-        GameObject judgeObject;
+
+        GameObject myParent = Instantiate(judgeParent, 
+            transformPosition + Quaternion.AngleAxis(Camera.main.transform.rotation.z, Vector3.forward) * (0.7f * Vector3.up),
+            Quaternion.identity);
 
         switch (LastJudge)
         {
             case JudgementType.PurePerfect:
-                judgeObject = Instantiate(resultPurePerfect, transformPosition + distFromPlayer, Quaternion.identity);
+                Instantiate(resultPurePerfect, myParent.transform).transform.localPosition = -distFromParent;
                 break;
             case JudgementType.Perfect:
-                judgeObject = Instantiate(resultPerfect, transformPosition + distFromPlayer, Quaternion.identity);
+                Instantiate(resultPerfect, myParent.transform).transform.localPosition = -distFromParent;
                 break;
             case JudgementType.Great:
-                judgeObject = Instantiate(resultGreat, transformPosition + distFromPlayer, Quaternion.identity);
+                Instantiate(resultGreat, myParent.transform).transform.localPosition = -distFromParent;
                 break;
             case JudgementType.Good:
-                judgeObject = Instantiate(resultGood, transformPosition + distFromPlayer, Quaternion.identity);
+                Instantiate(resultGood, myParent.transform).transform.localPosition = -distFromParent;
                 break;
             case JudgementType.Miss:
-                judgeObject = Instantiate(resultMiss, transformPosition + distFromPlayer, Quaternion.identity);
+                Instantiate(resultMiss, myParent.transform).transform.localPosition = -distFromParent;
                 break;
             case JudgementType.Invalid:
                 Debug.LogError("Invalid note should not be dealed with");
@@ -244,27 +245,28 @@ public class UIManager : MonoBehaviour
 
         switch (combo) {
             case > 0 and < 10:
-                Instantiate(numbers[combo], transformPosition + Vector3.up * 0.7f, Quaternion.identity);
+                Instantiate(numbers[combo], myParent.transform).transform.localPosition = distFromParent;
                 break;
             case >= 10 and < 100:
-                Instantiate(numbers[combo / 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
-                Instantiate(numbers[combo % 10], transformPosition + new Vector3(+0.1f, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo / 10], myParent.transform).transform.localPosition = distFromParent - 0.1f * Vector3.right;
+                Instantiate(numbers[combo % 10], myParent.transform).transform.localPosition = distFromParent + 0.1f * Vector3.right;
                 break;
             case >= 100 and < 1000:
-                Instantiate(numbers[combo / 100], transformPosition + new Vector3(-0.2f, 0.7f), Quaternion.identity);
-                Instantiate(numbers[combo / 10 % 10], transformPosition + new Vector3(0, 0.7f), Quaternion.identity);
-                Instantiate(numbers[combo % 10], transformPosition + new Vector3(0.2f, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo / 100], myParent.transform).transform.localPosition = distFromParent - 0.2f * Vector3.right;
+                Instantiate(numbers[combo / 10 % 10], myParent.transform).transform.localPosition = distFromParent;
+                Instantiate(numbers[combo % 10], myParent.transform).transform.localPosition = distFromParent + 0.2f * Vector3.right;
                 break;
             case >= 1000 and < 10000:
-                Instantiate(numbers[combo / 1000], transformPosition + new Vector3(-0.3f, 0.7f), Quaternion.identity);
-                Instantiate(numbers[combo / 100 % 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
-                Instantiate(numbers[combo / 10 % 10], transformPosition + new Vector3(0.1f, 0.7f), Quaternion.identity);
-                Instantiate(numbers[combo % 10], transformPosition + new Vector3(0.3f, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo / 1000],  myParent.transform).transform.localPosition = distFromParent - 0.3f * Vector3.right;
+                Instantiate(numbers[combo / 100 % 10], myParent.transform).transform.localPosition = distFromParent - 0.1f * Vector3.right;
+                Instantiate(numbers[combo / 10 % 10], myParent.transform).transform.localPosition = distFromParent + 0.1f * Vector3.right;
+                Instantiate(numbers[combo % 10], myParent.transform).transform.localPosition = distFromParent + 0.3f * Vector3.right;
                 break;
             default:
                 break;
-
         }
+
+        myParent.transform.localEulerAngles = Camera.main.transform.localEulerAngles;
     }
 
     private IEnumerator ShowFPSCoroutine() {
