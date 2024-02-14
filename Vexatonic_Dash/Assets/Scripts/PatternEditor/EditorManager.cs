@@ -7,7 +7,6 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using System;
 using System.Linq;
-
 public enum EditorState { 
     EditorInitial,
     EditorMain,
@@ -60,6 +59,7 @@ public class EditorManager : MonoBehaviour
     public InputField cameraVyInputField;
     public InputField cameraAngleInputField;
     public CameraControlType cct;
+    public GameObject termIndicator;
 
     private CharacterDirection direction;
     public Text directionText;
@@ -328,7 +328,12 @@ public class EditorManager : MonoBehaviour
         if (editorState != EditorState.EditorMain || selectedNote == null || hasEnd) return;
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (notePrefabs.IndexOf(selectedNote) == 19) {
-            cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (noteWriteSetting == NoteWriteSetting.MouseDiscrete) {
+                double lineGap = GameManager.myManager.CalculateInputWidthFromTime(240 / (bpm * bit));
+                int bitCount = (int)(mousePosition.x / lineGap);
+                cameraPosition = new Vector3((float)(lineGap * bitCount), mousePosition.y, 0);
+            }
+            else cameraPosition = mousePosition;
             ShowNotePreviewForCamera(cameraPosition);
         }
         else
@@ -541,8 +546,7 @@ public class EditorManager : MonoBehaviour
         
         c.a = 1f;
         noteSprite.color = c;
-        notePreview = null;
-        jumpEndIndicator = null;
+        
         OpenCameraSetting();
 
         //카메라 조작 종류에 따라 info 알아서 설정하기
@@ -656,6 +660,12 @@ public class EditorManager : MonoBehaviour
                 throw new ArgumentOutOfRangeException();        
         }
         editorState = EditorState.EditorMain;
+        if (cct != CameraControlType.Velocity) {
+            GameObject termIndicator = Instantiate(this.termIndicator, notePreview.transform);
+            termIndicator.transform.localScale = new Vector3(GameManager.myManager.CalculateInputWidthFromTime(term), 1, 1);
+        }
+        notePreview = null;
+        jumpEndIndicator = null;
         cameraSettingPanel.SetActive(false);
     }
 
