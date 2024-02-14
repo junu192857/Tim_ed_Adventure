@@ -25,6 +25,8 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Text sfxVolumeText;
 
     [Space(10)] [SerializeField] private GameObject inputSettingsParent;
+    [SerializeField] private Text[] keyTexts;
+    private int currentConfiguringKeyIndex;
 
     [Space(10)] [SerializeField] private GameObject playSettingsParent;
 
@@ -37,6 +39,9 @@ public class MainManager : MonoBehaviour
         audioSettingsParent.SetActive(false);
         inputSettingsParent.SetActive(false);
         playSettingsParent.SetActive(false);
+        
+        // Key Initialization
+        currentConfiguringKeyIndex = 0;
 
         StartCoroutine(MainShowAnimation());
     }
@@ -115,6 +120,8 @@ public class MainManager : MonoBehaviour
         inputSettingsParent.SetActive(true);
         GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(false);
+        
+        InitializeKeySettingTexts();
         // TODO: Add animations
     }
 
@@ -155,6 +162,8 @@ public class MainManager : MonoBehaviour
         inputSettingsParent.SetActive(false);
         GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(true);
+
+        currentConfiguringKeyIndex = 0;
         // TODO: Add animations
     }
 
@@ -209,5 +218,35 @@ public class MainManager : MonoBehaviour
         UpdateSFXVolumeText();
     }
 
-#endregion
+    #endregion
+    
+    #region Key Settings
+
+    private void InitializeKeySettingTexts()
+    {
+        for (int index = 0; index < keyTexts.Length; index++)
+        {
+            keyTexts[index].text = GameManager.myManager.keyList[index].ToString();
+        }
+    }
+    
+    public void OnKeySettingButton(int index)
+    {
+        keyTexts[index - 1].text = "--";
+        currentConfiguringKeyIndex = index;
+    }
+    
+    private void OnGUI()
+    {
+        Event keyPressEvent = Event.current;
+        if (keyPressEvent.type != EventType.KeyDown ||
+            keyPressEvent.keyCode == KeyCode.None ||
+            currentConfiguringKeyIndex == 0) return;
+
+        GameManager.myManager.keyList[currentConfiguringKeyIndex - 1] = keyPressEvent.keyCode;
+        keyTexts[currentConfiguringKeyIndex - 1].text = keyPressEvent.keyCode.ToString();
+        currentConfiguringKeyIndex = 0;
+    }
+
+    #endregion
 }
