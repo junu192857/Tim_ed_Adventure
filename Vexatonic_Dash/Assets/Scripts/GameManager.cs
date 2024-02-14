@@ -25,7 +25,10 @@ public class GameManager : MonoBehaviour
     public float noteSpeed; // 노트의 속력을 의미한다.
     public double globalOffset = 0; // 인겜 setting에서 설정할 수 있는 음악 오프셋이다.
     public double levelOffset; // 에디터를 통해 정한 각 레벨에서의 오프셋이다.
-    public float volume; // 소리 크기를 의미한다.
+    public float musicVolume; // 음악 크기를 의미한다. (0 ~ 1)
+    public float sfxVolume; // 효과음 크기를 의미한다. (0 ~ 1)
+
+    public List<KeyCode> keyList;
 
     [HideInInspector] public bool isMetaLoaded = false;
 
@@ -55,6 +58,20 @@ public class GameManager : MonoBehaviour
 
         SongsDirectory = Application.dataPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                          + Path.DirectorySeparatorChar + LevelsDirectoryName;
+
+        noteSpeed = 3f;
+
+        keyList = new List<KeyCode>()
+        {
+            KeyCode.F,
+            KeyCode.J,
+            KeyCode.D,
+            KeyCode.K,
+            KeyCode.Space,
+        };
+        
+        musicVolume = 1f;
+        sfxVolume = 1f;
     }
 
     public void Start()

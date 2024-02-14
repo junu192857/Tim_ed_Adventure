@@ -8,6 +8,9 @@ public class CameraControlInfo
     public double time;
     public double term;
 
+    //for Editor
+    public GameObject parent;
+
     public CameraControlInfo(double time, double term)
     {
         this.time = time;
