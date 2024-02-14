@@ -4145,7 +4145,9 @@ MonoBehaviour:
   noteSpeed: 0
   globalOffset: 0
   levelOffset: 0
-  volume: 0
+  musicVolume: 0
+  sfxVolume: 0
+  keyList: 
   isMetaLoaded: 0
   filepath: 
   rm: {fileID: 1818378586}
@@ -4969,6 +4971,7 @@ MonoBehaviour:
   resultGreatText: {fileID: 837743112}
   resultGoodText: {fileID: 2072956701}
   resultMissText: {fileID: 337181508}
+  judgeParent: {fileID: 365035238328121744, guid: 8e5289ae06926684f94c979887ee482c, type: 3}
   resultPurePerfect: {fileID: 800572279180568169, guid: 1a82db01fca3b45fd890e1f6981d468e, type: 3}
   resultPerfect: {fileID: 1257529318613028128, guid: 80db24fa693ce084586c5489c2f1555c, type: 3}
   resultGreat: {fileID: 1125051480700811945, guid: 377277229138f514da19a8321bf24d72, type: 3}
@@ -4989,8 +4992,6 @@ MonoBehaviour:
   gameOver: {fileID: 55384509}
   gameOverTitleText: {fileID: 1045871446}
   gameOverProgressText: {fileID: 1314664709}
-  judgeParent: {fileID: 0}
-  judgePrefab: {fileID: 3475141772924465932, guid: 1a82db01fca3b45fd890e1f6981d468e, type: 3}
   songName: SongName
   composerName: Various Artist
   difficulty: 0

@@ -21,7 +21,6 @@ public class JudgeObjectBehaviour : MonoBehaviour
         while (time < 1f) {
             c.a = Mathf.Min(1, 2 - 2 * time);
             sr.color = c;
-            transform.position = initialPos + new Vector3(0, time, 0);
             time += Time.deltaTime;
             yield return null;
         }
