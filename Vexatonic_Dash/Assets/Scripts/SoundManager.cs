@@ -21,7 +21,20 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource song;
     [SerializeField] private AudioSource[] sfxPlayer;
 
+    [SerializeField] private float musicVolume;
+    [SerializeField] private float sfxVolume;
 
+    public float MusicVolume
+    {
+        get => musicVolume;
+        set => musicVolume = Mathf.Clamp(value, 0f, 1f);
+    }
+
+    public float SFXVolume
+    {
+        get => sfxVolume;
+        set => sfxVolume = Mathf.Clamp(value, 0f, 1f);
+    }
 
     private void Awake()
     {
@@ -65,6 +78,7 @@ public class SoundManager : MonoBehaviour
         {
             AudioClip myClip = DownloadHandlerAudioClip.GetContent(uwr);
             song.clip = myClip;
+            song.volume = MusicVolume;
             song.Play();
         }
     }
@@ -81,7 +95,7 @@ public class SoundManager : MonoBehaviour
                     // SFXPlayer에서 재생 중이지 않은 Audio Source를 발견했다면 
                     if (!sfxPlayer[j].isPlaying)
                     {
-                        sfxPlayer[j].PlayOneShot(sfx[i].clip);
+                        sfxPlayer[j].PlayOneShot(sfx[i].clip, SFXVolume);
                         return;
                     }
                 }
