@@ -25,6 +25,9 @@ public class Note : MonoBehaviour
     
     public GameObject parentNote = null; // 움직이는 노트의 목적지에 있는 고정된 노트.
 
+    //for Tutorial
+    public bool tutorialDisable = false;
+
     public void Deactivate() {
         activated = false;
         gameObject.SetActive(false);
