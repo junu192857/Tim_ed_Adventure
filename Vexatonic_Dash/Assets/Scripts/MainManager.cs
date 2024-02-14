@@ -18,6 +18,7 @@ public class MainManager : MonoBehaviour
     [Header("Settings")] [SerializeField] private GameObject settingsParent;
 
     [Space(10)] [SerializeField] private GameObject videoSettingsParent;
+    [SerializeField] private Text speedValueText;
 
     [Space(10)] [SerializeField] private GameObject audioSettingsParent;
     [SerializeField] private Text offsetValueText;
@@ -102,6 +103,8 @@ public class MainManager : MonoBehaviour
         videoSettingsParent.SetActive(true);
         GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(false);
+        
+        UpdateNoteSpeedValueText();
         // TODO: Add animations
     }
 
@@ -175,6 +178,31 @@ public class MainManager : MonoBehaviour
         // TODO: Add animations
     }
 
+    #region Video Settings
+
+    private void UpdateNoteSpeedValueText()
+    {
+        speedValueText.text = GameManager.myManager.noteSpeed.ToString("#0.0");
+    }
+
+    public void OnClickNoteSpeedUpButton()
+    {
+        float newNoteSpeed = GameManager.myManager.noteSpeed + 0.1f;
+        GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
+        
+        UpdateNoteSpeedValueText();
+    }
+
+    public void OnClickNoteSpeedDownButton()
+    {
+        float newNoteSpeed = GameManager.myManager.noteSpeed - 0.1f;
+        GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
+        
+        UpdateNoteSpeedValueText();
+    }
+    
+    #endregion
+    
     #region Audio Settings
 
     private void UpdateAudioOffsetValueText()

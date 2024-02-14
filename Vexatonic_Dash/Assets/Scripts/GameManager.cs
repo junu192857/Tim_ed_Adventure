@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
     private const string LevelsDirectoryName = "Levels";
     public static string SongsDirectory;
 
+    public const float MinNoteSpeed = 1.0f;
+    public const float MaxNoteSpeed = 20.0f;
+    
     public static GameManager myManager;
 
     public float scrollSpeed; // 카메라 이동 속도를 의미한다.
