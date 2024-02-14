@@ -243,12 +243,12 @@ public class UIManager : MonoBehaviour
         }
 
         switch (combo) {
-            case < 10:
+            case > 0 and < 10:
                 Instantiate(numbers[combo], transformPosition + Vector3.up * 0.7f, Quaternion.identity);
                 break;
             case >= 10 and < 100:
                 Instantiate(numbers[combo / 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
-                Instantiate(numbers[combo % 10], transformPosition + new Vector3(-0.1f, 0.7f), Quaternion.identity);
+                Instantiate(numbers[combo % 10], transformPosition + new Vector3(+0.1f, 0.7f), Quaternion.identity);
                 break;
             case >= 100 and < 1000:
                 Instantiate(numbers[combo / 100], transformPosition + new Vector3(-0.2f, 0.7f), Quaternion.identity);
@@ -262,7 +262,6 @@ public class UIManager : MonoBehaviour
                 Instantiate(numbers[combo % 10], transformPosition + new Vector3(0.3f, 0.7f), Quaternion.identity);
                 break;
             default:
-                Debug.Log("More than 10000 combo? Really?");
                 break;
 
         }
