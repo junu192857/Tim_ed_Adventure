@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class CameraFixInfo : CameraControlInfo
 {
-    public Vector2 fixPivot;
+    public Vector2 fixPivotDelta;
     
-    public CameraFixInfo(double time, double term, Vector2 fixPivot) : base(time, term)
+    public CameraFixInfo(double time, double term, Vector2 fixPivotDelta) : base(time, term)
     {
         this.type = CameraControlType.Fix;
-        this.fixPivot = fixPivot;
+        this.fixPivotDelta = fixPivotDelta;
     }
 }

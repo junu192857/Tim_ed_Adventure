@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -178,6 +179,16 @@ public class MainManager : MonoBehaviour
         // TODO: Add animations
     }
 
+    public void OnClickTutorialbutton() {
+
+        GameManager.myManager.filepath = Application.streamingAssetsPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                         + Path.DirectorySeparatorChar + "Tutorial.txt";
+        GameManager.myManager.selectedSongName = "Tutorial";
+        GameManager.myManager.selectedComposerName = "Vexatonic Dash";
+
+        SceneManager.LoadScene("Scenes/Tutorial");
+    }
+
     #region Video Settings
 
     private void UpdateNoteSpeedValueText()
@@ -202,7 +213,7 @@ public class MainManager : MonoBehaviour
     }
     
     #endregion
-    
+
     #region Audio Settings
 
     private void UpdateAudioOffsetValueText()

@@ -231,7 +231,7 @@ public class LevelReader
                 info = new CameraZoomInfo(time, term, zoomScale);
                 break;
             case "VELOCITY":
-                info = new CameraVelocityInfo(time, false, new Vector2(
+                info = new CameraVelocityInfo(time, new Vector2(
                     float.Parse(infoList[4]),
                     float.Parse(infoList[5])
                 ));

@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
         }
         if (scrollSpeed == 0f) scrollSpeed = 1.5f;
 
-        SongsDirectory = Application.dataPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+        SongsDirectory = Application.streamingAssetsPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                          + Path.DirectorySeparatorChar + LevelsDirectoryName;
 
         noteSpeed = 3f;
