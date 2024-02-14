@@ -68,6 +68,7 @@ public class CharacterControl : MonoBehaviour
         Vector3 stopoverPos;
 
         if (note.angle == 0) {
+            gameObject.transform.localEulerAngles = Vector3.zero;
             while (adjustedTime < playerMovingTime + 0.166f)
             {
                 Vector3 targetPosition = platformNote.startPos * (playerMovingTime - adjustedTime) / playerMovingTime + platformNote.endPos * adjustedTime / playerMovingTime;
@@ -80,6 +81,7 @@ public class CharacterControl : MonoBehaviour
         else {
             forwardMovingTime = playerMovingTime * 0.16f / (platformNote.endPos.x - platformNote.startPos.x);
             stopoverPos = platformNote.startPos + new Vector3(0.16f, 0);
+            gameObject.transform.localEulerAngles = Vector3.zero;
             while (adjustedTime < forwardMovingTime) {
                 Vector3 targetPosition = platformNote.startPos * (forwardMovingTime - adjustedTime) / forwardMovingTime + stopoverPos * adjustedTime / forwardMovingTime;
                 gameObject.transform.position = targetPosition;
