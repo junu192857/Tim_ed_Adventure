@@ -29,6 +29,11 @@ public class MainManager : MonoBehaviour
     [Space(10)] [SerializeField] private GameObject videoSettingsParent;
     [SerializeField] private Text speedValueText;
 
+    [Space(5)]
+    [SerializeField] private Animator videoTitleTextAnim;
+    [SerializeField] private Animator noteSpeedSettingAnim;
+    [SerializeField] private Animator videoBackButtonAnim;
+
     [Space(10)] [SerializeField] private GameObject audioSettingsParent;
     [SerializeField] private Text offsetValueText;
     [SerializeField] private Text musicVolumeText;
@@ -155,9 +160,45 @@ public class MainManager : MonoBehaviour
     
     #region Video Setting Animation
 
+    private IEnumerator VideoSettingShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        videoTitleTextAnim.SetTrigger(AnimShowHash);
+        noteSpeedSettingAnim.SetTrigger(AnimShowHash);
+        videoBackButtonAnim.SetTrigger(AnimShowHash);
+    }
+
+    private IEnumerator VideoSettingHideAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        videoTitleTextAnim.SetTrigger(AnimHideHash);
+        noteSpeedSettingAnim.SetTrigger(AnimHideHash);
+        videoBackButtonAnim.SetTrigger(AnimHideHash);
+
+        yield return new WaitUntil(() => videoTitleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
+    }
+
     private IEnumerator EnterVideoSetting()
     {
-        yield return null;
+        videoSettingsParent.SetActive(true);
+
+        yield return StartCoroutine(SettingsHideAnimation());
+        yield return StartCoroutine(VideoSettingShowAnimation());
+        
+        settingsParent.SetActive(false);
+    }
+
+    private IEnumerator ExitVideoSetting()
+    {
+        settingsParent.SetActive(true);
+
+        yield return StartCoroutine(VideoSettingHideAnimation());
+        yield return StartCoroutine(SettingsShowAnimation());
+
+        videoSettingsParent.SetActive(false);
+
     }
     
     #endregion
@@ -287,7 +328,6 @@ public class MainManager : MonoBehaviour
         StartCoroutine(EnterVideoSetting());
         
         UpdateNoteSpeedValueText();
-        // TODO: Add animations
     }
 
     public void OnClickSettingsAudioButton()
@@ -322,10 +362,8 @@ public class MainManager : MonoBehaviour
 
     public void OnClickVideoSettingsBackButton()
     {
-        videoSettingsParent.SetActive(false);
         GameManager.myManager.sm.PlaySFX("Button");
-        settingsParent.SetActive(true);
-        // TODO: Add animations
+        StartCoroutine(ExitVideoSetting());
     }
 
     public void OnClickAudioSettingsBackButton()
