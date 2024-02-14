@@ -564,6 +564,13 @@ public class EditorManager : MonoBehaviour
         if (noteWriteSetting == NoteWriteSetting.WriteLength) SetNotePreviewByWriteLength();
     }
 
+    public void DeleteLastCamera() {
+        if (cameraStorage.Count == 0) return;
+        CameraControlInfo info = cameraStorage[^1];
+        Destroy(info.parent);
+        cameraStorage.RemoveAt(cameraStorage.Count - 1);
+    }
+
     public void ChangeNoteWriteSetting(int setting) {
         noteWriteSetting = setting switch
         {
