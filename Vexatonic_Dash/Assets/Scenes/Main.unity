@@ -3698,6 +3698,7 @@ MonoBehaviour:
   mainPlayButtonAnim: {fileID: 874165163}
   mainSettingsButtonAnim: {fileID: 446698059}
   mainQuitButtonAnim: {fileID: 1951927965}
+  mainTutorialButtonAnim: {fileID: 763218626}
   settingsParent: {fileID: 80439201}
   settingsTitleTextAnim: {fileID: 1515069614}
   videoButtonAnim: {fileID: 1382248467}
@@ -4317,7 +4318,7 @@ Animator:
   m_GameObject: {fileID: 763218623}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 401500d8c4062b2468f0ee2457f9c8eb, type: 2}
+  m_Controller: {fileID: 9100000, guid: 22eba06efdb4ff24fba1e22d44568990, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -8107,6 +8108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebf21a7fdbf9c7848bcc8881db7bc334, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isTutorial: 0
   scrollSpeed: 0
   noteSpeed: 0
   globalOffset: 0
