@@ -58,6 +58,8 @@ public class EditorManager : MonoBehaviour
     public InputField cameraVxInputField;
     public InputField cameraVyInputField;
     public InputField cameraAngleInputField;
+    public InputField cameraPosxInputField;
+    public InputField cameraPosyInputField;
     public CameraControlType cct;
     public GameObject termIndicator;
 
@@ -650,7 +652,7 @@ public class EditorManager : MonoBehaviour
                 cameraStorage.Add(ri);
                 break;
             case CameraControlType.Fix:
-                CameraFixInfo fi = new CameraFixInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, new Vector2(cameraPosition.x, cameraPosition.y))
+                CameraFixInfo fi = new CameraFixInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, new Vector2(float.Parse(cameraPosxInputField.text), float.Parse(cameraPosyInputField.text)))
                 {
                     parent = notePreview
                 };
@@ -687,6 +689,9 @@ public class EditorManager : MonoBehaviour
                 break;
             case CameraControlType.Rotate:
                 if (!int.TryParse(cameraAngleInputField.text, out int a)) return false;
+                break;
+            case CameraControlType.Fix:
+                if (!float.TryParse(cameraPosxInputField.text, out float px) || !float.TryParse(cameraPosyInputField.text, out float py)) return false;
                 break;
             default:
                 break;
@@ -805,7 +810,7 @@ public class EditorManager : MonoBehaviour
             CameraControlType.Zoom => (cci as CameraZoomInfo).scale.ToString(),
             CameraControlType.Velocity => (cci as CameraVelocityInfo).cameraVelocity.x.ToString(),
             CameraControlType.Rotate => (cci as CameraRotateInfo).angle.ToString(),
-            CameraControlType.Fix => (cci as CameraFixInfo).fixPivot.x.ToString(),
+            CameraControlType.Fix => (cci as CameraFixInfo).fixPivotDelta.x.ToString(),
             CameraControlType.Return => "",
             _ => throw new ArgumentException()
         };
@@ -815,7 +820,7 @@ public class EditorManager : MonoBehaviour
             CameraControlType.Zoom => "",
             CameraControlType.Velocity => (cci as CameraVelocityInfo).cameraVelocity.y.ToString(),
             CameraControlType.Rotate => "",
-            CameraControlType.Fix => (cci as CameraFixInfo).fixPivot.y.ToString(),
+            CameraControlType.Fix => (cci as CameraFixInfo).fixPivotDelta.y.ToString(),
             CameraControlType.Return => "",
             _ => throw new ArgumentException()
         };
