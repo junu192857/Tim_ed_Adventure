@@ -771,6 +771,12 @@ public class EditorManager : MonoBehaviour
 
         sw.WriteLine("OFFSET " + musicOffset.ToString());
 
+        cameraStorage = cameraStorage.OrderBy(i => i.time).ToList();
+        foreach (CameraControlInfo cci in cameraStorage) {
+            sw.WriteLine(MakeCameraInfoString(cci));
+        }
+
+
         foreach (NoteInfoPair pair in noteStorage) {
             sw.WriteLine(MakeNoteInfoString(pair.info));
         }
@@ -779,6 +785,43 @@ public class EditorManager : MonoBehaviour
         mapSavePanel.SetActive(false);
         settingBackgroundPanel.SetActive(false);
         editorState = EditorState.EditorMain;
+    }
+
+    private string MakeCameraInfoString(CameraControlInfo cci) {
+        string type = cci.type switch {
+            CameraControlType.Zoom => "ZOOM ",
+            CameraControlType.Velocity => "VELOCITY ",
+            CameraControlType.Rotate => "ROTATE ",
+            CameraControlType.Fix => "FIX ",
+            CameraControlType.Return => "RETURN ",
+            _ => throw new ArgumentException()
+        };
+
+        string time = cci.time.ToString() + " ";
+
+        string term = cci.type == CameraControlType.Velocity ? "0 " : cci.term.ToString() + " ";
+
+        string another1 = cci.type switch {
+            CameraControlType.Zoom => (cci as CameraZoomInfo).scale.ToString(),
+            CameraControlType.Velocity => (cci as CameraVelocityInfo).cameraVelocity.x.ToString(),
+            CameraControlType.Rotate => (cci as CameraRotateInfo).angle.ToString(),
+            CameraControlType.Fix => (cci as CameraFixInfo).fixPivot.x.ToString(),
+            CameraControlType.Return => "",
+            _ => throw new ArgumentException()
+        };
+        another1 += " ";
+
+        string another2 = cci.type switch {
+            CameraControlType.Zoom => "",
+            CameraControlType.Velocity => (cci as CameraVelocityInfo).cameraVelocity.y.ToString(),
+            CameraControlType.Rotate => "",
+            CameraControlType.Fix => (cci as CameraFixInfo).fixPivot.y.ToString(),
+            CameraControlType.Return => "",
+            _ => throw new ArgumentException()
+        };
+        another2 += " ";
+
+        return "CAM " + type + time + term + another1 + another2;
     }
 
     private string MakeNoteInfoString(NoteSpawnInfo info) {
