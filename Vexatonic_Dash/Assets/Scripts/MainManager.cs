@@ -7,29 +7,23 @@ public class MainManager : MonoBehaviour
 {
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
-    
-    [Header("Main")]
-    [SerializeField] private GameObject mainParent;
+
+    [Header("Main")] [SerializeField] private GameObject mainParent;
     [SerializeField] private Animator mainTitleTextAnim;
     [SerializeField] private Animator mainPlayButtonAnim;
     [SerializeField] private Animator mainSettingsButtonAnim;
     [SerializeField] private Animator mainQuitButtonAnim;
-    
-    [Header("Settings")]
-    [SerializeField] private GameObject settingsParent;
 
-    [Space(10)]
-    [SerializeField] private GameObject videoSettingsParent;
+    [Header("Settings")] [SerializeField] private GameObject settingsParent;
 
-    [Space(10)]
-    [SerializeField] private GameObject audioSettingsParent;
+    [Space(10)] [SerializeField] private GameObject videoSettingsParent;
+
+    [Space(10)] [SerializeField] private GameObject audioSettingsParent;
     [SerializeField] private Text offsetValueText;
-    
-    [Space(10)]
-    [SerializeField] private GameObject inputSettingsParent;
 
-    [Space(10)]
-    [SerializeField] private GameObject playSettingsParent;
+    [Space(10)] [SerializeField] private GameObject inputSettingsParent;
+
+    [Space(10)] [SerializeField] private GameObject playSettingsParent;
 
 
     private void Start()
@@ -47,7 +41,7 @@ public class MainManager : MonoBehaviour
     private IEnumerator MainShowAnimation()
     {
         yield return new WaitForEndOfFrame();
-        
+
         mainTitleTextAnim.SetTrigger(AnimShowHash);
         mainPlayButtonAnim.SetTrigger(AnimShowHash);
         mainSettingsButtonAnim.SetTrigger(AnimShowHash);
@@ -57,7 +51,7 @@ public class MainManager : MonoBehaviour
     private IEnumerator MainHideAnimation()
     {
         yield return new WaitForEndOfFrame();
-        
+
         mainTitleTextAnim.SetTrigger(AnimHideHash);
         mainPlayButtonAnim.SetTrigger(AnimHideHash);
         mainSettingsButtonAnim.SetTrigger(AnimHideHash);
@@ -77,7 +71,7 @@ public class MainManager : MonoBehaviour
         GameManager.myManager.sm.PlaySFX("Button");
         StartCoroutine(MainPlay());
     }
-    
+
     public void OnClickMainSettingsButton()
     {
         mainParent.SetActive(false);
@@ -85,7 +79,7 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
-    
+
     public void OnClickMainQuitButton()
     {
 #if UNITY_EDITOR
@@ -102,13 +96,13 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(false);
         // TODO: Add animations
     }
-    
+
     public void OnClickSettingsAudioButton()
     {
         audioSettingsParent.SetActive(true);
         GameManager.myManager.sm.PlaySFX("Button");
         settingsParent.SetActive(false);
-        
+
         UpdateAudioOffsetValueText();
         // TODO: Add animations
     }
@@ -144,7 +138,7 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
-    
+
     public void OnClickAudioSettingsBackButton()
     {
         audioSettingsParent.SetActive(false);
@@ -152,7 +146,7 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
-    
+
     public void OnClickInputSettingsBackButton()
     {
         inputSettingsParent.SetActive(false);
@@ -160,7 +154,7 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
-    
+
     public void OnClickPlaySettingsBackButton()
     {
         playSettingsParent.SetActive(false);
@@ -168,25 +162,35 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
         // TODO: Add animations
     }
-    
+
     #region Audio Settings
 
     private void UpdateAudioOffsetValueText()
     {
-        offsetValueText.text = GameManager.myManager.globalOffset.ToString("+##0;-##0;0");
+        offsetValueText.text = GameManager.myManager.globalOffset.ToString("+##0ms;-##0ms;0ms");
     }
-    
+
     public void OnClickAudioOffsetUpButton()
     {
         GameManager.myManager.globalOffset += 1;
         UpdateAudioOffsetValueText();
     }
-    
+
     public void OnClickAudioOffsetDownButton()
     {
         GameManager.myManager.globalOffset -= 1;
         UpdateAudioOffsetValueText();
     }
-    
-    #endregion
+
+    public void OnMusicVolumeSliderChanged(Slider slider)
+    {
+        GameManager.myManager.musicVolume = slider.value;
+    }
+
+    public void OnSFXVolumeSliderChanged(Slider slider)
+    {
+        GameManager.myManager.sfxVolume = slider.value;
+    }
+
+#endregion
 }
