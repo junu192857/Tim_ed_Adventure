@@ -395,7 +395,8 @@ public class MainManager : MonoBehaviour
         GameManager.myManager.selectedSongName = "Tutorial";
         GameManager.myManager.selectedComposerName = "Vexatonic Dash";
 
-        SceneManager.LoadScene("Scenes/Tutorial");
+        GameManager.myManager.isTutorial = true;
+        SceneManager.LoadScene("Scenes/LevelTest");
     }
 
     #region Video Settings

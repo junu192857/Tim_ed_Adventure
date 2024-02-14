@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 using System.Collections.Generic;
+using System.IO;
 
 public class UIManager : MonoBehaviour
 {
@@ -46,7 +47,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultMissText;
 
     [Header("Judgement & Combo")]
-    private GameObject myParent;
     [SerializeField] private GameObject judgeParent;
     [SerializeField] private GameObject resultPurePerfect;
     [SerializeField] private GameObject resultPerfect;
@@ -69,8 +69,14 @@ public class UIManager : MonoBehaviour
     public string composerName;
     public Difficulty difficulty;
 
-    private int _highProgress;
-    private int _highScore;
+    [Header("Tutorial")]
+    private FileStream fs;
+    private StreamReader sr;
+    private List<TutorialInfo> infos;
+    private Color c = new Color(1, 1, 1);
+    [SerializeField] private Text tutorialText;
+    private bool fadeinRunning = false;
+    private bool fadeoutRunning = false;
     
     private static int Score => GameManager.myManager.rm.score;
     private static int Progress => GameManager.myManager.rm.progress;
@@ -90,6 +96,8 @@ public class UIManager : MonoBehaviour
     
     private void Start()
     {
+        infos = new List<TutorialInfo>();
+        tutorialText.gameObject.SetActive(false);
         InitializeUI();
     }
     
@@ -296,4 +304,70 @@ public class UIManager : MonoBehaviour
     public void OpenPauseUI() => pause.SetActive(true);
 
     public void ClosePauseUI() => pause.SetActive(false);
+
+    public IEnumerator TutorialCoroutine() {
+        while (true) {
+            if (GameTime >= infos[0].startTime - 0.4f && !fadeinRunning) {
+                fadeinRunning = true;
+                tutorialText.text = infos[0].guide;
+                StartCoroutine(TextFadeIn());
+            }
+            else if (GameTime >= infos[0].endTime && fadeinRunning && !fadeoutRunning){
+                fadeoutRunning = true;
+                StartCoroutine(TextFadeOut());
+            }
+            yield return null;
+        }
+    }
+
+    private IEnumerator TextFadeIn() {
+        float time = 0f;
+        while (time < 0.4f) {
+            c.a = time * 2.5f;
+            tutorialText.color = c;
+            time += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private IEnumerator TextFadeOut()
+    {
+        float time = 0f;
+        while (time < 0.4f)
+        {
+            c.a = 1 - time * 2.5f;
+            tutorialText.color = c;
+            time += Time.deltaTime;
+            yield return null;
+        }
+        infos.RemoveAt(0);
+        fadeinRunning = false;
+        fadeoutRunning = false;
+    }
+
+    public void ReadTutorial() {
+        tutorialText.gameObject.SetActive(true);
+        fs = new FileStream(Application.streamingAssetsPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                         + Path.DirectorySeparatorChar + "TutorialInfo.txt", FileMode.Open);
+        sr = new StreamReader(fs);
+        string guide;
+        while (!sr.EndOfStream) { 
+            guide = sr.ReadLine();
+            var guideList = guide.Split('^');
+            infos.Add(new TutorialInfo(float.Parse(guideList[0]), float.Parse(guideList[1]), guideList[2]));
+        }
+        sr.Close();
+    }
+}
+
+struct TutorialInfo {
+    public float startTime;
+    public float endTime;
+    public string guide;
+
+    public TutorialInfo(float startTime, float endTime, string guide) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.guide = guide.Replace("\\n", "\n");
+    }
 }

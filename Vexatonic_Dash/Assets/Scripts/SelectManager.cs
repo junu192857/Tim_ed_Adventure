@@ -289,6 +289,7 @@ public class SelectManager : MonoBehaviour
             StopCoroutine(c);
         }
         coroutines.Clear();
+        GameManager.myManager.isTutorial = false;
         SceneManager.LoadScene("Scenes/LevelTest");
     }
 

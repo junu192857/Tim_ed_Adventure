@@ -109,7 +109,7 @@ public class RhythmManager : MonoBehaviour
     }
 
     [SerializeField] private AudioClip tutorialBgm;
-    private bool isTutorial;
+    private bool isTutorial => GameManager.myManager.isTutorial;
 
 
     // 게임에 활용되는 리듬게임적 요소를 다룬다.
@@ -132,9 +132,6 @@ public class RhythmManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (SceneManager.GetActiveScene().name == "Tutorial") isTutorial = true;
-        else isTutorial = false;
-
         song = GameManager.myManager.sm.GetComponent<AudioSource>();
 
         if (isTutorial) song.clip = tutorialBgm;
@@ -179,7 +176,10 @@ public class RhythmManager : MonoBehaviour
         );
         StartCoroutine(nameof(StartReceivingInput));
         StartCoroutine(StartSong());
-
+        if (isTutorial) {
+            GameManager.myManager.um.ReadTutorial();
+            StartCoroutine(GameManager.myManager.um.TutorialCoroutine());       
+        }
     }
 
     void Update()
@@ -655,7 +655,6 @@ public class RhythmManager : MonoBehaviour
     private IEnumerator StartParticle() {
         GameObject particle;
         while (true) {
-            Debug.Log("Generating Particle..");
             if (state == RhythmState.Ingame && gameTime > 0f)
             {
                 particle = Instantiate(particlePrefab, Vector3.zero, Quaternion.identity, player.transform);
@@ -670,6 +669,7 @@ public class RhythmManager : MonoBehaviour
             }
         }
     }
+
 }
 
 public enum JudgementType
