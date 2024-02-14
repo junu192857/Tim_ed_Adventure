@@ -128,7 +128,7 @@ public class CameraController : MonoBehaviour
                 ChangeCameraVelocity((info as CameraVelocityInfo).cameraVelocity);
                 break;
             case CameraControlType.Fix:
-                FixCamera((info as CameraFixInfo).fixPivot, info.term);
+                FixCamera((info as CameraFixInfo).fixPivotDelta, info.term);
                 break;
             case CameraControlType.Return:
                 FollowPlayer(info.term);
@@ -199,20 +199,20 @@ public class CameraController : MonoBehaviour
     /// </summary>
     /// <param name="fixPivot">The position you want to fix camera.</param>
     /// <param name="term">The time you want to let this operation take.</param>
-    public void FixCamera(Vector2 fixPivot, double term)
+    public void FixCamera(Vector2 fixPivotDelta, double term)
     {
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
 
-        moveCoroutine = FixCameraCoroutine(fixPivot, term);
+        moveCoroutine = FixCameraCoroutine(fixPivotDelta, term);
         StartCoroutine(moveCoroutine);
     }
     
-    private IEnumerator FixCameraCoroutine(Vector2 fixPivot, double term)
+    private IEnumerator FixCameraCoroutine(Vector2 fixPivotDelta, double term)
     {
         isBeingControlled = true;
 
         Vector3 currentPosition = _camera.transform.position;
-        Vector3 fixPivot3D = ConvertToCameraPos(fixPivot);
+        Vector3 fixPivot3D = ConvertToCameraPos((Vector2)currentPosition + fixPivotDelta);
         float localTime = 0f;
 
         while (localTime < term)
