@@ -8,6 +8,7 @@ public class CharacterControl : MonoBehaviour
     private IEnumerator characterCoroutine;
 
     private float g => GameManager.g;
+    private double myGameTime => GameManager.myManager.rm.GameTime;
     private int gravityAngle;
 
     private delegate float TimeFunc(float time, float playerMovingTime);
@@ -172,5 +173,20 @@ public class CharacterControl : MonoBehaviour
             if (time == 0) return 0;
             else return Mathf.Pow(time, 2f / 3f) * Mathf.Pow(playerMovingTime, 1f / 3f);
         else return time;
+    }
+
+    public void InitialCharacterMove() {
+        characterCoroutine = InitialCharacterCoroutine();
+        StartCoroutine(characterCoroutine);        
+    }
+
+    private IEnumerator InitialCharacterCoroutine() {
+        Vector3 initialPos = Vector3.left * GameManager.myManager.scrollSpeed * 2 * 5; //1초 이동 거리 = scrollSpeed * 2, 초기 플레이어 이동 시간 5초(gameTime -5초~0초)
+        while (myGameTime < 0.166f) {
+            Vector3 currentPos = initialPos * (float)(-myGameTime) / 5f;
+            gameObject.transform.position = currentPos;
+            yield return null;
+        }
+        characterCoroutine = null;
     }
 }

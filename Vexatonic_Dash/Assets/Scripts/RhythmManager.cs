@@ -192,6 +192,8 @@ public class RhythmManager : MonoBehaviour
             new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
         );
         StartCoroutine(nameof(StartReceivingInput));
+
+        myPlayer.InitialCharacterMove();
         StartCoroutine(StartSong());
         if (isTutorial) {
             GameManager.myManager.um.ReadTutorial();
