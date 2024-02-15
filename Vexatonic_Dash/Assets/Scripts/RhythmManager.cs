@@ -116,7 +116,7 @@ public class RhythmManager : MonoBehaviour
 
     [Header ("Tutorial")]
     [SerializeField] private AudioClip tutorialBgm;
-    private bool isTutorial => GameManager.myManager.isTutorial;
+    public bool isTutorial => GameManager.myManager.isTutorial;
     private int tutorialIndicatorIndex;
     private double[] startTimeForIndex = new double[] { 0, 28, 51, 52, 69, 70, 85, 86, 103, 104, 118, 119, 120, 126, 127, 128, 129, 147 };
 
@@ -195,7 +195,7 @@ public class RhythmManager : MonoBehaviour
         StartCoroutine(StartSong());
         if (isTutorial) {
             GameManager.myManager.um.ReadTutorial();
-            StartCoroutine(GameManager.myManager.um.TutorialCoroutine());       
+            StartCoroutine(GameManager.myManager.um.TutorialCoroutine());     
         }
     }
 
@@ -344,6 +344,11 @@ public class RhythmManager : MonoBehaviour
             }
         }
         UpdateGravity();
+
+        if (isTutorial && song.time >= 56.95f) {
+            song.Stop();
+            song.Play();
+        }
     }
 
 
@@ -391,6 +396,7 @@ public class RhythmManager : MonoBehaviour
 
     private void GameOver() {
         state = RhythmState.GameOver;
+        song.Stop();
         Time.timeScale = 0f;
         GameManager.myManager.sm.PlaySFX("Game Over");
 
@@ -409,7 +415,10 @@ public class RhythmManager : MonoBehaviour
     }
 
     private void GameClear() {
+        if (isTutorial) GameManager.myManager.um.DeactivateKeyboard();
+
         state = RhythmState.GameClear;
+        song.Stop();
         Time.timeScale = 0f;
         GameManager.myManager.sm.PlaySFX("Game Clear");
 

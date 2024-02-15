@@ -78,6 +78,12 @@ public class UIManager : MonoBehaviour
     private bool fadeinRunning = false;
     private bool fadeoutRunning = false;
     [SerializeField] private List<GameObject> TutorialIndicators;
+    [SerializeField] private GameObject keyboard;
+    [SerializeField] private List<GameObject> keyboardArrows;
+    private List<int> fjArrowTimings = new List<int> { 18, 29, 45, 53, 121, 130};
+    private List<int> dkArrowTimings = new List<int> { 59, 70, 79, 86, 121, 130 };
+    private List<int> spaceArrowTimings = new List<int> { 93, 104, 114, 118, 121, 130 };
+    private bool IsTutorial => GameManager.myManager.rm.isTutorial;
     
     private static int Score => GameManager.myManager.rm.score;
     private static int Progress => GameManager.myManager.rm.progress;
@@ -299,8 +305,11 @@ public class UIManager : MonoBehaviour
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
         GameManager.myManager.sm.PlaySFX("Button");
-        SceneManager.LoadScene("Scenes/Select");
+        
+        if (IsTutorial) SceneManager.LoadScene("Scenes/Main");
+        else SceneManager.LoadScene("Scenes/Select");
     }
+
 
     public void OpenPauseUI() => pause.SetActive(true);
 
@@ -317,6 +326,21 @@ public class UIManager : MonoBehaviour
                 fadeoutRunning = true;
                 StartCoroutine(TextFadeOut());
             }
+            if (fjArrowTimings.Count > 0 && GameTime > fjArrowTimings[0]) {
+                keyboardArrows[0].SetActive(!keyboardArrows[0].activeSelf);
+                fjArrowTimings.RemoveAt(0);
+            }
+            if (dkArrowTimings.Count > 0 && GameTime > dkArrowTimings[0])
+            {
+                keyboardArrows[1].SetActive(!keyboardArrows[1].activeSelf);
+                dkArrowTimings.RemoveAt(0);
+            }
+            if (spaceArrowTimings.Count > 0 && GameTime > spaceArrowTimings[0])
+            {
+                keyboardArrows[2].SetActive(!keyboardArrows[2].activeSelf);
+                spaceArrowTimings.RemoveAt(0);
+            }
+
             yield return null;
         }
     }
@@ -324,8 +348,7 @@ public class UIManager : MonoBehaviour
     private IEnumerator TextFadeIn() {
         float time = 0f;
         while (time < 0.4f) {
-            c.a = time * 2.5f;
-            tutorialText.color = c;
+            tutorialText.transform.localScale = new Vector3(time * 2.5f, time * 2.5f, 1f);
             time += Time.deltaTime;
             yield return null;
         }
@@ -336,8 +359,7 @@ public class UIManager : MonoBehaviour
         float time = 0f;
         while (time < 0.4f)
         {
-            c.a = 1 - time * 2.5f;
-            tutorialText.color = c;
+            tutorialText.transform.localScale = new Vector3(1f - time * 2.5f, 1f - time * 2.5f, 1f);
             time += Time.deltaTime;
             yield return null;
         }
@@ -349,6 +371,7 @@ public class UIManager : MonoBehaviour
     public void ReadTutorial() {
         tutorialText.gameObject.SetActive(true);
         foreach (var obj in TutorialIndicators) obj.SetActive(true);
+        keyboard.SetActive(true);
         fs = new FileStream(Application.streamingAssetsPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                          + Path.DirectorySeparatorChar + "TutorialInfo.txt", FileMode.Open);
         sr = new StreamReader(fs);
@@ -360,6 +383,8 @@ public class UIManager : MonoBehaviour
         }
         sr.Close();
     }
+
+    public void DeactivateKeyboard() => keyboard.SetActive(false);
 
     //public void FadeoutIndicator(int index) => StartCoroutine(TutorialIndicators[index].GetComponent<TutorialIndicatroBehaviour>().Fadeout());
 }

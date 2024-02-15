@@ -393,6 +393,7 @@ public class MainManager : MonoBehaviour
 
     public void OnClickTutorialbutton() {
 
+        GameManager.myManager.sm.PlaySFX("Button");
         GameManager.myManager.filepath = Application.streamingAssetsPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                          + Path.DirectorySeparatorChar + "Tutorial.txt";
         GameManager.myManager.selectedSongName = "Tutorial";
