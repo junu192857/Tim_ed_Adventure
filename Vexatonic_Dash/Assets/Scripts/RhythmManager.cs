@@ -344,6 +344,11 @@ public class RhythmManager : MonoBehaviour
             }
         }
         UpdateGravity();
+
+        if (isTutorial && song.time >= 56.95f) {
+            song.Stop();
+            song.Play();
+        }
     }
 
 
@@ -391,6 +396,7 @@ public class RhythmManager : MonoBehaviour
 
     private void GameOver() {
         state = RhythmState.GameOver;
+        song.Stop();
         Time.timeScale = 0f;
         GameManager.myManager.sm.PlaySFX("Game Over");
 
@@ -409,7 +415,10 @@ public class RhythmManager : MonoBehaviour
     }
 
     private void GameClear() {
+        if (isTutorial) GameManager.myManager.um.DeactivateKeyboard();
+
         state = RhythmState.GameClear;
+        song.Stop();
         Time.timeScale = 0f;
         GameManager.myManager.sm.PlaySFX("Game Clear");
 
@@ -666,6 +675,18 @@ public class RhythmManager : MonoBehaviour
                 pauseCoroutine = ReturnToGame();
                 pauseUICoroutine = GameManager.myManager.um.ShowCountdownUIForContinue();
                 StartCoroutine(pauseCoroutine);
+                break;
+            case RhythmState.GameOver:
+                GameManager.myManager.um.OnClickMusicSelectButton();
+                break;
+            case RhythmState.GameClear:
+                if (isTutorial) {
+                    GameManager.myManager.im.Deactivate();
+                    Time.timeScale = 1f;
+                    GameManager.myManager.sm.PlaySFX("Button");
+                    SceneManager.LoadScene("Scenes/Main");
+                }
+                else GameManager.myManager.um.OnClickMusicSelectButton();
                 break;
             default:
                 break;

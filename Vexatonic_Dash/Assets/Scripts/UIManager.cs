@@ -380,6 +380,8 @@ public class UIManager : MonoBehaviour
         sr.Close();
     }
 
+    public void DeactivateKeyboard() => keyboard.SetActive(false);
+
     //public void FadeoutIndicator(int index) => StartCoroutine(TutorialIndicators[index].GetComponent<TutorialIndicatroBehaviour>().Fadeout());
 }
 
