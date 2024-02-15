@@ -667,6 +667,10 @@ public class RhythmManager : MonoBehaviour
                 pauseUICoroutine = GameManager.myManager.um.ShowCountdownUIForContinue();
                 StartCoroutine(pauseCoroutine);
                 break;
+            case RhythmState.GameOver:
+            case RhythmState.GameClear:
+                GameManager.myManager.um.OnClickMusicSelectButton();
+                break;
             default:
                 break;
         }
