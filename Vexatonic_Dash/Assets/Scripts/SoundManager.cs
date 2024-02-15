@@ -54,6 +54,7 @@ public class SoundManager : MonoBehaviour
 
     // Not Implemented. play song for selected music in select scene.
     public IEnumerator PlaySelectedSong(int songIndex) {
+        song.Stop();
         string fullpath = "file://" + MetaReader.SongMetaList[songIndex].AudioFilePath;
         UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(fullpath, AudioType.MPEG);
         yield return uwr.SendWebRequest();

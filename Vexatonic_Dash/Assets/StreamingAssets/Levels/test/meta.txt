@@ -1,7 +1,7 @@
-SONG 240bpm_Metronome
-COMPOSER None
-LEVEL 1 1 1
+SONG Savage_Terminal
+COMPOSER NEXON
+LEVEL 1 1 8
 AUDIO audio.mp3
 EASY Test.txt
 HARD Test.txt
-VEX Test.txt
+VEX Vex.txt
