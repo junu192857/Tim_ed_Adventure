@@ -57,7 +57,8 @@ public class LevelReader
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
             }
             */
-            if (line.StartsWith("OFFSET")) // OFFSET (시간)
+            if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+            else if (line.StartsWith("OFFSET")) // OFFSET (시간)
             {
                 GameManager.myManager.levelOffset = double.Parse(myList[1]);
             }
@@ -87,18 +88,20 @@ public class LevelReader
 
                 cameraInfoStack.Push(camInfo);
             }
-            else {
-                if (myList[0].Length != 1) {
+            else
+            {
+                if (myList[0].Length != 1)
+                {
                     Debug.LogError("Parse Error: Length of Note type letter is not 1");
                     sr.Close();
                     return null;
                 }
-                        
+
                 // A (스폰시간) 0 (종류) (경사도) (진행방향)
                 // B (스폰시간) (대쉬 계수) (종류) (경사도) (진행방향)
                 // C (스폰시간) (높이변화) (종류) (경사도) (진행방향)
                 cur = GenerateNoteSpawnInfo(myList);
-                
+
                 if (list.TryPeek(out prev))
                 {
                     prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
@@ -113,9 +116,11 @@ public class LevelReader
                         }
                     }
                 }
+
                 list.Push(cur);
 
-                if (cur.noteSubType == NoteSubType.End) {
+                if (cur.noteSubType == NoteSubType.End)
+                {
                     cur.noteLastingTime = 1f;
                     List<NoteSpawnInfo> returnList = list.ToList();
                     returnList.Reverse();
