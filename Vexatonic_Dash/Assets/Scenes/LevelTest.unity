@@ -8321,7 +8321,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backgrounds:
   - {fileID: 21300000, guid: a41c3c5dadc148b4e84dc6fa3a0c7ea2, type: 3}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 8b3895aebdb308748b88e9c74e7a5fff, type: 3}
+  - {fileID: 21300000, guid: 49615c5de9ab68b4fb977aec9d750490, type: 3}
   backgroundUI: {fileID: 401878124}
   scoreText: {fileID: 15652164}
   progressText: {fileID: 864209694}

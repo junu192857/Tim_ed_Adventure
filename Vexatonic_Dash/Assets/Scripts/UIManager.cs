@@ -119,6 +119,8 @@ public class UIManager : MonoBehaviour
         backgroundUI.sprite = GameManager.myManager.selectedSongName switch
         {
             "Savage_Terminal" => backgrounds[0],
+            "Tutorial" => backgrounds[1],
+            "Reminiscence" => backgrounds[2],
         };
 
         scoreText.text = "0";
