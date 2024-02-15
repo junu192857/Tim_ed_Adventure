@@ -133,7 +133,7 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         
         levelInfo.SetActive(false);
-        ShowCountdownUI();
+        //ShowCountdownUI();
     }
 
     private IEnumerator CountdownUICoroutine()

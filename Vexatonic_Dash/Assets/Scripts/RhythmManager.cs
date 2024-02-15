@@ -590,8 +590,8 @@ public class RhythmManager : MonoBehaviour
 
     private IEnumerator StartSong() {
         double songStartTiming = -(GameManager.myManager.globalOffset + GameManager.myManager.levelOffset) / 1000;
-        while (gameTime < songStartTiming) yield return new WaitForEndOfFrame();
-        song.time = (float)(gameTime - songStartTiming);
+        yield return new WaitUntil(() => gameTime >= songStartTiming);
+        //song.time = (float)(gameTime - songStartTiming);
         song.Play();
     }
 
@@ -666,6 +666,7 @@ public class RhythmManager : MonoBehaviour
                 Time.timeScale = 0f;
                 song.Pause();
                 state = RhythmState.Paused;
+                GameManager.myManager.im.Deactivate();
                 GameManager.myManager.um.OpenPauseUI();
                 break;
             case RhythmState.Paused:
@@ -673,6 +674,7 @@ public class RhythmManager : MonoBehaviour
                 if (pauseCoroutine != null) StopCoroutine(pauseCoroutine);
                 if (pauseUICoroutine != null) StopCoroutine(pauseUICoroutine);
                 pauseCoroutine = ReturnToGame();
+                GameManager.myManager.im.Activate();
                 pauseUICoroutine = GameManager.myManager.um.ShowCountdownUIForContinue();
                 StartCoroutine(pauseCoroutine);
                 break;

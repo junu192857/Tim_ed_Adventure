@@ -168,7 +168,9 @@ public class CharacterControl : MonoBehaviour
     private float CalculateTimeForNormal(float time, float playerMovingTime) => time;
 
     private float CalculateTimeForDash(float time, float playerMovingTime) {
-        if (time <= playerMovingTime) return Mathf.Sqrt(time * playerMovingTime);
+        if (time <= playerMovingTime) 
+            if (time == 0) return 0;
+            else return Mathf.Pow(time, 2f / 3f) * Mathf.Pow(playerMovingTime, 1f / 3f);
         else return time;
     }
 }
