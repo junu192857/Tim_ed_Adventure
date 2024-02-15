@@ -23,8 +23,8 @@
 98^101^곧 점프 노트가 등장합니다!\n흐리게 보이는 플랫폼에 노트가 겹칠 때 <color=yellow>'Space'</color> 키를 눌러서 노트를 처리하세요!
 104^108^점프 노트와 대쉬 노트는 소개드린 것과 다른 종류의 노트도 존재합니다.
 109^113^종류와 관계없이,\n<color=yellow>노란색</color> 점프 노트는 <color=yellow>'Space'</color> 키를 눌러서 처리하고,\n<color=blue>파란색</color> 대쉬 노트는 <color=blue>'D'</color> 또는 <color=blue>'K'</color> 키를 눌러서 처리합니다.
-114^120^곧 노트가 2개 연속으로 등장합니다!\n<color=yellow>'Space'</color> 키를 두 번 눌러서 노트를 처리하세요!
-121^129^곧 노트가 4개 연속으로 등장합니다!\n<color=yellow>'Space'</color> -> <color=blue>'D'</color> 또는 <color=blue>'K'</color> -> <color=yellow>'Space'</color> -> <color=red>'F'</color> 또는 <color=red>'J'</color>를\n순서대로 눌러서 노트를 처리하세요!
+114^118^곧 노트가 2개 연속으로 등장합니다!\n<color=yellow>'Space'</color> 키를 두 번 눌러서 노트를 처리하세요!
+121^125^곧 노트가 4개 연속으로 등장합니다!\n<color=yellow>'Space'</color> -> <color=blue>'D'</color> 또는 <color=blue>'K'</color> -> <color=yellow>'Space'</color> -> <color=red>'F'</color> 또는 <color=red>'J'</color>를\n순서대로 눌러서 노트를 처리하세요!
 130^132^잘하셨습니다!
 133^137^마지막으로 소개할 노트는, 맵의 종료를 의미하는 <color=red>빨간색</color> 종료 노트입니다.
 138^142^종료 노트 역시 노트의 하나이므로, <color=red>'F'</color> 또는 <color=red>'J'</color> 키를 눌러야만 노트를 처리할 수 있습니다.
