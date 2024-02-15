@@ -195,7 +195,7 @@ public class RhythmManager : MonoBehaviour
         StartCoroutine(StartSong());
         if (isTutorial) {
             GameManager.myManager.um.ReadTutorial();
-            StartCoroutine(GameManager.myManager.um.TutorialCoroutine());       
+            StartCoroutine(GameManager.myManager.um.TutorialCoroutine());     
         }
     }
 
