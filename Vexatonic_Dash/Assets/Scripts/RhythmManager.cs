@@ -116,7 +116,7 @@ public class RhythmManager : MonoBehaviour
 
     [Header ("Tutorial")]
     [SerializeField] private AudioClip tutorialBgm;
-    private bool isTutorial => GameManager.myManager.isTutorial;
+    public bool isTutorial => GameManager.myManager.isTutorial;
     private int tutorialIndicatorIndex;
     private double[] startTimeForIndex = new double[] { 0, 28, 51, 52, 69, 70, 85, 86, 103, 104, 118, 119, 120, 126, 127, 128, 129, 147 };
 
@@ -677,16 +677,8 @@ public class RhythmManager : MonoBehaviour
                 StartCoroutine(pauseCoroutine);
                 break;
             case RhythmState.GameOver:
-                GameManager.myManager.um.OnClickMusicSelectButton();
-                break;
             case RhythmState.GameClear:
-                if (isTutorial) {
-                    GameManager.myManager.im.Deactivate();
-                    Time.timeScale = 1f;
-                    GameManager.myManager.sm.PlaySFX("Button");
-                    SceneManager.LoadScene("Scenes/Main");
-                }
-                else GameManager.myManager.um.OnClickMusicSelectButton();
+                GameManager.myManager.um.OnClickMusicSelectButton();
                 break;
             default:
                 break;

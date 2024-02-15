@@ -83,6 +83,7 @@ public class UIManager : MonoBehaviour
     private List<int> fjArrowTimings = new List<int> { 18, 29, 45, 53, 121, 130};
     private List<int> dkArrowTimings = new List<int> { 59, 70, 79, 86, 121, 130 };
     private List<int> spaceArrowTimings = new List<int> { 93, 104, 114, 118, 121, 130 };
+    private bool IsTutorial => GameManager.myManager.rm.isTutorial;
     
     private static int Score => GameManager.myManager.rm.score;
     private static int Progress => GameManager.myManager.rm.progress;
@@ -304,8 +305,11 @@ public class UIManager : MonoBehaviour
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
         GameManager.myManager.sm.PlaySFX("Button");
-        SceneManager.LoadScene("Scenes/Select");
+        
+        if (IsTutorial) SceneManager.LoadScene("Scenes/Main");
+        else SceneManager.LoadScene("Scenes/Select");
     }
+
 
     public void OpenPauseUI() => pause.SetActive(true);
 
