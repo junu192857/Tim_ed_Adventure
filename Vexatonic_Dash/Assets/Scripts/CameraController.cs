@@ -307,13 +307,11 @@ public class CameraController : MonoBehaviour
         {
             float tempScale = GetSineEaseValue(currentScale, destScale, (float) (localTime / term));
             _camera.orthographicSize = tempScale;
-            GameManager.myManager.um.SetBackground(tempScale);
             yield return null;
             localTime += Time.deltaTime;
         }
 
         _camera.orthographicSize = destScale;
-        GameManager.myManager.um.SetBackground(destScale);
         zoomCoroutine = null;
     }
 

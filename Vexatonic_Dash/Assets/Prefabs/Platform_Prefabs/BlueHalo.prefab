@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7413139402026628301}
   - component: {fileID: 7413139402026628300}
   - component: {fileID: 5015990851577089217}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BlueHalo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
