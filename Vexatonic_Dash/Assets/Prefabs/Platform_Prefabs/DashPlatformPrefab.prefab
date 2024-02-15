@@ -59,6 +59,7 @@ MonoBehaviour:
   angle: 0
   actualAngle: 0
   parentNote: {fileID: 0}
+  tutorialDisable: 0
 --- !u!1 &583682282139914259
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,7 +137,7 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 1
+  m_DrawMode: 2
   m_Size: {x: 10, y: 2.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0

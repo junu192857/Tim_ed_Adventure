@@ -27,6 +27,11 @@ public class CameraController : MonoBehaviour
 
     private double gameTime => GameManager.myManager.rm.gameTime;
     private double lastNoteTime;
+    private CharacterDirection dir;
+
+    private Vector3 AutoCameraPosDelta {
+        get => dir == CharacterDirection.Left ? 2 * Vector3.left : 2 * Vector3.right;
+    }
 
     private IEnumerator zoomCoroutine;
     private IEnumerator rotateCoroutine;
@@ -98,7 +103,7 @@ public class CameraController : MonoBehaviour
     private IEnumerator AutoMoveCoroutine()
     {
         Vector3 currentCamPos = _camera.transform.position;
-        Vector3 currentEndPos = ConvertToCameraPos(currentPlayingNote.endPos);
+        Vector3 currentEndPos = ConvertToCameraPos(currentPlayingNote.endPos + AutoCameraPosDelta);
 
         double endTime = currentPlayingNote.noteEndTime;
         
@@ -248,7 +253,7 @@ public class CameraController : MonoBehaviour
             
         while (localTime < term)
         {
-            Vector3 currentCharacterPos = ConvertToCameraPos(character.transform.position);
+            Vector3 currentCharacterPos = ConvertToCameraPos(character.transform.position + AutoCameraPosDelta);
             Vector3 tempPos = GetSineOutValue(currentPosition, currentCharacterPos, (float)(localTime / term));
             _camera.transform.position = tempPos;
             
@@ -378,6 +383,7 @@ public class CameraController : MonoBehaviour
 
         lastNoteTime = gameTime;
         currentPlayingNote = note;
+        dir = note.direction;
     }
 
     private void StopCameraCoroutine()
