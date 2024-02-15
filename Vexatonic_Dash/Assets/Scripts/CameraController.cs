@@ -158,7 +158,7 @@ public class CameraController : MonoBehaviour
         else return PlayerPositionState.CriticallyOutsideBorder;
     }
 
-    private IEnumerator CameraMoveCoroutine(Vector2 viewpointPos) {
+    /*private IEnumerator CameraMoveCoroutine(Vector2 viewpointPos) {
         Vector2 currentCameraPos = _camera.transform.position;
         Vector2 newCameraPos = CalcalateNewCameraPos(viewpointPos);
         float time = 0f;
@@ -180,7 +180,7 @@ public class CameraController : MonoBehaviour
         else if (centeredPos.y > 0.4f) newCameraPos.y += _camera.orthographicSize * 2 * (centeredPos.y - 0.4f);
 
         return newCameraPos;
-    }
+    }*/
 
     /// <summary>
     /// Moves camera to given position and fixes camera.

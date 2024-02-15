@@ -1,7 +1,0 @@
-SONG Normal one
-COMPOSER Who knows
-LEVEL 1 1 1
-AUDIO audio.mp3
-EASY Test.txt
-HARD Test.txt
-VEX Test.txt

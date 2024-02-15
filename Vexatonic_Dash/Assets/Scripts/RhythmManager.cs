@@ -192,6 +192,8 @@ public class RhythmManager : MonoBehaviour
             new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
         );
         StartCoroutine(nameof(StartReceivingInput));
+
+        myPlayer.InitialCharacterMove();
         StartCoroutine(StartSong());
         if (isTutorial) {
             GameManager.myManager.um.ReadTutorial();
@@ -316,6 +318,7 @@ public class RhythmManager : MonoBehaviour
 
                     DequeueNoteFromQueue();
                     note.FixNote();
+                    GameManager.myManager.um.SpawnHalo(note);
                     myPlayer.MoveCharacter(note, gameTime);
                     AddJudgement(judgement);
                 }
@@ -339,6 +342,7 @@ public class RhythmManager : MonoBehaviour
             {
                 DequeueNoteFromQueue();
                 note.FixNote();
+                GameManager.myManager.um.SpawnHalo(note);
                 myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
             }
@@ -657,7 +661,7 @@ public class RhythmManager : MonoBehaviour
         return prevAngle;
     }
 
-    public void OnPause() {
+    public void OnPause() { //Pressed Esc Button
         switch (state)
         {
             case RhythmState.BeforeGameStart:
@@ -680,17 +684,15 @@ public class RhythmManager : MonoBehaviour
                 break;
             case RhythmState.GameOver:
             case RhythmState.GameClear:
-                GameManager.myManager.um.OnClickMusicSelectButton();
                 break;
             default:
                 break;
         }
     }
-    public void OnReturnToMain() {
-        if (state != RhythmState.Paused && state != RhythmState.GameClear) return;
+    public void OnReturnToMain() { // Pressed Enter Button
+        if (state != RhythmState.Paused && state != RhythmState.GameClear && state != RhythmState.GameOver) return;
         Time.timeScale = 1f;
-        GameManager.myManager.sm.PlaySFX("Button");
-        SceneManager.LoadScene("Select");
+        GameManager.myManager.um.OnClickMusicSelectButton();
     }
 
 
