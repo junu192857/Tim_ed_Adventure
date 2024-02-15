@@ -318,6 +318,7 @@ public class RhythmManager : MonoBehaviour
 
                     DequeueNoteFromQueue();
                     note.FixNote();
+                    GameManager.myManager.um.SpawnHalo(note);
                     myPlayer.MoveCharacter(note, gameTime);
                     AddJudgement(judgement);
                 }
@@ -341,6 +342,7 @@ public class RhythmManager : MonoBehaviour
             {
                 DequeueNoteFromQueue();
                 note.FixNote();
+                GameManager.myManager.um.SpawnHalo(note);
                 myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
             }

@@ -2285,7 +2285,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &541251125
 GameObject:
@@ -2328,7 +2328,7 @@ Transform:
   - {fileID: 409217832}
   - {fileID: 1844017999}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &571764372
 GameObject:
@@ -5913,7 +5913,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1298983387
 GameObject:
@@ -6860,7 +6860,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1504139004
 GameObject:
@@ -8063,6 +8063,10 @@ MonoBehaviour:
   fpsText: {fileID: 976191457}
   healthSlider: {fileID: 2019173763}
   healthImage: {fileID: 391404063}
+  halos:
+  - {fileID: 7413139402026628303, guid: 801a930f8433cb149a51088c67713b01, type: 3}
+  - {fileID: 7413139402026628303, guid: 8e50f3637ef7c314584361f739c2e094, type: 3}
+  - {fileID: 7413139402026628303, guid: 3647ef5ad32e58744994d5a45581d2dd, type: 3}
   levelInfo: {fileID: 1461118653}
   levelInfoSongNameText: {fileID: 598477557}
   levelInfoComposerNameText: {fileID: 1905431352}
@@ -8137,7 +8141,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1789463942
 GameObject:
@@ -8457,7 +8461,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1818378588
 MonoBehaviour:
@@ -8636,7 +8640,7 @@ RectTransform:
   - {fileID: 1360974338}
   - {fileID: 1187415136}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -9868,7 +9872,7 @@ Transform:
   m_Children:
   - {fileID: 1564321059724471661}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1052819610171755547
 SpriteRenderer:
