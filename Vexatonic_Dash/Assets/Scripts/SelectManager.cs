@@ -316,4 +316,8 @@ public class SelectManager : MonoBehaviour
         GameManager.myManager.sm.PlaySFX("Button");
         StartGame();
     }
+
+    public void OnBackToMain() {
+        OnClickBackButton();
+    }
 }
