@@ -13,6 +13,10 @@ public class UIManager : MonoBehaviour
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
 
+    [Header("Backgrounds")]
+    [SerializeField] private List<Sprite> backgrounds;
+    [SerializeField] private SpriteRenderer bgRenderer;
+
     [Header("In-Game UI")]
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
@@ -111,6 +115,12 @@ public class UIManager : MonoBehaviour
     
     private void InitializeUI()
     {
+        //Background part trash-like coded to submit game file as soon as possible. should must be fixed
+        bgRenderer.sprite = GameManager.myManager.selectedSongName switch
+        {
+            "Savage_Terminal" => backgrounds[0],
+        };
+
         scoreText.text = "0";
         healthSlider.value = 1f;
         healthImage.color = new Color(0.5f, 1f, 0.5f);
@@ -404,6 +414,10 @@ public class UIManager : MonoBehaviour
         };
 
         Instantiate(halos[haloIndex], note.startPos + haloPositionDelta, Quaternion.identity);
+    }
+
+    public void SetBackground(float orthographicScale) {
+        bgRenderer.gameObject.transform.localScale = new Vector3(orthographicScale * 1.1f / 3, orthographicScale * 1.1f / 3, 1f);
     }
     //public void FadeoutIndicator(int index) => StartCoroutine(TutorialIndicators[index].GetComponent<TutorialIndicatroBehaviour>().Fadeout());
 }

@@ -126,6 +126,7 @@ public class CharacterControl : MonoBehaviour
             // Vector3 targetPosition = CalculateJumpPosition(v, time, note.startPos);
             // if (time > playerMovingTime) targetPosition = note.endPos;
             gameObject.transform.position = targetPosition;
+            gameObject.transform.localEulerAngles = new Vector3(0, 0, (int)note.direction * Mathf.Rad2Deg * Mathf.Atan2(v_y + g * time, v_x));
             time += Time.deltaTime;
             yield return null;
         }
