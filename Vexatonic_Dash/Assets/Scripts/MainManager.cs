@@ -16,6 +16,7 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator mainSettingsButtonAnim;
     [SerializeField] private Animator mainQuitButtonAnim;
     [SerializeField] private Animator mainTutorialButtonAnim;
+    [SerializeField] private Animator mainCreditButtonAnim;
 
     [Header("Settings")] [SerializeField] private GameObject settingsParent;
 
@@ -88,6 +89,7 @@ public class MainManager : MonoBehaviour
         mainSettingsButtonAnim.SetTrigger(AnimShowHash);
         mainQuitButtonAnim.SetTrigger(AnimShowHash);
         mainTutorialButtonAnim.SetTrigger(AnimShowHash);
+        mainCreditButtonAnim.SetTrigger(AnimShowHash);
     }
 
     private IEnumerator MainHideAnimation()
@@ -99,6 +101,7 @@ public class MainManager : MonoBehaviour
         mainSettingsButtonAnim.SetTrigger(AnimHideHash);
         mainQuitButtonAnim.SetTrigger(AnimHideHash);
         mainTutorialButtonAnim.SetTrigger(AnimHideHash);
+        mainCreditButtonAnim.SetTrigger(AnimHideHash);
 
         yield return new WaitUntil(() => mainTitleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
     }
