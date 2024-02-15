@@ -2650,11 +2650,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebf21a7fdbf9c7848bcc8881db7bc334, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isTutorial: 0
   scrollSpeed: 0
   noteSpeed: 0
   globalOffset: 0
   levelOffset: 0
-  volume: 0
+  musicVolume: 0
+  sfxVolume: 0
+  keyList: 
   isMetaLoaded: 0
   filepath: 
   rm: {fileID: 0}
@@ -9450,7 +9453,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1106714072
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12998,7 +13001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1609361124
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14491,7 +14494,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1751766058
 RectTransform:
   m_ObjectHideFlags: 0

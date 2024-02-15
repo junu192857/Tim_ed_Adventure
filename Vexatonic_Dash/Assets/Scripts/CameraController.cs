@@ -105,11 +105,11 @@ public class CameraController : MonoBehaviour
         Vector3 currentCamPos = _camera.transform.position;
         Vector3 currentEndPos = ConvertToCameraPos(currentPlayingNote.endPos + AutoCameraPosDelta);
 
-        double endTime = currentPlayingNote.noteEndTime;
+        double endTime = currentPlayingNote.noteEndTime + 0.166f; // Hard Coded
         
         Vector3 cameraVelocity = (currentEndPos - currentCamPos) / (float) (endTime - gameTime);
 
-        while (!isBeingControlled)
+        while (!isBeingControlled && gameTime < endTime) 
         {
             Vector3 tempCamPos = _camera.transform.position + Time.deltaTime * cameraVelocity;
             _camera.transform.position = tempCamPos;
@@ -156,21 +156,6 @@ public class CameraController : MonoBehaviour
             return PlayerPositionState.OutsideBorder;
         }
         else return PlayerPositionState.CriticallyOutsideBorder;
-    }
-
-    private void InstantlyMoveCamera(Vector2 viewpointPos)
-    {
-        Vector2 newCameraPos = CalcalateNewCameraPos(viewpointPos);
-
-        _camera.transform.position = newCameraPos;
-    }
-    private void ContinuouslyMoveCamera(Vector2 viewpointPos) {
-        if (cameraCoroutine != null) { 
-            StopCoroutine(cameraCoroutine);
-            cameraCoroutine = null;
-        }
-        cameraCoroutine = CameraMoveCoroutine(viewpointPos);
-        StartCoroutine(cameraCoroutine);
     }
 
     private IEnumerator CameraMoveCoroutine(Vector2 viewpointPos) {
@@ -261,7 +246,7 @@ public class CameraController : MonoBehaviour
             localTime += Time.deltaTime;
         }
 
-        _camera.transform.position = ConvertToCameraPos(character.transform.position);
+        _camera.transform.position = ConvertToCameraPos(character.transform.position + AutoCameraPosDelta);
         
         isBeingControlled = false;
         moveCoroutine = null;
@@ -315,7 +300,7 @@ public class CameraController : MonoBehaviour
     private IEnumerator ZoomCameraCoroutine(double scale, double term)
     {
         float currentScale = _camera.orthographicSize;
-        float destScale = 3f / (float)scale;
+        float destScale = (float)scale;
         float localTime = 0f;
 
         while (localTime < term)
