@@ -661,7 +661,7 @@ public class RhythmManager : MonoBehaviour
         return prevAngle;
     }
 
-    public void OnPause() {
+    public void OnPause() { //Pressed Esc Button
         switch (state)
         {
             case RhythmState.BeforeGameStart:
@@ -684,17 +684,15 @@ public class RhythmManager : MonoBehaviour
                 break;
             case RhythmState.GameOver:
             case RhythmState.GameClear:
-                GameManager.myManager.um.OnClickMusicSelectButton();
                 break;
             default:
                 break;
         }
     }
-    public void OnReturnToMain() {
-        if (state != RhythmState.Paused && state != RhythmState.GameClear) return;
+    public void OnReturnToMain() { // Pressed Enter Button
+        if (state != RhythmState.Paused && state != RhythmState.GameClear && state != RhythmState.GameOver) return;
         Time.timeScale = 1f;
-        GameManager.myManager.sm.PlaySFX("Button");
-        SceneManager.LoadScene("Select");
+        GameManager.myManager.um.OnClickMusicSelectButton();
     }
 
 

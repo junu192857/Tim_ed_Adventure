@@ -37,18 +37,14 @@ public class SoundManager : MonoBehaviour
     }
 
     //For Main Scene
-    private void Start()
-    {
-        switch (SceneManager.GetActiveScene().name) {
-            case "Main":
-                song.clip = mainBgm;
-                song.Play();
-                break;
-            case "Select":
-                StartCoroutine(PlaySelectedSong(0));
-                break;
-            default:
-                break;
+    private void Start() => StartMainBgm();
+
+    public void StartMainBgm() {
+        song.Stop();
+        if (mainBgm != null)
+        {
+            song.clip = mainBgm;
+            song.Play();
         }
     }
 

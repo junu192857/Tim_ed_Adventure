@@ -2377,7 +2377,7 @@ MonoBehaviour:
     m_FontSize: 64
     m_FontStyle: 2
     m_BestFit: 0
-    m_MinSize: 6
+    m_MinSize: 4
     m_MaxSize: 72
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -2385,7 +2385,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Composer Name
+  m_Text: ComposerName
 --- !u!222 &915981348
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3523,6 +3523,8 @@ MonoBehaviour:
   highScoreValueText: {fileID: 5117308}
   patternInfoImage: {fileID: 1517497904}
   patternInfoText: {fileID: 753522045}
+  patternSelectButton: {fileID: 1517497903}
+  StartButton: {fileID: 226863708}
   titleTextAnim: {fileID: 290863778}
   songsParentAnim: {fileID: 475749063}
   highlightedSongAnim: {fileID: 1909301138}

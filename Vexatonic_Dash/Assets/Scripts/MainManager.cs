@@ -65,6 +65,9 @@ public class MainManager : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("Hello?");
+        GameManager.myManager.sm.StartMainBgm();
+
         mainParent.SetActive(true);
         settingsParent.SetActive(false);
         videoSettingsParent.SetActive(false);
