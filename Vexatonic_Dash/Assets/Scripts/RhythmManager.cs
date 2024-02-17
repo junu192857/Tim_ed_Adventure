@@ -142,7 +142,7 @@ public class RhythmManager : MonoBehaviour
     void Start()
     {
         song = GameManager.myManager.sm.GetComponent<AudioSource>();
-        song.loop = false;
+
         if (isTutorial) song.clip = tutorialBgm;
 
         overtime = isTutorial ? 0.3f : 0.166f;
