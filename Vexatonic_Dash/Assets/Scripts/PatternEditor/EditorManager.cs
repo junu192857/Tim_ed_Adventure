@@ -63,6 +63,19 @@ public class EditorManager : MonoBehaviour
     public CameraControlType cct;
     public GameObject termIndicator;
 
+    private CameraControlInfo selectedCamera;
+    public CameraControlInfo SelectedCamera {
+        get => selectedCamera;
+        set {
+            if (selectedCamera != null) selectedCamera.parent.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            selectedCamera = value;
+            selectedCamera.parent.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+        }
+    }
+
+    private delegate void CameraSettingDeletage();
+    CameraSettingDeletage csd;
+
     private CharacterDirection direction;
     public Text directionText;
     public List<GameObject> notePrefabs;
@@ -549,8 +562,9 @@ public class EditorManager : MonoBehaviour
         
         c.a = 1f;
         noteSprite.color = c;
+
         
-        OpenCameraSetting();
+        OpenCameraSetting(true);
 
         //카메라 조작 종류에 따라 info 알아서 설정하기
     }
@@ -569,9 +583,13 @@ public class EditorManager : MonoBehaviour
 
     public void DeleteLastCamera() {
         if (cameraStorage.Count == 0) return;
-        CameraControlInfo info = cameraStorage[^1];
-        Destroy(info.parent);
-        cameraStorage.RemoveAt(cameraStorage.Count - 1);
+        Destroy(SelectedCamera.parent);
+        cameraStorage.Remove(SelectedCamera);
+    }
+
+    public void SwitchSelectedCamera(float value) {
+        if (value < 0) SelectedCamera = cameraStorage[Mathf.Max(0, cameraStorage.IndexOf(SelectedCamera) - 1)];
+        else SelectedCamera = cameraStorage[Mathf.Min(cameraStorage.Count - 1, cameraStorage.IndexOf(SelectedCamera) + 1)];
     }
 
     public void ChangeNoteWriteSetting(int setting) {
@@ -621,64 +639,146 @@ public class EditorManager : MonoBehaviour
         if (noteWriteSetting == NoteWriteSetting.WriteLength) SetNotePreviewByWriteLength();
     }
 
-    public void OpenCameraSetting() {
+    public void OpenCameraSetting(bool newCamera) {
         editorState = EditorState.OnSetting;
+        if (newCamera) csd = CloseCameraSettingForNewCamera;
+        else csd = CloseCameraSettingForExistingCamera;
+
         cameraSettingPanel.SetActive(true);
     }
 
-    public void CloseCameraSetting() {
+    public void CloseCameraSetting() => csd();
+
+    public void CloseCameraSettingForExistingCamera() {
+        if (!CheckValidInput()) return;
+        GameObject termIndicatorObj;
+        double term = double.Parse(cameraTermInputField.text);
+        
+
+        switch (cct)
+        {
+            case CameraControlType.Zoom:
+                CameraZoomInfo zi = new CameraZoomInfo(SelectedCamera.time, term, double.Parse(cameraScaleInputField.text))
+                {
+                    parent = SelectedCamera.parent,
+                };
+                SelectedCamera = zi;
+                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[0];
+                break;
+            case CameraControlType.Velocity:
+                CameraVelocityInfo vi = new CameraVelocityInfo(SelectedCamera.time, new Vector2(float.Parse(cameraVxInputField.text), float.Parse(cameraVyInputField.text)))
+                {
+                    parent = SelectedCamera.parent,
+                };
+                SelectedCamera = vi;
+                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[1];
+                break;
+            case CameraControlType.Rotate:
+                CameraRotateInfo ri = new CameraRotateInfo(SelectedCamera.time, term, int.Parse(cameraAngleInputField.text))
+                {
+                    parent = SelectedCamera.parent,
+                };
+                SelectedCamera = ri;
+                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[2];
+                break;
+            case CameraControlType.Fix:
+                CameraFixInfo fi = new CameraFixInfo(SelectedCamera.time, term, new Vector2(float.Parse(cameraPosxInputField.text), float.Parse(cameraPosyInputField.text)))
+                {
+                    parent = SelectedCamera.parent,
+                };
+                SelectedCamera = fi;
+                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[3];
+                break;
+            case CameraControlType.Return:
+                CameraReturnInfo rei = new CameraReturnInfo(SelectedCamera.time, term)
+                {
+                    parent = SelectedCamera.parent,
+                };
+                SelectedCamera = rei;
+                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[4];
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        if (cct != CameraControlType.Velocity) 
+        {
+            termIndicatorObj = Instantiate(termIndicator, SelectedCamera.parent.transform);
+            termIndicatorObj.transform.localScale = new Vector3(GameManager.myManager.CalculateInputWidthFromTime(term), 1, 1);
+        }
+
+        cameraStorage = cameraStorage.OrderBy(camera => camera.time).ToList();
+        cameraSettingPanel.SetActive(false);
+        editorState = EditorState.EditorMain;
+    }
+
+    public void CloseCameraSettingForNewCamera() {
         if (!CheckValidInput()) return;
         double term = double.Parse(cameraTermInputField.text);
+        GameObject termIndicatorObj;
+
+        if (cct != CameraControlType.Velocity)
+        {
+            termIndicatorObj = Instantiate(termIndicator, notePreview.transform);
+            termIndicatorObj.transform.localScale = new Vector3(GameManager.myManager.CalculateInputWidthFromTime(term), 1, 1);
+        }
 
         switch (cct)
         {
             case CameraControlType.Zoom:
                 CameraZoomInfo zi = new CameraZoomInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, double.Parse(cameraScaleInputField.text))
                 {
-                    parent = notePreview
+                    parent = notePreview,
                 };
-                noteSprite.sprite = CameraSprites[0];
                 cameraStorage.Add(zi);
+                
+                SelectedCamera = zi;
+                noteSprite.sprite = CameraSprites[0];
                 break;
             case CameraControlType.Velocity:
                 CameraVelocityInfo vi = new CameraVelocityInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), new Vector2(float.Parse(cameraVxInputField.text), float.Parse(cameraVyInputField.text))) {
-                    parent = notePreview
+                    parent = notePreview,
                 };
                 cameraStorage.Add(vi);
+                
+                SelectedCamera = vi;
                 noteSprite.sprite = CameraSprites[1];
                 break;
             case CameraControlType.Rotate:
                 CameraRotateInfo ri = new CameraRotateInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, int.Parse(cameraAngleInputField.text))
                 {
-                    parent = notePreview
+                    parent = notePreview,
                 };
                 cameraStorage.Add(ri);
+                
+                SelectedCamera = ri;
                 noteSprite.sprite = CameraSprites[2];
                 break;
             case CameraControlType.Fix:
                 CameraFixInfo fi = new CameraFixInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, new Vector2(float.Parse(cameraPosxInputField.text), float.Parse(cameraPosyInputField.text)))
                 {
-                    parent = notePreview
+                    parent = notePreview,
                 };
                 cameraStorage.Add(fi);
+                
+                SelectedCamera = fi;
                 noteSprite.sprite = CameraSprites[3];
                 break;
             case CameraControlType.Return:
                 CameraReturnInfo rei = new CameraReturnInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term)
                 {
-                    parent = notePreview
+                    parent = notePreview,
                 };
                 cameraStorage.Add(rei);
+                
+                SelectedCamera = rei;
                 noteSprite.sprite = CameraSprites[4];
                 break;
             default:
                 throw new ArgumentOutOfRangeException();        
         }
 
-        if (cct != CameraControlType.Velocity) {
-            GameObject termIndicator = Instantiate(this.termIndicator, notePreview.transform);
-            termIndicator.transform.localScale = new Vector3(GameManager.myManager.CalculateInputWidthFromTime(term), 1, 1);
-        }
+        cameraStorage = cameraStorage.OrderBy(camera => camera.time).ToList();
 
         notePreview = null;
         jumpEndIndicator = null;
@@ -706,6 +806,8 @@ public class EditorManager : MonoBehaviour
         }
         return true;
     }
+
+ 
 
     public void SetCameraType(int index) {
         cct = index switch
