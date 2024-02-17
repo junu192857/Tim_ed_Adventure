@@ -590,6 +590,22 @@ public class MainManager : MonoBehaviour
         UpdateNoteSpeedValueText();
     }
     
+    public void OnClickNoteSpeedUpMajorButton()
+    {
+        float newNoteSpeed = GameManager.myManager.noteSpeed + 1.0f;
+        GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
+        
+        UpdateNoteSpeedValueText();
+    }
+    
+    public void OnClickNoteSpeedDownMajorButton()
+    {
+        float newNoteSpeed = GameManager.myManager.noteSpeed - 1.0f;
+        GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
+        
+        UpdateNoteSpeedValueText();
+    }
+    
     #endregion
 
     #region Audio Settings
