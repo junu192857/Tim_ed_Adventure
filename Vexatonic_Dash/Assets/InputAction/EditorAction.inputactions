@@ -40,6 +40,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchCamera",
+                    "type": "Button",
+                    "id": "f87eaa1b-8f0c-46d1-8db4-4fd48dd76d24",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OpenExistingCamera",
+                    "type": "Button",
+                    "id": "983c0c8a-e07c-4b36-aa9b-46f93490eec1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -196,6 +214,50 @@
                     "action": "DirectionToggle",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "SwitchCamera",
+                    "id": "c223c2fc-c3db-4d1d-863d-32daddf3ce9f",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchCamera",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "9d6845bf-9c3e-4fcf-b567-561c3c776494",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "99578cd1-ae6d-46db-bfb6-a1538a903159",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "76801fbc-2e0a-4a9d-ab98-92c0be839304",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenExistingCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

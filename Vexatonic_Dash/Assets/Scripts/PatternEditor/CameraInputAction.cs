@@ -33,6 +33,18 @@ public class CameraInputAction : MonoBehaviour
         if (em.editorState != EditorState.EditorMain) return;
         em.ChangeDirection(value.Get<float>());
     }
+
+    public void OnSwitchCamera(InputValue value) {
+        if (em.editorState != EditorState.EditorMain) return;
+        em.SwitchSelectedCamera(value.Get<float>());
+    }
+
+    public void OnOpenExistingCamera()
+    {
+        if (em.editorState != EditorState.EditorMain || em.SelectedCamera == null) return;
+        Debug.Log("Hi...");
+        em.OpenCameraSetting(false);
+    }
     private void Update()
     {
         if (em.editorState != EditorState.EditorMain) return;
