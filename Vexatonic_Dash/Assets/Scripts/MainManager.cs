@@ -18,6 +18,8 @@ public enum MainState
 
 public class MainManager : MonoBehaviour
 {
+    private static readonly int[] CursorMaxIndex = {4, 3, 1, 3, 4, 1};
+    
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
     
@@ -129,16 +131,10 @@ public class MainManager : MonoBehaviour
 
         if (input == 0) return;
 
-        CurrentCursorIndex = (CurrentCursorIndex + input) % CurrentState switch
-        {
-            MainState.Main          => 4,
-            MainState.Settings      => 3,
-            MainState.VideoSettings => 1,
-            MainState.AudioSettings => 3,
-            MainState.InputSettings => 4,
-            MainState.PlaySettings  => 1,
-            _ => throw new ArgumentException()
-        };
+        CurrentCursorIndex = (CurrentCursorIndex + input);
+        
+        if (CurrentCursorIndex < 0) CurrentCursorIndex = CursorMaxIndex[(int)CurrentState] - 1;
+        else if (CurrentCursorIndex >= CursorMaxIndex[(int)CurrentState]) CurrentCursorIndex = 0;
         
         UpdateCursor();
     }
@@ -170,7 +166,63 @@ public class MainManager : MonoBehaviour
 
     public void OnSelectCurrent()
     {
-        // TODO
+        switch (CurrentState)
+        {
+            case MainState.Main:
+                switch (CurrentCursorIndex)
+                {
+                    case 0:
+                        OnClickMainPlayButton();
+                        break;
+                    case 1:
+                        OnClickMainSettingsButton();
+                        break;
+                    case 2:
+                        OnClickMainQuitButton();
+                        break;
+                    case 3:
+                        OnClickTutorialButton();
+                        break;
+                    case 4:
+                        OnClickTutorialButton();
+                        break;
+                }
+                break;
+            
+            case MainState.Settings:
+                switch (CurrentCursorIndex)
+                {
+                    case 0:
+                        OnClickSettingsVideoButton();
+                        break;
+                    case 1:
+                        OnClickSettingsAudioButton();
+                        break;
+                    case 2:
+                        OnClickSettingsInputButton();
+                        break;
+                    case 3:
+                        OnClickSettingsPlayButton();
+                        break;
+                }
+                break;
+
+            case MainState.VideoSettings:
+                break;
+            
+            case MainState.AudioSettings:
+                break;
+            
+            case MainState.InputSettings:
+                OnKeySettingButton(CurrentCursorIndex + 1);
+                break;
+            
+            case MainState.PlaySettings:
+                break;
+            
+            default:
+                throw new ArgumentException();
+        }
     }
 
     public void OnEscape()
