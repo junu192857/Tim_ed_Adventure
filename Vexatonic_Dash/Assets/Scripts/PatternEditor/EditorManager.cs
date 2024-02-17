@@ -35,7 +35,7 @@ public class EditorManager : MonoBehaviour
     public GameObject bitLinePrefab;
     public GameObject songLinePrefab;
     public InputField bitInputField;
-    private float musicOffset;
+    private int musicOffset;
     public InputField offsetInputField;
     private IEnumerator songLineMoveCoroutine;
     private GameObject songLine;
@@ -72,6 +72,8 @@ public class EditorManager : MonoBehaviour
             if (selectedCamera != null)selectedCamera.parent.GetComponentInChildren<SpriteRenderer>().color = Color.red;
         }
     }
+
+    private bool hasEnd;
 
     private delegate void CameraSettingDeletage();
     CameraSettingDeletage csd;
@@ -126,6 +128,7 @@ public class EditorManager : MonoBehaviour
         PlaySongFromInitialButton.enabled = false;
         StartEditorButton.enabled = false;
         editorState = EditorState.EditorInitial;
+        hasEnd = false;
         //placedNotes = new List<GameObject>();
         //noteSpawnInfos = new List<NoteSpawnInfo>();
         noteStorage = new List<NoteInfoPair>();
@@ -147,7 +150,7 @@ public class EditorManager : MonoBehaviour
             lines = new List<GameObject>();
             bit = 4;
             bitInputField.text = "4";
-            musicOffset = 0f;
+            musicOffset = 0;
             offsetInputField.text = $"{musicOffset}";
             direction = CharacterDirection.Right;
             indicatorEnabled = true;
@@ -286,7 +289,8 @@ public class EditorManager : MonoBehaviour
 
     private IEnumerator StartSongCoroutine(float startX) {
         if (startX < 0) startX = 0;
-        float musicTime = (float)GameManager.myManager.CalculateTimeFromInputWidth(startX) + musicOffset / 1000;
+        float musicTime = (float)GameManager.myManager.CalculateTimeFromInputWidth(startX) + musicOffset / 1000f;
+        Debug.Log(musicTime);
         if (musicTime >= 0f) {
             song.time = musicTime;
             song.Play();
@@ -321,7 +325,7 @@ public class EditorManager : MonoBehaviour
         offsetInputField.text = musicOffset.ToString();
     }
 
-    public void ChangeMusicOffsetDirectly() => float.TryParse(offsetInputField.text, out musicOffset);
+    public void ChangeMusicOffsetDirectly() => int.TryParse(offsetInputField.text, out musicOffset);
 
     public void ChangeDirection(float value) {
         if (value < 0)
@@ -341,7 +345,7 @@ public class EditorManager : MonoBehaviour
     private void Update()
     {
         // 아래는 노트의 미리보기를 생성하는 부분
-        if (editorState != EditorState.EditorMain || selectedNote == null) return;
+        if (editorState != EditorState.EditorMain || selectedNote == null || hasEnd) return;
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (notePrefabs.IndexOf(selectedNote) == 19) {
             if (noteWriteSetting == NoteWriteSetting.MouseDiscrete) {
@@ -447,7 +451,7 @@ public class EditorManager : MonoBehaviour
 
     public void PutNote() {
 
-        if (noteStartPosition.x >= noteEndPosition.x || notePreview == null) return;
+        if (noteStartPosition.x >= noteEndPosition.x || notePreview == null || hasEnd) return;
         // notePreview를 불투명하게 바꿔서 노트 설치하기.
         GameObject[] previousJumpIndicator = GameObject.FindGameObjectsWithTag("JumpIndicator");
         foreach (GameObject indicator in previousJumpIndicator)
@@ -535,6 +539,7 @@ public class EditorManager : MonoBehaviour
                     angle = 0,
                     direction = direction,
                 };
+                hasEnd = true;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -551,7 +556,7 @@ public class EditorManager : MonoBehaviour
     }
 
     public void PutCameraNote() {
-        if (notePreview == null) return;
+        if (notePreview == null || hasEnd) return;
 
         GameObject[] previousJumpIndicator = GameObject.FindGameObjectsWithTag("JumpIndicator");
         foreach (GameObject indicator in previousJumpIndicator)
@@ -573,8 +578,8 @@ public class EditorManager : MonoBehaviour
         if (noteStorage.Count == 0) return;
         NoteInfoPair pair = noteStorage[^1];
         noteStartPosition = pair.note.transform.position;
+        if (pair.info.noteSubType == NoteSubType.End) hasEnd = false; 
         Destroy(pair.note);
-
         noteStorage.RemoveAt(noteStorage.Count - 1);
         if (noteWriteSetting == NoteWriteSetting.WriteLength) SetNotePreviewByWriteLength();
     }
@@ -985,7 +990,123 @@ public class EditorManager : MonoBehaviour
 
     //========================================= Rewrite Map from saveFile ================================
 
+    public void BrowseMapFile()
+    {
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("TxtFiles", ".txt"));
+        FileBrowser.SetDefaultFilter(".txt");
+        FileBrowser.SetExcludedExtensions(".lnk", ".tmp", ".zip", ".rar", ".exe");
+        FileBrowser.AddQuickLink("Users", "C:/Users", null);
+        StartCoroutine(ShowTextLoadDialogCoroutine());
+    }
 
+    IEnumerator ShowTextLoadDialogCoroutine()
+    {
+        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.FilesAndFolders, true, null, null, "Load Files and Folders", "Load");
+        Debug.Log(FileBrowser.Success);
+
+        if (FileBrowser.Success)
+        {
+            for (int i = 0; i < FileBrowser.Result.Length; i++)
+                Debug.Log(FileBrowser.Result[i]);
+
+            LoadMapFromFile(FileBrowser.Result[0]);
+        }
+    }
+
+    private void LoadMapFromFile(string filepath) { 
+        
+        List<GravityData> gravityData = new List<GravityData>(); //dummy gravity data. gravity를 실제로 활용하게 된다면 이용할 수 있지만 Editor에서 Gravity를 지원하지 않음.
+
+        LevelReader lr = new LevelReader();
+
+        Vector3 startPosition = Vector3.zero;
+
+        List<NoteSpawnInfo> noteInfos = lr.ParseFile(filepath, out gravityData, out cameraStorage, out musicOffset);
+        offsetInputField.text = musicOffset.ToString();
+
+        foreach (NoteSpawnInfo nsi in noteInfos) {
+            int noteIndex = 0;
+            if (nsi.noteType == NoteType.Jump)
+            {
+                noteIndex = nsi.noteSubType switch
+                {
+                    NoteSubType.Ground => 15,
+                    NoteSubType.Air => 16,
+                    NoteSubType.Wall => 17,
+                    _ => throw new ArgumentException()
+                };
+            }
+            else if (nsi.noteType == NoteType.Dash && nsi.noteSubType == NoteSubType.Air) noteIndex = 14;
+            else if (nsi.noteType == NoteType.Normal && nsi.noteSubType == NoteSubType.End) {
+                noteIndex = 30;
+                hasEnd = true;
+            }
+            else
+            {
+                if (nsi.noteType == NoteType.Dash) noteIndex += 7;
+                noteIndex += nsi.angle switch
+                {
+                    0 => 0,
+                    30 => 1,
+                    45 => 2,
+                    60 => 3,
+                    -30 => 4,
+                    -45 => 5,
+                    -60 => 6,
+                    _ => throw new ArgumentException()
+                };
+            }
+
+            GameObject note = Instantiate(notePrefabs[noteIndex], startPosition, Quaternion.identity);
+            nsi.spawnPosition = startPosition;
+            SpriteRenderer sr = note.GetComponentInChildren<SpriteRenderer>();
+            float inputWidth = GameManager.myManager.CalculateInputWidthFromTime(nsi.noteLastingTime);
+
+            if (nsi.noteType != NoteType.Jump && nsi.noteSubType == NoteSubType.Ground)
+                sr.size = nsi.angle switch
+                {
+                    0 => new Vector2(10 * inputWidth, 2.5f),
+                    30 or -30 => new Vector2(10 * inputWidth, 8.27f),
+                    45 or -45 => new Vector2(10 * inputWidth, 12.5f),
+                    60 or -60 => new Vector2(10 * inputWidth, 19.82f),
+                    _ => new Vector2()
+                };
+
+            if (nsi.direction == CharacterDirection.Left) sr.color = new Color(1, 1, 1, 0.5f);
+
+            startPosition.x += inputWidth;
+            if (nsi.noteType == NoteType.Jump) startPosition.y += (nsi as JumpNoteSpawnInfo).jumpHeight;
+            else if (nsi.noteSubType == NoteSubType.Ground) startPosition.y += Mathf.Tan(Mathf.Deg2Rad * nsi.angle);
+
+            NoteInfoPair pair = new NoteInfoPair(note, nsi);
+            noteStorage.Add(pair);
+        }
+
+        noteStartPosition = startPosition;
+
+        foreach (CameraControlInfo ci in cameraStorage)
+        {
+            int spriteIndex = ci.type switch
+            {
+                CameraControlType.Zoom => 0,
+                CameraControlType.Velocity => 1,
+                CameraControlType.Rotate => 2,
+                CameraControlType.Fix => 3,
+                CameraControlType.Return => 4,
+                _ => throw new ArgumentException()
+            };
+
+            float cameraspawnPositionY = 0f;
+            for (int i = 0; i < noteInfos.Count && noteInfos[i].spawnTime <= ci.time; i++) cameraspawnPositionY = noteInfos[i].spawnPosition.y + 3f;
+
+            GameObject cameraTrigger = Instantiate(notePrefabs[19], 
+                                       new Vector3(GameManager.myManager.CalculateInputWidthFromTime(ci.time), cameraspawnPositionY), Quaternion.identity);
+            cameraTrigger.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[spriteIndex];
+            ci.parent = cameraTrigger;
+        }
+
+        SelectedCamera = cameraStorage[^1];
+    }
 }
 
 class NoteInfoPair {
