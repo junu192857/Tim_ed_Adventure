@@ -66,6 +66,7 @@ public class EditorManager : MonoBehaviour
     private CharacterDirection direction;
     public Text directionText;
     public List<GameObject> notePrefabs;
+    public List<Sprite> CameraSprites;
     public GameObject jumpEndIndicator;
     private GameObject selectedNote;
     private Color c;
@@ -636,6 +637,7 @@ public class EditorManager : MonoBehaviour
                 {
                     parent = notePreview
                 };
+                noteSprite.sprite = CameraSprites[0];
                 cameraStorage.Add(zi);
                 break;
             case CameraControlType.Velocity:
@@ -643,6 +645,7 @@ public class EditorManager : MonoBehaviour
                     parent = notePreview
                 };
                 cameraStorage.Add(vi);
+                noteSprite.sprite = CameraSprites[1];
                 break;
             case CameraControlType.Rotate:
                 CameraRotateInfo ri = new CameraRotateInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, int.Parse(cameraAngleInputField.text))
@@ -650,6 +653,7 @@ public class EditorManager : MonoBehaviour
                     parent = notePreview
                 };
                 cameraStorage.Add(ri);
+                noteSprite.sprite = CameraSprites[2];
                 break;
             case CameraControlType.Fix:
                 CameraFixInfo fi = new CameraFixInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term, new Vector2(float.Parse(cameraPosxInputField.text), float.Parse(cameraPosyInputField.text)))
@@ -657,6 +661,7 @@ public class EditorManager : MonoBehaviour
                     parent = notePreview
                 };
                 cameraStorage.Add(fi);
+                noteSprite.sprite = CameraSprites[3];
                 break;
             case CameraControlType.Return:
                 CameraReturnInfo rei = new CameraReturnInfo(GameManager.myManager.CalculateTimeFromInputWidth(cameraPosition.x), term)
@@ -664,18 +669,21 @@ public class EditorManager : MonoBehaviour
                     parent = notePreview
                 };
                 cameraStorage.Add(rei);
+                noteSprite.sprite = CameraSprites[4];
                 break;
             default:
                 throw new ArgumentOutOfRangeException();        
         }
-        editorState = EditorState.EditorMain;
+
         if (cct != CameraControlType.Velocity) {
             GameObject termIndicator = Instantiate(this.termIndicator, notePreview.transform);
             termIndicator.transform.localScale = new Vector3(GameManager.myManager.CalculateInputWidthFromTime(term), 1, 1);
         }
+
         notePreview = null;
         jumpEndIndicator = null;
         cameraSettingPanel.SetActive(false);
+        editorState = EditorState.EditorMain;
     }
 
     private bool CheckValidInput() {
