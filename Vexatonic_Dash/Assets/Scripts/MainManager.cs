@@ -601,13 +601,29 @@ public class MainManager : MonoBehaviour
 
     public void OnClickAudioOffsetUpButton()
     {
+        if (GameManager.myManager.globalOffset >= 999) return;
         GameManager.myManager.globalOffset += 1;
         UpdateAudioOffsetValueText();
     }
 
     public void OnClickAudioOffsetDownButton()
     {
+        if (GameManager.myManager.globalOffset <= -999) return;
         GameManager.myManager.globalOffset -= 1;
+        UpdateAudioOffsetValueText();
+    }
+    
+    public void OnClickAudioOffsetUpMajorButton()
+    {
+        if (GameManager.myManager.globalOffset >= 990) return;
+        GameManager.myManager.globalOffset += 10;
+        UpdateAudioOffsetValueText();
+    }
+
+    public void OnClickAudioOffsetDownMajorButton()
+    {
+        if (GameManager.myManager.globalOffset <= -990) return;
+        GameManager.myManager.globalOffset -= 10;
         UpdateAudioOffsetValueText();
     }
 
