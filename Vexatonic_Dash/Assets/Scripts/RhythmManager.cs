@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Threading;
 
 public enum RhythmState { 
     BeforeGameStart,
@@ -373,6 +374,8 @@ public class RhythmManager : MonoBehaviour
         
         lastJudge = type;
 
+        GameManager.myManager.sm.PlaySFX("Note");
+
         if (type == JudgementType.Miss) { 
             if (gameTime - lastHit >= unbeatTime) {
                 lastHit = gameTime;
@@ -724,7 +727,7 @@ public class RhythmManager : MonoBehaviour
 
         return dequeuedNote;
     }
-
+    
     private IEnumerator StartParticle() {
         GameObject particle;
         while (true) {
