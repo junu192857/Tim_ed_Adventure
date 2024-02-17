@@ -373,6 +373,8 @@ public class RhythmManager : MonoBehaviour
         
         lastJudge = type;
 
+        GameManager.myManager.sm.PlaySFX("Note");
+
         if (type == JudgementType.Miss) { 
             if (gameTime - lastHit >= unbeatTime) {
                 lastHit = gameTime;
