@@ -14,15 +14,10 @@ public class LevelReader
 
     public static int noteCount; // 채보의 전체 노트수
 
-    //맵 파일을 읽어 노트 정보에 관한 Queue로 반환하는 함수.
-    [Obsolete("Gravity data added. Please use the newer one.")]
-    public List<NoteSpawnInfo> ParseFile(string filepath)
-    {
-        return ParseFile(filepath, out List<GravityData> dummy, out List<CameraControlInfo> dummy2);
-    }
-    
-    public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList, out List<CameraControlInfo> cameraControlList) {
+
+    public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList, out List<CameraControlInfo> cameraControlList, out int offset) {
         noteCount = 0;
+        offset = 0;
 
         NoteSpawnInfo cur;
         NoteSpawnInfo prev;
@@ -60,7 +55,7 @@ public class LevelReader
             if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
             else if (line.StartsWith("OFFSET")) // OFFSET (시간)
             {
-                GameManager.myManager.levelOffset = double.Parse(myList[1]);
+                offset = int.Parse(myList[1]);
             }
             else if (line.StartsWith("GRAVITY")) // GRAVITY (시간) (중력 방향: 0이 아래, 90이 오른쪽)
             {

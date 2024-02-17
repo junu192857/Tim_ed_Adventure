@@ -71,6 +71,7 @@ public class RhythmManager : MonoBehaviour
     public List<KeyCode> keyList => GameManager.myManager.keyList;
 
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
+    private int levelOffset;
     private List<NoteSpawnInfo> noteList;
     private List<GravityData> gravityDataList;
     private List<CameraControlInfo> cameraInfoList;
@@ -142,7 +143,7 @@ public class RhythmManager : MonoBehaviour
     void Start()
     {
         song = GameManager.myManager.sm.GetComponent<AudioSource>();
-
+        song.loop = false;
         if (isTutorial) song.clip = tutorialBgm;
 
         overtime = isTutorial ? 0.3f : 0.166f;
@@ -154,7 +155,8 @@ public class RhythmManager : MonoBehaviour
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
         gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
-        noteList = lr.ParseFile(levelFilePath, out gravityDataList, out cameraInfoList);
+        levelOffset = 0;
+        noteList = lr.ParseFile(levelFilePath, out gravityDataList, out cameraInfoList, out levelOffset);
 
         myNoteCount = isTutorial ? noteCount - 6 : noteCount;
 
@@ -192,6 +194,8 @@ public class RhythmManager : MonoBehaviour
             new List<NoteType> { NoteType.Normal, NoteType.Normal, NoteType.Dash, NoteType.Dash, NoteType.Jump }
         );
         StartCoroutine(nameof(StartReceivingInput));
+
+        myPlayer.InitialCharacterMove();
         StartCoroutine(StartSong());
         if (isTutorial) {
             GameManager.myManager.um.ReadTutorial();
@@ -316,6 +320,7 @@ public class RhythmManager : MonoBehaviour
 
                     DequeueNoteFromQueue();
                     note.FixNote();
+                    GameManager.myManager.um.SpawnHalo(note);
                     myPlayer.MoveCharacter(note, gameTime);
                     AddJudgement(judgement);
                 }
@@ -339,6 +344,7 @@ public class RhythmManager : MonoBehaviour
             {
                 DequeueNoteFromQueue();
                 note.FixNote();
+                GameManager.myManager.um.SpawnHalo(note);
                 myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
             }
@@ -589,7 +595,7 @@ public class RhythmManager : MonoBehaviour
     }
 
     private IEnumerator StartSong() {
-        double songStartTiming = -(GameManager.myManager.globalOffset + GameManager.myManager.levelOffset) / 1000;
+        double songStartTiming = -(double)(GameManager.myManager.globalOffset + levelOffset) / 1000;
         yield return new WaitUntil(() => gameTime >= songStartTiming);
         //song.time = (float)(gameTime - songStartTiming);
         song.Play();
@@ -657,7 +663,7 @@ public class RhythmManager : MonoBehaviour
         return prevAngle;
     }
 
-    public void OnPause() {
+    public void OnPause() { //Pressed Esc Button
         switch (state)
         {
             case RhythmState.BeforeGameStart:
@@ -680,17 +686,15 @@ public class RhythmManager : MonoBehaviour
                 break;
             case RhythmState.GameOver:
             case RhythmState.GameClear:
-                GameManager.myManager.um.OnClickMusicSelectButton();
                 break;
             default:
                 break;
         }
     }
-    public void OnReturnToMain() {
-        if (state != RhythmState.Paused && state != RhythmState.GameClear) return;
+    public void OnReturnToMain() { // Pressed Enter Button
+        if (state != RhythmState.Paused && state != RhythmState.GameClear && state != RhythmState.GameOver) return;
         Time.timeScale = 1f;
-        GameManager.myManager.sm.PlaySFX("Button");
-        SceneManager.LoadScene("Select");
+        GameManager.myManager.um.OnClickMusicSelectButton();
     }
 
 

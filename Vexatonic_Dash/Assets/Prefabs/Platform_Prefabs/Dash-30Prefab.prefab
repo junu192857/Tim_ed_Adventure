@@ -143,3 +143,4 @@ MonoBehaviour:
   angle: -30
   actualAngle: 0
   parentNote: {fileID: 0}
+  tutorialDisable: 0

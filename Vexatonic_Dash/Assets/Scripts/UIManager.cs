@@ -13,12 +13,17 @@ public class UIManager : MonoBehaviour
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
 
+    [Header("Backgrounds")]
+    [SerializeField] private List<Sprite> backgrounds;
+    [SerializeField] private Image backgroundUI;
+
     [Header("In-Game UI")]
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
     [SerializeField] private Text fpsText;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Image healthImage;
+    [SerializeField] private List<GameObject> halos;
 
     [Header("Level Info UI")]
     [SerializeField] private GameObject levelInfo;
@@ -110,6 +115,14 @@ public class UIManager : MonoBehaviour
     
     private void InitializeUI()
     {
+        //Background part trash-like coded to submit game file as soon as possible. should must be fixed
+        backgroundUI.sprite = GameManager.myManager.selectedSongName switch
+        {
+            "Savage_Terminal" => backgrounds[0],
+            "Tutorial" => backgrounds[1],
+            "Reminiscence" => backgrounds[2],
+        };
+
         scoreText.text = "0";
         healthSlider.value = 1f;
         healthImage.color = new Color(0.5f, 1f, 0.5f);
@@ -385,6 +398,25 @@ public class UIManager : MonoBehaviour
     }
 
     public void DeactivateKeyboard() => keyboard.SetActive(false);
+
+    public void SpawnHalo(Note note) {
+        int haloIndex = note.noteType switch
+        {
+            NoteType.Normal => 0,
+            NoteType.Dash => 1,
+            NoteType.Jump => 2,
+            _ => throw new ArgumentException()
+        };
+
+        Vector3 haloPositionDelta = note.noteSubType switch
+        {
+            NoteSubType.Air or NoteSubType.Wall => Vector3.zero,
+            NoteSubType.Ground or NoteSubType.End => new Vector3(0.17f, -0.13f),
+            _ => throw new ArgumentException()
+        };
+
+        Instantiate(halos[haloIndex], note.startPos + haloPositionDelta, Quaternion.identity);
+    }
 
     //public void FadeoutIndicator(int index) => StartCoroutine(TutorialIndicators[index].GetComponent<TutorialIndicatroBehaviour>().Fadeout());
 }
