@@ -901,7 +901,11 @@ public class EditorManager : MonoBehaviour
     }
 
     public void SaveEditorToMapFile() {
-        filepath = Application.dataPath + "/SavedLevels/" + mapNameInputField.text + ".txt";
+        SaveEditorToMapFileOne(mapNameInputField.text);
+    }
+
+    public void SaveEditorToMapFileOne(string mapName) {
+        filepath = Application.dataPath + "/SavedLevels/" + mapName + ".txt";
         writer = new FileStream(filepath, FileMode.Create, FileAccess.Write);
         sw = new StreamWriter(writer);
 
@@ -1106,6 +1110,11 @@ public class EditorManager : MonoBehaviour
         }
 
         SelectedCamera = cameraStorage[^1];
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveEditorToMapFileOne("AutoSavedLevel");
     }
 }
 
