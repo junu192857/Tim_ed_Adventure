@@ -84,18 +84,8 @@ public class MainManager : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private Text currentCursorIndexText;
 
-    [NonSerialized] public MainState CurrentState;
-    private int CurrentCursorIndex
-    {
-        get => _currentCursorIndex;
-        set
-        {
-            _currentCursorIndex = value;
-            currentCursorIndexText.text = $"Current Cursor Index: {value}";
-        }
-    }
-    
-    private int _currentCursorIndex;
+    public MainState currentState;
+    public int currentCursorIndex;
 
     private void Start()
     {
@@ -109,13 +99,18 @@ public class MainManager : MonoBehaviour
         playSettingsParent.SetActive(false);
 
         // Keyboard control values
-        CurrentState = MainState.Main;
-        CurrentCursorIndex = 0;
+        currentState = MainState.Main;
+        currentCursorIndex = 0;
 
         // Key Initialization
         currentConfiguringKeyIndex = 0;
 
         StartCoroutine(MainShowAnimation());
+    }
+
+    private void Update()
+    {
+        currentCursorIndexText.text = $"Current Cursor Index: {currentCursorIndex}";
     }
 
     private void UpdateCursor()
@@ -131,10 +126,10 @@ public class MainManager : MonoBehaviour
 
         if (input == 0) return;
 
-        CurrentCursorIndex = (CurrentCursorIndex + input);
+        currentCursorIndex = (currentCursorIndex + input);
         
-        if (CurrentCursorIndex < 0) CurrentCursorIndex = CursorMaxIndex[(int)CurrentState] - 1;
-        else if (CurrentCursorIndex >= CursorMaxIndex[(int)CurrentState]) CurrentCursorIndex = 0;
+        if (currentCursorIndex < 0) currentCursorIndex = CursorMaxIndex[(int)currentState] - 1;
+        else if (currentCursorIndex >= CursorMaxIndex[(int)currentState]) currentCursorIndex = 0;
         
         UpdateCursor();
     }
@@ -145,7 +140,7 @@ public class MainManager : MonoBehaviour
 
         if (input == 0) return;
 
-        switch (currentState: CurrentState, currentCursorIndex: CurrentCursorIndex)
+        switch (currentState: currentState, currentCursorIndex: currentCursorIndex)
         {
             case (MainState.VideoSettings, 0):
                 if (input > 0) OnClickNoteSpeedUpButton();
@@ -166,10 +161,10 @@ public class MainManager : MonoBehaviour
 
     public void OnSelectCurrent()
     {
-        switch (CurrentState)
+        switch (currentState)
         {
             case MainState.Main:
-                switch (CurrentCursorIndex)
+                switch (currentCursorIndex)
                 {
                     case 0:
                         OnClickMainPlayButton();
@@ -190,7 +185,7 @@ public class MainManager : MonoBehaviour
                 break;
             
             case MainState.Settings:
-                switch (CurrentCursorIndex)
+                switch (currentCursorIndex)
                 {
                     case 0:
                         OnClickSettingsVideoButton();
@@ -214,7 +209,7 @@ public class MainManager : MonoBehaviour
                 break;
             
             case MainState.InputSettings:
-                OnKeySettingButton(CurrentCursorIndex + 1);
+                OnKeySettingButton(currentCursorIndex + 1);
                 break;
             
             case MainState.PlaySettings:
@@ -227,7 +222,7 @@ public class MainManager : MonoBehaviour
 
     public void OnEscape()
     {
-        switch (CurrentState)
+        switch (currentState)
         {
             case MainState.Main:
                 break;
@@ -329,8 +324,8 @@ public class MainManager : MonoBehaviour
         
         yield return StartCoroutine(MainHideAnimation());
         
-        CurrentState = MainState.Settings;
-        CurrentCursorIndex = 0;
+        currentState = MainState.Settings;
+        currentCursorIndex = 0;
         
         yield return StartCoroutine(SettingsShowAnimation());
 
@@ -343,8 +338,8 @@ public class MainManager : MonoBehaviour
 
         yield return StartCoroutine(SettingsHideAnimation());
         
-        CurrentState = MainState.Main;
-        CurrentCursorIndex = 0;
+        currentState = MainState.Main;
+        currentCursorIndex = 0;
         
         yield return StartCoroutine(MainShowAnimation());
 
@@ -381,8 +376,8 @@ public class MainManager : MonoBehaviour
 
         yield return StartCoroutine(SettingsHideAnimation());
         
-        CurrentState = MainState.VideoSettings;
-        CurrentCursorIndex = 0;
+        currentState = MainState.VideoSettings;
+        currentCursorIndex = 0;
         
         yield return StartCoroutine(VideoSettingShowAnimation());
         
@@ -395,8 +390,8 @@ public class MainManager : MonoBehaviour
 
         yield return StartCoroutine(VideoSettingHideAnimation());
         
-        CurrentState = MainState.Settings;
-        CurrentCursorIndex = 0;
+        currentState = MainState.Settings;
+        currentCursorIndex = 0;
         
         yield return StartCoroutine(SettingsShowAnimation());
 
@@ -438,8 +433,8 @@ public class MainManager : MonoBehaviour
 
         yield return StartCoroutine(SettingsHideAnimation());
         
-        CurrentState = MainState.AudioSettings;
-        CurrentCursorIndex = 0;
+        currentState = MainState.AudioSettings;
+        currentCursorIndex = 0;
         
         yield return StartCoroutine(AudioSettingShowAnimation());
         
@@ -452,8 +447,8 @@ public class MainManager : MonoBehaviour
 
         yield return StartCoroutine(AudioSettingHideAnimation());
         
-        CurrentState = MainState.Settings;
-        CurrentCursorIndex = 0;
+        currentState = MainState.Settings;
+        currentCursorIndex = 0;
         
         yield return StartCoroutine(SettingsShowAnimation());
 
@@ -496,8 +491,8 @@ public class MainManager : MonoBehaviour
 
         yield return StartCoroutine(SettingsHideAnimation());
         
-        CurrentState = MainState.InputSettings;
-        CurrentCursorIndex = 0;
+        currentState = MainState.InputSettings;
+        currentCursorIndex = 0;
         
         yield return StartCoroutine(InputSettingShowAnimation());
         
@@ -510,8 +505,8 @@ public class MainManager : MonoBehaviour
 
         yield return StartCoroutine(InputSettingHideAnimation());
         
-        CurrentState = MainState.Settings;
-        CurrentCursorIndex = 0;
+        currentState = MainState.Settings;
+        currentCursorIndex = 0;
         
         yield return StartCoroutine(SettingsShowAnimation());
 
