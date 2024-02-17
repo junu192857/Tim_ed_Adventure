@@ -89,7 +89,6 @@ public class EditorManager : MonoBehaviour
     private int dashPlatformAngle;
     private float dashCoeff;
     private int gravity;
-    private bool hasEnd;
     public enum NoteWriteSetting
     {
         MouseDiscrete,
@@ -154,7 +153,6 @@ public class EditorManager : MonoBehaviour
             noteEndPosition = Vector3.zero;
             dashCoeff = 1.5f;
             gravity = 0;
-            hasEnd = false;
             editorState = EditorState.EditorMain;
             noteWriteSetting = NoteWriteSetting.MouseDiscrete;
             Camera.main.transform.position = -5 * Vector3.forward;
@@ -341,7 +339,7 @@ public class EditorManager : MonoBehaviour
     private void Update()
     {
         // 아래는 노트의 미리보기를 생성하는 부분
-        if (editorState != EditorState.EditorMain || selectedNote == null || hasEnd) return;
+        if (editorState != EditorState.EditorMain || selectedNote == null) return;
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (notePrefabs.IndexOf(selectedNote) == 19) {
             if (noteWriteSetting == NoteWriteSetting.MouseDiscrete) {
@@ -447,7 +445,7 @@ public class EditorManager : MonoBehaviour
 
     public void PutNote() {
 
-        if (noteStartPosition.x >= noteEndPosition.x || notePreview == null || hasEnd) return;
+        if (noteStartPosition.x >= noteEndPosition.x || notePreview == null) return;
         // notePreview를 불투명하게 바꿔서 노트 설치하기.
         GameObject[] previousJumpIndicator = GameObject.FindGameObjectsWithTag("JumpIndicator");
         foreach (GameObject indicator in previousJumpIndicator)
@@ -535,7 +533,6 @@ public class EditorManager : MonoBehaviour
                     angle = 0,
                     direction = direction,
                 };
-                hasEnd = true;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -552,7 +549,7 @@ public class EditorManager : MonoBehaviour
     }
 
     public void PutCameraNote() {
-        if (notePreview == null || hasEnd) return;
+        if (notePreview == null) return;
 
         GameObject[] previousJumpIndicator = GameObject.FindGameObjectsWithTag("JumpIndicator");
         foreach (GameObject indicator in previousJumpIndicator)
@@ -574,7 +571,6 @@ public class EditorManager : MonoBehaviour
         if (noteStorage.Count == 0) return;
         NoteInfoPair pair = noteStorage[^1];
         noteStartPosition = pair.note.transform.position;
-        if (pair.info.noteSubType == NoteSubType.End) hasEnd = false;
         Destroy(pair.note);
 
         noteStorage.RemoveAt(noteStorage.Count - 1);
@@ -869,11 +865,6 @@ public class EditorManager : MonoBehaviour
 
     // =========================== Save Map File ===============================
     public void OpenMapSavePanel() {
-        if (!hasEnd) {
-            Debug.LogWarning("This map do not have an End note");
-            return;
-        }
-
         mapSavePanel.SetActive(true);
         settingBackgroundPanel.SetActive(true);
         editorState = EditorState.OnSetting;
