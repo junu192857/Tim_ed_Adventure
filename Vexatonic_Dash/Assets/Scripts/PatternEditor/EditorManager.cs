@@ -69,7 +69,7 @@ public class EditorManager : MonoBehaviour
         set {
             if (selectedCamera != null) selectedCamera.parent.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             selectedCamera = value;
-            selectedCamera.parent.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+            if (selectedCamera != null)selectedCamera.parent.GetComponentInChildren<SpriteRenderer>().color = Color.red;
         }
     }
 
@@ -114,6 +114,8 @@ public class EditorManager : MonoBehaviour
     private FileStream writer;
     private StreamWriter sw;
     private string filepath;
+
+    private StreamReader sr;
 
 
     private void Start()
@@ -578,12 +580,23 @@ public class EditorManager : MonoBehaviour
     }
 
     public void DeleteLastCamera() {
-        if (cameraStorage.Count == 0) return;
+        if (selectedCamera == null) return;
         Destroy(SelectedCamera.parent);
+        int index = cameraStorage.IndexOf(selectedCamera);
         cameraStorage.Remove(SelectedCamera);
+
+        //삭제한 카메라의 앞에 카메라가 있는 경우.
+        if (index != 0) SelectedCamera = cameraStorage[index - 1];
+        else if (cameraStorage.Count != 0) SelectedCamera = cameraStorage.First();
+        else SelectedCamera = null;
     }
 
     public void SwitchSelectedCamera(float value) {
+        Debug.Log(cameraStorage.IndexOf(SelectedCamera));
+        if (SelectedCamera == null) { 
+            SelectedCamera = cameraStorage[^1];
+            return;
+        }
         if (value < 0) SelectedCamera = cameraStorage[Mathf.Max(0, cameraStorage.IndexOf(SelectedCamera) - 1)];
         else SelectedCamera = cameraStorage[Mathf.Min(cameraStorage.Count - 1, cameraStorage.IndexOf(SelectedCamera) + 1)];
     }
@@ -638,8 +651,12 @@ public class EditorManager : MonoBehaviour
     public void OpenCameraSetting(bool newCamera) {
         editorState = EditorState.OnSetting;
         if (newCamera) csd = CloseCameraSettingForNewCamera;
-        else csd = CloseCameraSettingForExistingCamera;
+        else {
+            if (SelectedCamera == null) return;
+            csd = CloseCameraSettingForExistingCamera;
+        }
 
+        Debug.Log("Hello");
         cameraSettingPanel.SetActive(true);
     }
 
@@ -657,41 +674,42 @@ public class EditorManager : MonoBehaviour
                 CameraZoomInfo zi = new CameraZoomInfo(SelectedCamera.time, term, double.Parse(cameraScaleInputField.text))
                 {
                     parent = SelectedCamera.parent,
+                    
                 };
-                SelectedCamera = zi;
-                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[0];
+                ReassignSelectedCamera(zi);
+                zi.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[0];
                 break;
             case CameraControlType.Velocity:
                 CameraVelocityInfo vi = new CameraVelocityInfo(SelectedCamera.time, new Vector2(float.Parse(cameraVxInputField.text), float.Parse(cameraVyInputField.text)))
                 {
                     parent = SelectedCamera.parent,
                 };
-                SelectedCamera = vi;
-                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[1];
+                ReassignSelectedCamera(vi);
+                vi.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[1];
                 break;
             case CameraControlType.Rotate:
                 CameraRotateInfo ri = new CameraRotateInfo(SelectedCamera.time, term, int.Parse(cameraAngleInputField.text))
                 {
                     parent = SelectedCamera.parent,
                 };
-                SelectedCamera = ri;
-                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[2];
+                ReassignSelectedCamera(ri);
+                ri.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[2];
                 break;
             case CameraControlType.Fix:
                 CameraFixInfo fi = new CameraFixInfo(SelectedCamera.time, term, new Vector2(float.Parse(cameraPosxInputField.text), float.Parse(cameraPosyInputField.text)))
                 {
                     parent = SelectedCamera.parent,
                 };
-                SelectedCamera = fi;
-                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[3];
+                ReassignSelectedCamera(fi);
+                fi.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[3];
                 break;
             case CameraControlType.Return:
                 CameraReturnInfo rei = new CameraReturnInfo(SelectedCamera.time, term)
                 {
                     parent = SelectedCamera.parent,
                 };
-                SelectedCamera = rei;
-                SelectedCamera.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[4];
+                ReassignSelectedCamera(rei);
+                rei.parent.GetComponentInChildren<SpriteRenderer>().sprite = CameraSprites[4];
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -706,6 +724,13 @@ public class EditorManager : MonoBehaviour
         cameraStorage = cameraStorage.OrderBy(camera => camera.time).ToList();
         cameraSettingPanel.SetActive(false);
         editorState = EditorState.EditorMain;
+    }
+
+    private void ReassignSelectedCamera(CameraControlInfo info) {
+        cameraStorage.Remove(SelectedCamera);
+        SelectedCamera = info;
+        cameraStorage.Add(info);
+        SelectedCamera = info;
     }
 
     public void CloseCameraSettingForNewCamera() {
@@ -957,6 +982,10 @@ public class EditorManager : MonoBehaviour
 
         return type + spawnTime + dashCoeffOrJumpHeight + subType + angle + direction;
     }
+
+    //========================================= Rewrite Map from saveFile ================================
+
+
 }
 
 class NoteInfoPair {

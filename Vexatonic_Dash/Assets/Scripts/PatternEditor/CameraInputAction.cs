@@ -41,7 +41,8 @@ public class CameraInputAction : MonoBehaviour
 
     public void OnOpenExistingCamera()
     {
-        if (em.editorState != EditorState.EditorMain) return;
+        if (em.editorState != EditorState.EditorMain || em.SelectedCamera == null) return;
+        Debug.Log("Hi...");
         em.OpenCameraSetting(false);
     }
     private void Update()
