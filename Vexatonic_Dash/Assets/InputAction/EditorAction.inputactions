@@ -22,24 +22,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "MusicOffset",
-                    "type": "Button",
-                    "id": "8f58b118-c2f8-409e-981e-1cf4ee2fd062",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "DirectionToggle",
-                    "type": "Button",
-                    "id": "5d908672-fee2-4b74-8349-12edab192f21",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -130,10 +112,36 @@
                     "action": "CameraZoom",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
+                }
+            ]
+        },
+        {
+            "name": "EditorActions",
+            "id": "d73122cc-6fbf-4c42-9746-2e5942603be8",
+            "actions": [
                 {
                     "name": "MusicOffset",
-                    "id": "69f63185-0197-40eb-9a53-741148a8c3b0",
+                    "type": "Button",
+                    "id": "c37933b6-fded-4ef5-9a15-96401f526b20",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DirectionToggle",
+                    "type": "Button",
+                    "id": "a1d76545-47a9-43eb-ab1a-e1409bcd8117",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "MusicOffset",
+                    "id": "d4305518-7dd5-4aeb-a288-dfc70307759c",
                     "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
@@ -144,7 +152,7 @@
                 },
                 {
                     "name": "negative",
-                    "id": "b2dba63d-a3fe-492d-ad47-4bc57121b6fd",
+                    "id": "b86648b3-77e9-4132-8cee-35c8512b2f8d",
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
@@ -155,7 +163,7 @@
                 },
                 {
                     "name": "positive",
-                    "id": "94405471-3714-4f83-bd05-1a6717351ad3",
+                    "id": "969f29c2-8a40-439b-992b-824746c1dff4",
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
@@ -166,7 +174,7 @@
                 },
                 {
                     "name": "Direction",
-                    "id": "aee99546-826a-4c41-8bc2-7cb0aa4d6333",
+                    "id": "02730f04-0aab-4a4b-966e-a9cabbf5a68f",
                     "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
@@ -177,7 +185,7 @@
                 },
                 {
                     "name": "negative",
-                    "id": "85f7e203-a71e-4690-a138-1614da173594",
+                    "id": "926f887d-64e3-472e-bc45-ef71a5cb2049",
                     "path": "<Keyboard>/1",
                     "interactions": "",
                     "processors": "",
@@ -188,7 +196,7 @@
                 },
                 {
                     "name": "positive",
-                    "id": "c8293b71-ee79-443a-bc89-78f8803ad69d",
+                    "id": "98d84a29-8168-4672-ba09-0906abe7ea31",
                     "path": "<Keyboard>/2",
                     "interactions": "",
                     "processors": "",

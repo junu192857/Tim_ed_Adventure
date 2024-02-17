@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using System;
 using System.Linq;
+using UnityEngine.InputSystem;
 public enum EditorState { 
     EditorInitial,
     EditorMain,
@@ -863,6 +864,19 @@ public class EditorManager : MonoBehaviour
         string direction = info.direction == CharacterDirection.Left ? "L" : "R";
 
         return type + spawnTime + dashCoeffOrJumpHeight + subType + angle + direction;
+    }
+
+    //========================================= Input Actions ===================================================
+    public void OnMusicOffset(InputValue value)
+    {
+        if (editorState != EditorState.EditorMain) return;
+        ChangeMusicOffset(value.Get<float>());
+    }
+
+    public void OnDirectionToggle(InputValue value)
+    {
+        if (editorState != EditorState.EditorMain) return;
+        ChangeDirection(value.Get<float>());
     }
 }
 

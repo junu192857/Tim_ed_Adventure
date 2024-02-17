@@ -3467,8 +3467,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 668d3439272f30344b81cd8f327ae04f, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3891,8 +3891,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 935880c8afe9e854080906deb3480fcf, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4472,6 +4472,7 @@ GameObject:
   - component: {fileID: 564180928}
   - component: {fileID: 564180927}
   - component: {fileID: 564180929}
+  - component: {fileID: 564180930}
   m_Layer: 0
   m_Name: EditorManager
   m_TagString: Untagged
@@ -4551,8 +4552,8 @@ MonoBehaviour:
   - {fileID: 1867009198593522743, guid: 7a3bd803b3206a74d92c0bb5dc0102e1, type: 3}
   CameraSprites:
   - {fileID: 21300000, guid: 260c13dd96e1881449d588a7ef34171c, type: 3}
-  - {fileID: 21300000, guid: cb8c9ae450d3d294cb4d65d47729768f, type: 3}
   - {fileID: 21300000, guid: 01f34aebf701fb54884c66c605f318b2, type: 3}
+  - {fileID: 21300000, guid: cb8c9ae450d3d294cb4d65d47729768f, type: 3}
   - {fileID: 21300000, guid: a25cff7f011094a408643ae59d837ade, type: 3}
   - {fileID: 21300000, guid: 632ca91ce7a551443b53264ffea7a84a, type: 3}
   jumpEndIndicator: {fileID: 0}
@@ -4678,6 +4679,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &564180930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 564180926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 58ee46a96eeedc94eb83c5387435b49d, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: Mouse & Keyboard
+  m_DefaultActionMap: d73122cc-6fbf-4c42-9746-2e5942603be8
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &570274315
 GameObject:
   m_ObjectHideFlags: 0
@@ -11353,7 +11384,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 59fc9ff900cbbee4e8fd93aeefc3a667, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -17210,7 +17241,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 6891ffd43c58bf94a9ef37d893d4d34a, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
