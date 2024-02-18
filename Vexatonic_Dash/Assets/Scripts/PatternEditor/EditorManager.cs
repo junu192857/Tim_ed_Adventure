@@ -1109,7 +1109,7 @@ public class EditorManager : MonoBehaviour
             ci.parent = cameraTrigger;
         }
 
-        SelectedCamera = cameraStorage[^1];
+        if (cameraStorage.Count != 0) SelectedCamera = cameraStorage[^1];
     }
 
     private void OnApplicationQuit()
