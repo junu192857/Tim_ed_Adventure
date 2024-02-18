@@ -4873,6 +4873,8 @@ MonoBehaviour:
   offsetValueText: {fileID: 1702890200}
   musicVolumeText: {fileID: 1209363973}
   sfxVolumeText: {fileID: 2052425210}
+  musicVolumeSlider: {fileID: 633603425}
+  sfxVolumeSlider: {fileID: 1743594499}
   audioTitleTextAnim: {fileID: 1962834926}
   offsetSettingAnim: {fileID: 1926042213}
   musicVolumeSettingAnim: {fileID: 795749849}

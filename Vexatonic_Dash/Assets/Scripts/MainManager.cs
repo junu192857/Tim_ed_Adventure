@@ -73,6 +73,8 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Text offsetValueText;
     [SerializeField] private Text musicVolumeText;
     [SerializeField] private Text sfxVolumeText;
+    [SerializeField] private Slider musicVolumeSlider;
+    [SerializeField] private Slider sfxVolumeSlider;
 
     [Space(5)]
     [SerializeField] private Animator audioTitleTextAnim;
@@ -264,10 +266,10 @@ public class MainManager : MonoBehaviour
                 else OnClickAudioOffsetDownButton();
                 break;
             case (MainState.AudioSettings, 1):
-                // TODO: Music Volume control
+                musicVolumeSlider.value = Mathf.Clamp01(musicVolumeSlider.value + 0.1f * input);
                 break;
             case (MainState.AudioSettings, 2):
-                // TODO: SFX Volume control
+                sfxVolumeSlider.value = Mathf.Clamp01(sfxVolumeSlider.value + 0.1f * input);
                 break;
         }
     }
