@@ -1,16 +1,38 @@
 using System;
 using System.Collections;
+using System.IO;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.IO;
+using UnityEngine.InputSystem;
+
+public enum MainState
+{
+    Main          = 0,
+    Settings      = 1,
+    VideoSettings = 2,
+    AudioSettings = 3,
+    InputSettings = 4,
+    PlaySettings  = 5
+}
 
 public class MainManager : MonoBehaviour
 {
+    private static readonly int[] CursorMaxIndex = {5, 3, 1, 3, 4, 1};
+    
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
 
-    [Header("Main")] [SerializeField] private GameObject mainParent;
+    [Header("Main")]
+    [SerializeField] private GameObject mainParent;
+    [SerializeField] private Button mainPlayButton;
+    [SerializeField] private Button mainSettingsButton;
+    [SerializeField] private Button mainQuitButton;
+    [SerializeField] private Button mainCreditButton;
+    [SerializeField] private Button mainTutorialButton;
+    
+    [Space(5)]
     [SerializeField] private Animator mainTitleTextAnim;
     [SerializeField] private Animator mainPlayButtonAnim;
     [SerializeField] private Animator mainSettingsButtonAnim;
@@ -18,7 +40,12 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator mainTutorialButtonAnim;
     [SerializeField] private Animator mainCreditButtonAnim;
 
-    [Header("Settings")] [SerializeField] private GameObject settingsParent;
+    [Header("Settings")]
+    [SerializeField] private GameObject settingsParent;
+    [SerializeField] private Button videoButton;
+    [SerializeField] private Button audioButton;
+    [SerializeField] private Button inputButton;
+    [SerializeField] private Button playButton;
 
     [Space(5)]
     [SerializeField] private Animator settingsTitleTextAnim;
@@ -28,7 +55,9 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator playButtonAnim;
     [SerializeField] private Animator settingsBackButtonAnim;
 
-    [Space(10)] [SerializeField] private GameObject videoSettingsParent;
+    [Header("Video Settings")]
+    [SerializeField] private GameObject videoSettingsParent;
+    [SerializeField] private Button noteSpeedSettingButton;
     [SerializeField] private Text speedValueText;
 
     [Space(5)]
@@ -36,10 +65,16 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator noteSpeedSettingAnim;
     [SerializeField] private Animator videoBackButtonAnim;
 
-    [Space(10)] [SerializeField] private GameObject audioSettingsParent;
+    [Header("Audio Settings")]
+    [SerializeField] private GameObject audioSettingsParent;
+    [SerializeField] private Button offsetSettingButton;
+    [SerializeField] private Button musicVolumeSettingButton;
+    [SerializeField] private Button sfxVolumeSettingButton;
     [SerializeField] private Text offsetValueText;
     [SerializeField] private Text musicVolumeText;
     [SerializeField] private Text sfxVolumeText;
+    [SerializeField] private Slider musicVolumeSlider;
+    [SerializeField] private Slider sfxVolumeSlider;
 
     [Space(5)]
     [SerializeField] private Animator audioTitleTextAnim;
@@ -48,7 +83,12 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator sfxVolumeSettingAnim;
     [SerializeField] private Animator audioBackButtonAnim;
 
-    [Space(10)] [SerializeField] private GameObject inputSettingsParent;
+    [Header("Input Settings")]
+    [SerializeField] private GameObject inputSettingsParent;
+    [SerializeField] private Button normalButton1;
+    [SerializeField] private Button normalButton2;
+    [SerializeField] private Button dashButton1;
+    [SerializeField] private Button dashButton2;
     [SerializeField] private Text[] keyTexts;
     private int currentConfiguringKeyIndex;
     
@@ -60,12 +100,17 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator dashButton2Anim;
     [SerializeField] private Animator inputBackButtonAnim;
 
-    [Space(10)] [SerializeField] private GameObject playSettingsParent;
+    [Header("Play Settings")]
+    [SerializeField] private GameObject playSettingsParent;
 
+    [Header("Debug")]
+    [SerializeField] private Text currentCursorIndexText;
+
+    public MainState currentState;
+    public int currentCursorIndex;
 
     private void Start()
     {
-        Debug.Log("Hello?");
         GameManager.myManager.sm.StartMainBgm();
 
         mainParent.SetActive(true);
@@ -74,12 +119,255 @@ public class MainManager : MonoBehaviour
         audioSettingsParent.SetActive(false);
         inputSettingsParent.SetActive(false);
         playSettingsParent.SetActive(false);
-        
+
+        // Keyboard control values
+        currentState = MainState.Main;
+        currentCursorIndex = 0;
+
         // Key Initialization
         currentConfiguringKeyIndex = 0;
 
         StartCoroutine(MainShowAnimation());
     }
+
+    private void Update()
+    {
+        currentCursorIndexText.text = $"Current Cursor Index: {currentCursorIndex}";
+    }
+
+    private void UpdateCursor()
+    {
+        switch (currentState)
+        {
+            case MainState.Main:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        mainPlayButton.Select();
+                        break;
+                    case 1:
+                        mainSettingsButton.Select();
+                        break;
+                    case 2:
+                        mainQuitButton.Select();
+                        break;
+                    case 3:
+                        mainCreditButton.Select();
+                        break;
+                    case 4:
+                        mainTutorialButton.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.Settings:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        videoButton.Select();
+                        break;
+                    case 1:
+                        audioButton.Select();
+                        break;
+                    case 2:
+                        inputButton.Select();
+                        break;
+                    case 3:
+                        playButton.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.VideoSettings:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        noteSpeedSettingButton.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.AudioSettings:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        offsetSettingButton.Select();
+                        break;
+                    case 1:
+                        musicVolumeSettingButton.Select();
+                        break;
+                    case 2:
+                        sfxVolumeSettingButton.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.InputSettings:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        normalButton1.Select();
+                        break;
+                    case 1:
+                        normalButton2.Select();
+                        break;
+                    case 2:
+                        dashButton1.Select();
+                        break;
+                    case 3:
+                        dashButton2.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.PlaySettings:
+                break;
+            
+            default:
+                throw new ArgumentException();
+        }
+    }
+
+    #region Keyboard Control
+
+    public void OnMoveCursor(InputValue inputValue)
+    {
+        var input = (int)Mathf.Sign(inputValue.Get<float>());
+
+        if (input == 0) return;
+
+        currentCursorIndex = (currentCursorIndex + input);
+        
+        if (currentCursorIndex < 0) currentCursorIndex = CursorMaxIndex[(int)currentState] - 1;
+        else if (currentCursorIndex >= CursorMaxIndex[(int)currentState]) currentCursorIndex = 0;
+        
+        UpdateCursor();
+    }
+
+    public void OnAdjustValue(InputValue inputValue)
+    {
+        var input = (int)Mathf.Sign(inputValue.Get<float>());
+
+        if (input == 0) return;
+
+        switch (currentState, currentCursorIndex)
+        {
+            case (MainState.VideoSettings, 0):
+                if (input > 0) OnClickNoteSpeedUpButton();
+                else OnClickNoteSpeedDownButton();
+                break;
+            case (MainState.AudioSettings, 0):
+                if (input > 0) OnClickAudioOffsetUpButton();
+                else OnClickAudioOffsetDownButton();
+                break;
+            case (MainState.AudioSettings, 1):
+                musicVolumeSlider.value = Mathf.Clamp01(musicVolumeSlider.value + 0.1f * input);
+                break;
+            case (MainState.AudioSettings, 2):
+                sfxVolumeSlider.value = Mathf.Clamp01(sfxVolumeSlider.value + 0.1f * input);
+                break;
+        }
+    }
+
+    public void OnSelectCurrent()
+    {
+        switch (currentState)
+        {
+            case MainState.Main:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        OnClickMainPlayButton();
+                        break;
+                    case 1:
+                        OnClickMainSettingsButton();
+                        break;
+                    case 2:
+                        OnClickMainQuitButton();
+                        break;
+                    case 3:
+                        OnClickTutorialButton();
+                        break;
+                    case 4:
+                        OnClickTutorialButton();
+                        break;
+                }
+                break;
+            
+            case MainState.Settings:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        OnClickSettingsVideoButton();
+                        break;
+                    case 1:
+                        OnClickSettingsAudioButton();
+                        break;
+                    case 2:
+                        OnClickSettingsInputButton();
+                        break;
+                    case 3:
+                        OnClickSettingsPlayButton();
+                        break;
+                }
+                break;
+
+            case MainState.VideoSettings:
+                break;
+            
+            case MainState.AudioSettings:
+                break;
+            
+            case MainState.InputSettings:
+                OnKeySettingButton(currentCursorIndex + 1);
+                break;
+            
+            case MainState.PlaySettings:
+                break;
+            
+            default:
+                throw new ArgumentException();
+        }
+    }
+
+    public void OnEscape()
+    {
+        switch (currentState)
+        {
+            case MainState.Main:
+                break;
+            
+            case MainState.Settings:
+                OnClickSettingsBackButton();
+                break;
+            
+            case MainState.VideoSettings:
+                OnClickVideoSettingsBackButton();
+                break;
+            
+            case MainState.AudioSettings:
+                OnClickAudioSettingsBackButton();
+                break;
+            
+            case MainState.InputSettings:
+                OnClickInputSettingsBackButton();
+                break;
+            
+            case MainState.PlaySettings:
+                OnClickPlaySettingsBackButton();
+                break;
+            
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+    
+    #endregion
 
     #region Main Animation
     
@@ -150,6 +438,10 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
         
         yield return StartCoroutine(MainHideAnimation());
+        
+        currentState = MainState.Settings;
+        currentCursorIndex = 0;
+        
         yield return StartCoroutine(SettingsShowAnimation());
 
         mainParent.SetActive(false);
@@ -160,6 +452,10 @@ public class MainManager : MonoBehaviour
         mainParent.SetActive(true);
 
         yield return StartCoroutine(SettingsHideAnimation());
+        
+        currentState = MainState.Main;
+        currentCursorIndex = 1;
+        
         yield return StartCoroutine(MainShowAnimation());
 
         settingsParent.SetActive(false);
@@ -194,6 +490,10 @@ public class MainManager : MonoBehaviour
         videoSettingsParent.SetActive(true);
 
         yield return StartCoroutine(SettingsHideAnimation());
+        
+        currentState = MainState.VideoSettings;
+        currentCursorIndex = 0;
+        
         yield return StartCoroutine(VideoSettingShowAnimation());
         
         settingsParent.SetActive(false);
@@ -204,6 +504,10 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
 
         yield return StartCoroutine(VideoSettingHideAnimation());
+        
+        currentState = MainState.Settings;
+        currentCursorIndex = 0;
+        
         yield return StartCoroutine(SettingsShowAnimation());
 
         videoSettingsParent.SetActive(false);
@@ -243,6 +547,10 @@ public class MainManager : MonoBehaviour
         audioSettingsParent.SetActive(true);
 
         yield return StartCoroutine(SettingsHideAnimation());
+        
+        currentState = MainState.AudioSettings;
+        currentCursorIndex = 0;
+        
         yield return StartCoroutine(AudioSettingShowAnimation());
         
         settingsParent.SetActive(false);
@@ -253,6 +561,10 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
 
         yield return StartCoroutine(AudioSettingHideAnimation());
+        
+        currentState = MainState.Settings;
+        currentCursorIndex = 1;
+        
         yield return StartCoroutine(SettingsShowAnimation());
 
         audioSettingsParent.SetActive(false);
@@ -293,6 +605,10 @@ public class MainManager : MonoBehaviour
         inputSettingsParent.SetActive(true);
 
         yield return StartCoroutine(SettingsHideAnimation());
+        
+        currentState = MainState.InputSettings;
+        currentCursorIndex = 0;
+        
         yield return StartCoroutine(InputSettingShowAnimation());
         
         settingsParent.SetActive(false);
@@ -303,6 +619,10 @@ public class MainManager : MonoBehaviour
         settingsParent.SetActive(true);
 
         yield return StartCoroutine(InputSettingHideAnimation());
+        
+        currentState = MainState.Settings;
+        currentCursorIndex = 2;
+        
         yield return StartCoroutine(SettingsShowAnimation());
 
         inputSettingsParent.SetActive(false);
@@ -397,7 +717,7 @@ public class MainManager : MonoBehaviour
         // TODO: Add animations
     }
 
-    public void OnClickTutorialbutton() {
+    public void OnClickTutorialButton() {
 
         GameManager.myManager.sm.PlaySFX("Button");
         GameManager.myManager.filepath = Application.streamingAssetsPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
@@ -432,6 +752,22 @@ public class MainManager : MonoBehaviour
         UpdateNoteSpeedValueText();
     }
     
+    public void OnClickNoteSpeedUpMajorButton()
+    {
+        float newNoteSpeed = GameManager.myManager.noteSpeed + 1.0f;
+        GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
+        
+        UpdateNoteSpeedValueText();
+    }
+    
+    public void OnClickNoteSpeedDownMajorButton()
+    {
+        float newNoteSpeed = GameManager.myManager.noteSpeed - 1.0f;
+        GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
+        
+        UpdateNoteSpeedValueText();
+    }
+    
     #endregion
 
     #region Audio Settings
@@ -443,13 +779,29 @@ public class MainManager : MonoBehaviour
 
     public void OnClickAudioOffsetUpButton()
     {
+        if (GameManager.myManager.globalOffset >= 999) return;
         GameManager.myManager.globalOffset += 1;
         UpdateAudioOffsetValueText();
     }
 
     public void OnClickAudioOffsetDownButton()
     {
+        if (GameManager.myManager.globalOffset <= -999) return;
         GameManager.myManager.globalOffset -= 1;
+        UpdateAudioOffsetValueText();
+    }
+    
+    public void OnClickAudioOffsetUpMajorButton()
+    {
+        if (GameManager.myManager.globalOffset >= 990) return;
+        GameManager.myManager.globalOffset += 10;
+        UpdateAudioOffsetValueText();
+    }
+
+    public void OnClickAudioOffsetDownMajorButton()
+    {
+        if (GameManager.myManager.globalOffset <= -990) return;
+        GameManager.myManager.globalOffset -= 10;
         UpdateAudioOffsetValueText();
     }
 
