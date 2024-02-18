@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
@@ -18,13 +19,20 @@ public enum MainState
 
 public class MainManager : MonoBehaviour
 {
-    private static readonly int[] CursorMaxIndex = {4, 3, 1, 3, 4, 1};
+    private static readonly int[] CursorMaxIndex = {5, 3, 1, 3, 4, 1};
     
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
-    
+
     [Header("Main")]
     [SerializeField] private GameObject mainParent;
+    [SerializeField] private Button mainPlayButton;
+    [SerializeField] private Button mainSettingsButton;
+    [SerializeField] private Button mainQuitButton;
+    [SerializeField] private Button mainCreditButton;
+    [SerializeField] private Button mainTutorialButton;
+    
+    [Space(5)]
     [SerializeField] private Animator mainTitleTextAnim;
     [SerializeField] private Animator mainPlayButtonAnim;
     [SerializeField] private Animator mainSettingsButtonAnim;
@@ -34,6 +42,10 @@ public class MainManager : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private GameObject settingsParent;
+    [SerializeField] private Button videoButton;
+    [SerializeField] private Button audioButton;
+    [SerializeField] private Button inputButton;
+    [SerializeField] private Button playButton;
 
     [Space(5)]
     [SerializeField] private Animator settingsTitleTextAnim;
@@ -43,8 +55,9 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator playButtonAnim;
     [SerializeField] private Animator settingsBackButtonAnim;
 
-    [Space(10)]
+    [Header("Video Settings")]
     [SerializeField] private GameObject videoSettingsParent;
+    [SerializeField] private Button noteSpeedSettingButton;
     [SerializeField] private Text speedValueText;
 
     [Space(5)]
@@ -52,8 +65,11 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator noteSpeedSettingAnim;
     [SerializeField] private Animator videoBackButtonAnim;
 
-    [Space(10)]
+    [Header("Audio Settings")]
     [SerializeField] private GameObject audioSettingsParent;
+    [SerializeField] private Button offsetSettingButton;
+    [SerializeField] private Button musicVolumeSettingButton;
+    [SerializeField] private Button sfxVolumeSettingButton;
     [SerializeField] private Text offsetValueText;
     [SerializeField] private Text musicVolumeText;
     [SerializeField] private Text sfxVolumeText;
@@ -65,8 +81,12 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator sfxVolumeSettingAnim;
     [SerializeField] private Animator audioBackButtonAnim;
 
-    [Space(10)]
+    [Header("Input Settings")]
     [SerializeField] private GameObject inputSettingsParent;
+    [SerializeField] private Button normalButton1;
+    [SerializeField] private Button normalButton2;
+    [SerializeField] private Button dashButton1;
+    [SerializeField] private Button dashButton2;
     [SerializeField] private Text[] keyTexts;
     private int currentConfiguringKeyIndex;
     
@@ -78,7 +98,7 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator dashButton2Anim;
     [SerializeField] private Animator inputBackButtonAnim;
 
-    [Space(10)]
+    [Header("Play Settings")]
     [SerializeField] private GameObject playSettingsParent;
 
     [Header("Debug")]
@@ -115,7 +135,100 @@ public class MainManager : MonoBehaviour
 
     private void UpdateCursor()
     {
-        // TODO
+        switch (currentState)
+        {
+            case MainState.Main:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        mainPlayButton.Select();
+                        break;
+                    case 1:
+                        mainSettingsButton.Select();
+                        break;
+                    case 2:
+                        mainQuitButton.Select();
+                        break;
+                    case 3:
+                        mainCreditButton.Select();
+                        break;
+                    case 4:
+                        mainTutorialButton.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.Settings:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        videoButton.Select();
+                        break;
+                    case 1:
+                        audioButton.Select();
+                        break;
+                    case 2:
+                        inputButton.Select();
+                        break;
+                    case 3:
+                        playButton.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.VideoSettings:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        noteSpeedSettingButton.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.AudioSettings:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        offsetSettingButton.Select();
+                        break;
+                    case 1:
+                        musicVolumeSettingButton.Select();
+                        break;
+                    case 2:
+                        sfxVolumeSettingButton.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.InputSettings:
+                switch (currentCursorIndex)
+                {
+                    case 0:
+                        normalButton1.Select();
+                        break;
+                    case 1:
+                        normalButton2.Select();
+                        break;
+                    case 2:
+                        dashButton1.Select();
+                        break;
+                    case 3:
+                        dashButton2.Select();
+                        break;
+                }
+
+                break;
+            
+            case MainState.PlaySettings:
+                break;
+            
+            default:
+                throw new ArgumentException();
+        }
     }
 
     #region Keyboard Control
