@@ -168,16 +168,6 @@ public class SelectManager : MonoBehaviour
         {
             MoveDown();
         }
-        //only for 2/16 Ver
-        if (_currentIndex != 0)
-        {
-            patternSelectButton.interactable = false;
-            StartButton.interactable = false;
-        }
-        else {
-            patternSelectButton.interactable = true;
-            StartButton.interactable = true;
-        }
     }
 
     private void SetSongListText()
@@ -193,8 +183,6 @@ public class SelectManager : MonoBehaviour
     {
         highlightedSongNameText.text = _songList[_currentIndex].SongName;
         highlightedSongComposerText.text = _songList[_currentIndex].ComposerName;
-        //only for 2/16 ver
-        highlightedSongComposerText.fontSize = _currentIndex == 0 ? 64 : 48;
     }
 
     private void SetCurrentPatternUI()
@@ -324,16 +312,12 @@ public class SelectManager : MonoBehaviour
 
     public void OnSwitchDifficulty()
     {
-        //Only for 2/16 Ver
-        if (_currentIndex != 0) return;
         GameManager.myManager.sm.PlaySFX("Button");
         SwitchDifficulty();
     }
 
     public void OnStartGame()
     {
-        //Only for 2/16 Ver
-        if (_currentIndex != 0) return;
         GameManager.myManager.sm.PlaySFX("Button");
         StartGame();
     }

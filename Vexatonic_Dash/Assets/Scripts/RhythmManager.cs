@@ -598,7 +598,6 @@ public class RhythmManager : MonoBehaviour
         double songStartTiming = -(double)(GameManager.myManager.globalOffset + levelOffset) / 1000;
         yield return new WaitForSeconds(1f);
         song.PlayScheduled(AudioSettings.dspTime + songStartTiming - gameTime);
-        song.Play();
     }
 
     // 스코어 업데이트

@@ -290,7 +290,6 @@ public class EditorManager : MonoBehaviour
     private IEnumerator StartSongCoroutine(float startX) {
         if (startX < 0) startX = 0;
         float musicTime = (float)GameManager.myManager.CalculateTimeFromInputWidth(startX) + musicOffset / 1000f;
-        Debug.Log(musicTime);
         if (musicTime >= 0f) {
             song.time = musicTime;
             song.Play();
