@@ -414,6 +414,7 @@ public class RhythmManager : MonoBehaviour
             var patternKey = GameManager.myManager.selectedSongName + '_' + GameManager.myManager.selectedDifficulty;
             highProgress = progress;
             PlayerPrefs.SetInt(patternKey + "Progress", highProgress);
+            PlayerPrefs.Save();
             GameManager.myManager.um.ShowGameOverUI(true);
             Debug.Log($"Saved progress {highProgress} for {patternKey}");
         }
@@ -438,6 +439,8 @@ public class RhythmManager : MonoBehaviour
             highScore = score;
             PlayerPrefs.SetInt(patternKey + "Progress", highProgress);
             PlayerPrefs.SetInt(patternKey + "Score", highScore);
+            PlayerPrefs.Save();
+
             GameManager.myManager.um.ShowResultUI(true);
             Debug.Log($"Saved score {highScore} for {patternKey}");
         }
