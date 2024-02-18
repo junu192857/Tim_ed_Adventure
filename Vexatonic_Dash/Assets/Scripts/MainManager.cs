@@ -140,7 +140,7 @@ public class MainManager : MonoBehaviour
 
         if (input == 0) return;
 
-        switch (currentState: currentState, currentCursorIndex: currentCursorIndex)
+        switch (currentState, currentCursorIndex)
         {
             case (MainState.VideoSettings, 0):
                 if (input > 0) OnClickNoteSpeedUpButton();
@@ -339,7 +339,7 @@ public class MainManager : MonoBehaviour
         yield return StartCoroutine(SettingsHideAnimation());
         
         currentState = MainState.Main;
-        currentCursorIndex = 0;
+        currentCursorIndex = 1;
         
         yield return StartCoroutine(MainShowAnimation());
 
@@ -448,7 +448,7 @@ public class MainManager : MonoBehaviour
         yield return StartCoroutine(AudioSettingHideAnimation());
         
         currentState = MainState.Settings;
-        currentCursorIndex = 0;
+        currentCursorIndex = 1;
         
         yield return StartCoroutine(SettingsShowAnimation());
 
@@ -506,7 +506,7 @@ public class MainManager : MonoBehaviour
         yield return StartCoroutine(InputSettingHideAnimation());
         
         currentState = MainState.Settings;
-        currentCursorIndex = 0;
+        currentCursorIndex = 2;
         
         yield return StartCoroutine(SettingsShowAnimation());
 
