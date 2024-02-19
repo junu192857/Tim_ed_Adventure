@@ -5,4 +5,3 @@ AUDIO audio.mp3
 EASY Easy.txt
 HARD Hard.txt
 VEX Vex.txt
-EVENT

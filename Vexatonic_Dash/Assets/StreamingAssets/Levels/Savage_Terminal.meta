@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Vexatonic_Dash/Assets/StreamingAssets/LevelsBackup.meta
+guid: ec2faebb660130f49b7361070066d2b1
+========
 guid: 66a9ff6950344834fb7442014642baeb
+>>>>>>>> main:Vexatonic_Dash/Assets/StreamingAssets/Levels/Savage_Terminal.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
