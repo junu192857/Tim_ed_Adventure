@@ -382,7 +382,7 @@ public class RhythmManager : MonoBehaviour
                 {
                     health -= 20;
                     StartCoroutine(GameManager.myManager.um.HealthBarAnimation(health / 100f));
-                    GameManager.myManager.um.HitAnimation(myPlayer.transform.position, health);
+                    GameManager.myManager.um.HitAnimation(health);
                 }
                 myPlayer.HurtPlayer(health);
             }
@@ -709,9 +709,8 @@ public class RhythmManager : MonoBehaviour
                 break;
         }
     }
-    public void OnReturnToMain() { // Pressed Enter Button
-        if (state != RhythmState.Paused && state != RhythmState.GameClear && state != RhythmState.GameOver) return;
-        GameManager.myManager.um.OnClickMusicSelectButton();
+    public void OnMain() { // Pressed Enter Button
+        if (state == RhythmState.Paused || state == RhythmState.GameClear || state == RhythmState.GameOver) GameManager.myManager.um.OnClickMusicSelectButton();
     }
 
 

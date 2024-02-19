@@ -278,6 +278,8 @@ public class UIManager : MonoBehaviour
 
         gameOverProgressText.text = Progress + " %";
 
+        _isResultAnimationFinished = true;
+
         gameOver.SetActive(true);    // TODO: Add show animation
     }
 
@@ -340,27 +342,8 @@ public class UIManager : MonoBehaviour
     }
 
     //only regards damage is 20, should be fixed later..? but there is no 'later'
-    public void HitAnimation(Vector3 transformPosition, int health) {
-        GameObject myParent = Instantiate(judgeParent,
-            transformPosition + Quaternion.AngleAxis(Camera.main.transform.rotation.z, Vector3.forward) * (0.7f * Vector3.up),
-            Quaternion.identity);
+    public void HitAnimation(int health) => gradation.GetComponent<Image>().color = new Color(0.66f, 0f, 0f, 0.5f - 0.005f * health);
 
-        GameObject minus = Instantiate(numbers[10], myParent.transform);
-        minus.transform.localPosition = distFromParent - 0.2f * Vector3.right;
-        minus.transform.GetComponent<SpriteRenderer>().color = new Color(1, 0.3f, 0.3f);
-
-        GameObject _10digit = Instantiate(numbers[2], myParent.transform);
-        _10digit.transform.localPosition =  distFromParent - 0.1f * Vector3.right;
-        _10digit.transform.GetComponent<SpriteRenderer>().color = new Color(1, 0.3f, 0.3f);
-
-        GameObject _1digit = Instantiate(numbers[0], myParent.transform);
-        _1digit.transform.localPosition = distFromParent + 0.1f * Vector3.right;
-        _1digit.transform.GetComponent<SpriteRenderer>().color = new Color(1, 0.3f, 0.3f);
-
-        myParent.transform.localEulerAngles = Camera.main.transform.localEulerAngles;
-
-        gradation.GetComponent<Image>().color = new Color(0.66f, 0f, 0f, 0.5f - 0.005f * health);
-    }
     private IEnumerator ShowFPSCoroutine() {
         float time = 0;
         int fps = 0;
@@ -379,20 +362,27 @@ public class UIManager : MonoBehaviour
 
     public void OnClickMusicSelectButton()
     {
+        Debug.Log("hello");
         if (!_isResultAnimationFinished) return;
-        
+
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
         GameManager.myManager.sm.PlaySFX("Button");
-        
+
         if (IsTutorial) SceneManager.LoadScene("Scenes/Main");
         else SceneManager.LoadScene("Scenes/Select");
     }
 
 
-    public void OpenPauseUI() => pause.SetActive(true);
+    public void OpenPauseUI(){
+        _isResultAnimationFinished = true;
+        pause.SetActive(true);
+    }
 
-    public void ClosePauseUI() => pause.SetActive(false);
+    public void ClosePauseUI() {
+        _isResultAnimationFinished = false;
+        pause.SetActive(false);
+    }
 
     public IEnumerator TutorialCoroutine() {
         while (infos.Count > 0) {
