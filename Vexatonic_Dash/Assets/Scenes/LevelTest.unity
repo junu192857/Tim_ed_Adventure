@@ -7259,6 +7259,7 @@ MonoBehaviour:
   sfxVolume: 0
   keyList: 
   isMetaLoaded: 0
+  isAudioClipLoaded: 0
   filepath: 
   rm: {fileID: 1818378586}
   um: {fileID: 1773674259}
@@ -7267,6 +7268,7 @@ MonoBehaviour:
   selectedSongName: 
   selectedComposerName: 
   selectedDifficulty: 0
+  audioClips: []
   gravity: 0
 --- !u!4 &1504029264
 Transform:
@@ -8483,6 +8485,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a41c3c5dadc148b4e84dc6fa3a0c7ea2, type: 3}
   - {fileID: 21300000, guid: 49615c5de9ab68b4fb977aec9d750490, type: 3}
   - {fileID: 21300000, guid: 2324c28c73106384ba438aa0722a0c8c, type: 3}
+  - {fileID: 21300000, guid: e104bfb91e57f9648aebe9dea6bca789, type: 3}
   backgroundUI: {fileID: 401878124}
   gradation: {fileID: 1364859511}
   scoreText: {fileID: 15652164}
