@@ -348,6 +348,9 @@ public class RhythmManager : MonoBehaviour
                 GameManager.myManager.um.SpawnHalo(note);
                 myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
+            }else if (note.lifetime < 0.012f)
+            {
+                GameManager.myManager.sm.PlayUTouch();
             }
         }
         UpdateGravity();
@@ -376,6 +379,7 @@ public class RhythmManager : MonoBehaviour
         
         lastJudge = type;
 
+
         if (type == JudgementType.Miss) { 
             if (gameTime - lastHit >= unbeatTime) {
                 lastHit = gameTime;
@@ -390,7 +394,11 @@ public class RhythmManager : MonoBehaviour
         }
 
         if (type == JudgementType.Miss) combo = 0;
-        else combo++;
+        else
+        {
+            combo++;
+            GameManager.myManager.sm.PlayTouch();
+        }
         if (isTutorial) tutorialIndicatorIndex++;
 
         UpdateScore(type);

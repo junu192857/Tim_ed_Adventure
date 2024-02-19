@@ -16,9 +16,10 @@ public class SoundManager : MonoBehaviour
 {
 
     [SerializeField] private AudioClip mainBgm;
+    [SerializeField] private AudioClip _note, _unote;
     [SerializeField] private Sound[] sfx;
 
-    [SerializeField] private AudioSource song;
+    [SerializeField] private AudioSource song, note, unote;
     [SerializeField] private AudioSource[] sfxPlayer;
 
     private float MusicVolume => GameManager.myManager.musicVolume;
@@ -34,6 +35,12 @@ public class SoundManager : MonoBehaviour
         if (GameManager.myManager.sm != null && GameManager.myManager.sm != this) {
             Destroy(gameObject);
         }
+
+        note.clip = _note;
+        unote.clip = _unote;
+
+        note.volume = SFXVolume;
+        unote.volume = SFXVolume;
     }
 
     //For Main Scene
@@ -78,6 +85,21 @@ public class SoundManager : MonoBehaviour
         }
         Debug.Log(p_sfxName + " 이름의 효과음이 없습니다.");
         return;
+    }
+
+    public void PlayUTouch()
+    {
+        if (unote.isPlaying) return;
+        double curdspTime = AudioSettings.dspTime;
+        unote.PlayScheduled(curdspTime);
+    }
+
+    public void PlayTouch()
+    {
+        Debug.Log("touch!");
+        if (unote.isPlaying) note.timeSamples = Math.Min(unote.timeSamples + 300, 1400);
+        else note.timeSamples = 900;
+        note.Play();
     }
 
     public void SetBgmVolume() => song.volume = MusicVolume;
