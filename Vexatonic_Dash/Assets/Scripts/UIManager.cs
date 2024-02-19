@@ -127,6 +127,8 @@ public class UIManager : MonoBehaviour
         {
             "Savage_Terminal" => backgrounds[1],
             "Reminiscence" => backgrounds[2],
+            "Union_Arena" => backgrounds[3],
+            "Inside_Honnouji" => backgrounds[4],
             _ => backgrounds[0]
         };
 
