@@ -36,15 +36,13 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    //For Main Scene
-    private void Start() => StartMainBgm();
-
     public void StartMainBgm() {
         song.Stop();
         if (mainBgm != null)
         {
             song.clip = mainBgm;
             song.loop = true;
+            song.volume = MusicVolume;
             song.Play();
         }
     }

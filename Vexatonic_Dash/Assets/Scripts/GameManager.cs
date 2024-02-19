@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     public string selectedSongName;
     public string selectedComposerName;
     public Difficulty selectedDifficulty;
+    public int selectedLevel;
     
     public List<AudioClip> audioClips = new();
 
@@ -117,6 +118,22 @@ public class GameManager : MonoBehaviour
         }
         
         isAudioClipLoaded = true;
+    }
+
+    public void SaveSettings()
+    {
+        PlayerPrefs.SetFloat("noteSpeed", noteSpeed);
+        PlayerPrefs.SetInt("globalOffset", globalOffset);
+        PlayerPrefs.SetFloat("musicVolume", musicVolume);
+        PlayerPrefs.SetFloat("sfxVolume", sfxVolume);
+    }
+
+    public void LoadSettings()
+    {
+        noteSpeed = PlayerPrefs.GetFloat("noteSpeed", 3f);
+        globalOffset = PlayerPrefs.GetInt("globalOffset", 0);
+        musicVolume = PlayerPrefs.GetFloat("musicVolume", 1f);
+        sfxVolume = PlayerPrefs.GetFloat("sfxVolume", 1f);
     }
 
     /// <summary>
