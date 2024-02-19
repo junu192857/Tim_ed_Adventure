@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -115,8 +116,6 @@ public class SelectManager : MonoBehaviour
         SetCurrentPatternUI();
 
         StartCoroutine(SelectShowAnimation());
-        coroutines.Add(StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex)));
-
     }
 
     private IEnumerator SelectShowAnimation()
@@ -124,6 +123,7 @@ public class SelectManager : MonoBehaviour
         _isAnimationPlaying = true;
         
         yield return new WaitForEndOfFrame();
+        yield return new WaitUntil(() => GameManager.myManager.isAudioClipLoaded);
         
         titleTextAnim.SetTrigger(AnimShowHash);
         songsParentAnim.SetTrigger(AnimShowHash);
@@ -135,6 +135,8 @@ public class SelectManager : MonoBehaviour
         backButtonAnim.SetTrigger(AnimShowHash);
         
         yield return new WaitUntil(() => titleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle"));
+        
+        GameManager.myManager.sm.PlaySelectedSong(GameManager.myManager.audioClips[_currentIndex]);
         
         _isAnimationPlaying = false;
     }
@@ -153,7 +155,12 @@ public class SelectManager : MonoBehaviour
         patternInfoAnim.SetTrigger(AnimHideHash);
         startButtonAnim.SetTrigger(AnimHideHash);
         backButtonAnim.SetTrigger(AnimHideHash);
-        eventInfoAnim.SetTrigger(AnimHideHash);
+        
+        if (eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Show") ||
+            eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        {
+            eventInfoAnim.SetTrigger(AnimHideHash);
+        }
         
         yield return new WaitUntil(() => titleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
         
@@ -162,7 +169,8 @@ public class SelectManager : MonoBehaviour
 
     private IEnumerator EventSongShowAnimation()
     {
-        if (!eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden")) yield break;
+        if (eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle") ||
+            eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Show")) yield break;
         
         yield return new WaitForEndOfFrame();
         
@@ -171,7 +179,8 @@ public class SelectManager : MonoBehaviour
     
     private IEnumerator EventSongHideAnimation()
     {
-        if (!eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle")) yield break;
+        if (eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden") ||
+            eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Hide")) yield break;
         
         yield return new WaitForEndOfFrame();
         
@@ -190,16 +199,6 @@ public class SelectManager : MonoBehaviour
         else
         {
             MoveDown();
-        }
-        //only for 2/16 Ver
-        if (_currentIndex != 0)
-        {
-            patternSelectButton.interactable = false;
-            StartButton.interactable = false;
-        }
-        else {
-            patternSelectButton.interactable = true;
-            StartButton.interactable = true;
         }
     }
 
@@ -221,9 +220,6 @@ public class SelectManager : MonoBehaviour
         highlightedSongHardText.text = currentSong.Levels[1].ToString();
         highlightedSongVexText.text = currentSong.Levels[2].ToString();
         coroutines.Add(StartCoroutine(currentSong.IsEvent ? EventSongShowAnimation() : EventSongHideAnimation()));
-
-        //only for 2/16 ver
-        highlightedSongComposerText.fontSize = _currentIndex == 0 ? 64 : 48;
     }
 
     private void SetCurrentPatternUI()
@@ -262,7 +258,7 @@ public class SelectManager : MonoBehaviour
         _currentIndex--;
         Debug.Log("current Index" + _currentIndex.ToString());
         coroutines.Add(StartCoroutine(MoveSongCoroutine(true)));
-        coroutines.Add(StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex)));
+        GameManager.myManager.sm.PlaySelectedSong(GameManager.myManager.audioClips[_currentIndex]);
     }
 
     private void MoveDown()
@@ -271,7 +267,7 @@ public class SelectManager : MonoBehaviour
         _currentIndex++;
         Debug.Log("current Index" + _currentIndex.ToString());
         coroutines.Add(StartCoroutine(MoveSongCoroutine(false)));
-        coroutines.Add(StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex)));
+        GameManager.myManager.sm.PlaySelectedSong(GameManager.myManager.audioClips[_currentIndex]);
     }
 
     private IEnumerator MoveSongCoroutine(bool up)
@@ -329,11 +325,14 @@ public class SelectManager : MonoBehaviour
         GameManager.myManager.selectedComposerName = selectedSong.ComposerName;
         GameManager.myManager.selectedSongName = selectedSong.SongName;
         GameManager.myManager.selectedDifficulty = _currentDifficulty;
+        GameManager.myManager.selectedLevel = selectedSong.Levels[(int)_currentDifficulty];
 
+        /*
         foreach (var c in coroutines)
         {
             StopCoroutine(c);
         }
+        */
         coroutines.Clear();
         GameManager.myManager.isTutorial = false;
         SceneManager.LoadScene("Scenes/LevelTest");
@@ -353,16 +352,12 @@ public class SelectManager : MonoBehaviour
 
     public void OnSwitchDifficulty()
     {
-        //Only for 2/16 Ver
-        if (_currentIndex != 0) return;
         GameManager.myManager.sm.PlaySFX("Button");
         SwitchDifficulty();
     }
 
     public void OnStartGame()
     {
-        //Only for 2/16 Ver
-        if (_currentIndex != 0) return;
         GameManager.myManager.sm.PlaySFX("Button");
         StartGame();
     }

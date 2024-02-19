@@ -36,38 +36,24 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    //For Main Scene
-    private void Start() => StartMainBgm();
-
     public void StartMainBgm() {
         song.Stop();
         if (mainBgm != null)
         {
             song.clip = mainBgm;
-            song.Play();
-        }
-    }
-
-    // Not Implemented. play song for selected music in select scene.
-    public IEnumerator PlaySelectedSong(int songIndex) {
-        song.Stop();
-        string fullpath = "file://" + MetaReader.SongMetaList[songIndex].AudioFilePath;
-        UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(fullpath, AudioType.MPEG);
-        yield return uwr.SendWebRequest();
-
-        if (uwr.result == UnityWebRequest.Result.ConnectionError)
-        {
-            Debug.Log(uwr.error);
-        }
-        else
-        {
-            AudioClip myClip = DownloadHandlerAudioClip.GetContent(uwr);
-            song.clip = myClip;
+            song.loop = true;
             song.volume = MusicVolume;
             song.Play();
         }
     }
 
+    public void PlaySelectedSong(AudioClip clip)
+    {
+        song.Stop();
+        song.clip = clip;
+        song.volume = MusicVolume;
+        song.Play();
+    }
 
     public void PlaySFX(string p_sfxName)
     {
@@ -91,4 +77,6 @@ public class SoundManager : MonoBehaviour
         Debug.Log(p_sfxName + " 이름의 효과음이 없습니다.");
         return;
     }
+
+    public void SetBgmVolume() => song.volume = MusicVolume;
 }

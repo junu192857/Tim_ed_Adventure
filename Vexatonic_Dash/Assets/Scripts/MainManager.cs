@@ -24,6 +24,9 @@ public class MainManager : MonoBehaviour
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
 
+    [Header("Loading")]
+    [SerializeField] private GameObject loadingParent;
+    
     [Header("Main")]
     [SerializeField] private GameObject mainParent;
     [SerializeField] private Button mainPlayButton;
@@ -122,9 +125,12 @@ public class MainManager : MonoBehaviour
 
     private void Start()
     {
+        GameManager.myManager.LoadSettings();
+        
         GameManager.myManager.sm.StartMainBgm();
 
-        mainParent.SetActive(true);
+        loadingParent.SetActive(true);
+        mainParent.SetActive(false);
         settingsParent.SetActive(false);
         videoSettingsParent.SetActive(false);
         audioSettingsParent.SetActive(false);
@@ -144,8 +150,8 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
-        currentCursorIndexText.text = $"Current Cursor Index: {currentCursorIndex}";
-        scrollRectPositionText.text = $"Scroll Rect Position: {creditsScrollRect.verticalNormalizedPosition}";
+        //currentCursorIndexText.text = $"Current Cursor Index: {currentCursorIndex}";
+        //scrollRectPositionText.text = $"Scroll Rect Position: {creditsScrollRect.verticalNormalizedPosition}";
     }
 
     private void UpdateCursor()
@@ -398,6 +404,10 @@ public class MainManager : MonoBehaviour
     private IEnumerator MainShowAnimation()
     {
         yield return new WaitForEndOfFrame();
+        yield return new WaitUntil(() => GameManager.myManager.isAudioClipLoaded);
+        
+        loadingParent.SetActive(false);
+        mainParent.SetActive(true);
 
         mainTitleTextAnim.SetTrigger(AnimShowHash);
         mainPlayButtonAnim.SetTrigger(AnimShowHash);
@@ -733,7 +743,7 @@ public class MainManager : MonoBehaviour
         GameManager.myManager.sm.PlaySFX("Button");
         StartCoroutine(EnterVideoSetting());
         
-        UpdateNoteSpeedValueText();
+        UpdateNoteSpeedValue();
     }
 
     public void OnClickSettingsAudioButton()
@@ -741,7 +751,7 @@ public class MainManager : MonoBehaviour
         GameManager.myManager.sm.PlaySFX("Button");
         StartCoroutine(EnterAudioSetting());
         
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
 
     public void OnClickSettingsInputButton()
@@ -813,6 +823,8 @@ public class MainManager : MonoBehaviour
                          + Path.DirectorySeparatorChar + "Tutorial.txt";
         GameManager.myManager.selectedSongName = "Tutorial";
         GameManager.myManager.selectedComposerName = "Vexatonic Dash";
+        GameManager.myManager.selectedDifficulty = Difficulty.Easy;
+        GameManager.myManager.selectedLevel = 0;
 
         GameManager.myManager.isTutorial = true;
         SceneManager.LoadScene("Scenes/LevelTest");
@@ -820,9 +832,10 @@ public class MainManager : MonoBehaviour
 
     #region Video Settings
 
-    private void UpdateNoteSpeedValueText()
+    private void UpdateNoteSpeedValue()
     {
         speedValueText.text = GameManager.myManager.noteSpeed.ToString("#0.0");
+        GameManager.myManager.SaveSettings();
     }
 
     public void OnClickNoteSpeedUpButton()
@@ -830,7 +843,7 @@ public class MainManager : MonoBehaviour
         float newNoteSpeed = GameManager.myManager.noteSpeed + 0.1f;
         GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
         
-        UpdateNoteSpeedValueText();
+        UpdateNoteSpeedValue();
     }
 
     public void OnClickNoteSpeedDownButton()
@@ -838,7 +851,7 @@ public class MainManager : MonoBehaviour
         float newNoteSpeed = GameManager.myManager.noteSpeed - 0.1f;
         GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
         
-        UpdateNoteSpeedValueText();
+        UpdateNoteSpeedValue();
     }
     
     public void OnClickNoteSpeedUpMajorButton()
@@ -846,7 +859,7 @@ public class MainManager : MonoBehaviour
         float newNoteSpeed = GameManager.myManager.noteSpeed + 1.0f;
         GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
         
-        UpdateNoteSpeedValueText();
+        UpdateNoteSpeedValue();
     }
     
     public void OnClickNoteSpeedDownMajorButton()
@@ -854,55 +867,60 @@ public class MainManager : MonoBehaviour
         float newNoteSpeed = GameManager.myManager.noteSpeed - 1.0f;
         GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
         
-        UpdateNoteSpeedValueText();
+        UpdateNoteSpeedValue();
     }
     
     #endregion
 
     #region Audio Settings
 
-    private void UpdateAudioOffsetValueText()
+    private void UpdateAudioSettingsValues()
     {
         offsetValueText.text = GameManager.myManager.globalOffset.ToString("+##0ms;-##0ms;0ms");
+        musicVolumeSlider.value = GameManager.myManager.musicVolume;
+        sfxVolumeSlider.value = GameManager.myManager.sfxVolume;
+        GameManager.myManager.SaveSettings();
     }
 
     public void OnClickAudioOffsetUpButton()
     {
         if (GameManager.myManager.globalOffset >= 999) return;
         GameManager.myManager.globalOffset += 1;
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
 
     public void OnClickAudioOffsetDownButton()
     {
         if (GameManager.myManager.globalOffset <= -999) return;
         GameManager.myManager.globalOffset -= 1;
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
     
     public void OnClickAudioOffsetUpMajorButton()
     {
         if (GameManager.myManager.globalOffset >= 990) return;
         GameManager.myManager.globalOffset += 10;
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
 
     public void OnClickAudioOffsetDownMajorButton()
     {
         if (GameManager.myManager.globalOffset <= -990) return;
         GameManager.myManager.globalOffset -= 10;
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
 
     private void UpdateMusicVolumeText()
     {
         int percentageVolume = Mathf.RoundToInt(GameManager.myManager.musicVolume * 100);
         musicVolumeText.text = percentageVolume.ToString();
+        GameManager.myManager.SaveSettings();
     }
     
     public void OnMusicVolumeSliderChanged(Slider slider)
     {
         GameManager.myManager.musicVolume = slider.value;
+        GameManager.myManager.sm.SetBgmVolume();
         UpdateMusicVolumeText();
     }
 
