@@ -325,6 +325,7 @@ public class SelectManager : MonoBehaviour
         GameManager.myManager.selectedComposerName = selectedSong.ComposerName;
         GameManager.myManager.selectedSongName = selectedSong.SongName;
         GameManager.myManager.selectedDifficulty = _currentDifficulty;
+        GameManager.myManager.selectedLevel = selectedSong.Levels[(int)_currentDifficulty];
 
         /*
         foreach (var c in coroutines)

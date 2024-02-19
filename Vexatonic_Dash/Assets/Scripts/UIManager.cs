@@ -20,6 +20,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text scoreText;
     [SerializeField] private Text progressText;
     [SerializeField] private Text fpsText;
+    [SerializeField] private Text songNameText;
+    [SerializeField] private Text patternText;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Image healthImage;
     [SerializeField] private RectTransform healthAnimationRect;
@@ -29,8 +31,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject levelInfo;
     [SerializeField] private Text levelInfoSongNameText;
     [SerializeField] private Text levelInfoComposerNameText;
+    [SerializeField] private Text levelInfoPatternText; 
     [SerializeField] private Animator levelInfoSongNameAnim;
     [SerializeField] private Animator levelInfoComposerNameAnim;
+    [SerializeField] private Animator levelInfoPatternAnim;
 
     [Header("Countdown UI")]
     [SerializeField] private GameObject countdown;
@@ -42,6 +46,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultScoreText;
     [SerializeField] private Text resultSongNameText;
     [SerializeField] private Text resultComposerNameText;
+    [SerializeField] private Text resultPatternText;
     private bool _isResultAnimationFinished;
 
     [Space(5)]
@@ -136,6 +141,8 @@ public class UIManager : MonoBehaviour
         healthSlider.value = 1f;
         healthImage.color = new Color(0.5f, 1f, 0.5f);
         progressText.text = "0 %";
+        songNameText.text = songName;
+        patternText.text = difficulty + " " + GameManager.myManager.selectedLevel;
         StartCoroutine(ShowFPSCoroutine());
     }
 
@@ -147,11 +154,14 @@ public class UIManager : MonoBehaviour
         levelInfoSongNameAnim.SetTrigger(AnimShowHash);
         yield return new WaitForSeconds(0.2f);
         levelInfoComposerNameAnim.SetTrigger(AnimShowHash);
-        yield return new WaitForSeconds(1.8f);
+        yield return new WaitForSeconds(0.2f);
+        levelInfoPatternAnim.SetTrigger(AnimShowHash);
+        yield return new WaitForSeconds(1.6f);
 
         // Hide animation
         levelInfoComposerNameAnim.SetTrigger(AnimHideHash);
         levelInfoSongNameAnim.SetTrigger(AnimHideHash);
+        levelInfoPatternAnim.SetTrigger(AnimHideHash);
         yield return new WaitForSeconds(1f);
 
         levelInfo.SetActive(false);
@@ -207,6 +217,14 @@ public class UIManager : MonoBehaviour
     {
         levelInfoSongNameText.text = GameManager.myManager.selectedSongName;
         levelInfoComposerNameText.text = GameManager.myManager.selectedComposerName;
+        levelInfoPatternText.text = GameManager.myManager.selectedDifficulty + " " + GameManager.myManager.selectedLevel;
+        levelInfoPatternText.color = GameManager.myManager.selectedDifficulty switch
+        {
+            Difficulty.Easy => new Color(0.5f, 1f, 0.5f),
+            Difficulty.Hard => new Color(1f, 1f, 0.5f),
+            Difficulty.Vex  => new Color(1f, 0.5f, 0.5f),
+            _ => throw new ArgumentException()
+        };
         StartCoroutine(LevelInfoUICoroutine());
     }
 
@@ -238,6 +256,14 @@ public class UIManager : MonoBehaviour
         resultScoreText.text = Score.ToString();
         resultSongNameText.text = songName;
         resultComposerNameText.text = composerName;
+        resultPatternText.text = patternText.text;
+        resultPatternText.color = difficulty switch
+        {
+            Difficulty.Easy => new Color(0.5f, 1f, 0.5f),
+            Difficulty.Hard => new Color(1f, 1f, 0.5f),
+            Difficulty.Vex  => new Color(1f, 0.5f, 0.5f),
+            _ => throw new ArgumentException()
+        };
 
         // Set Judgement texts
         resultPurePerfectText.text = JudgementList[0].ToString();
