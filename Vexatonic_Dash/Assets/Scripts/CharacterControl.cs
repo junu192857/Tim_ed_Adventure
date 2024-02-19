@@ -18,7 +18,7 @@ public class CharacterControl : MonoBehaviour
     [SerializeField] private ParticleSystem particleSystem;
 
     public void MoveCharacter(Note note, double gameTime) {
-        Instantiate(afterimage, transform.position, transform.rotation);
+        Instantiate(afterimage, transform.position, transform.rotation).transform.localScale = new Vector3((int)note.direction, 1, 1);
         transform.localScale = new Vector3((int)note.direction, 1, 1);
         
         if (characterCoroutine != null) StopCoroutine(characterCoroutine);
