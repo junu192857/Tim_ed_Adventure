@@ -431,7 +431,7 @@ public class RhythmManager : MonoBehaviour
         if (isTutorial) GameManager.myManager.um.DeactivateKeyboard();
 
         state = RhythmState.GameClear;
-        song.Stop();
+        StartCoroutine(SongFadeout());
         //Time.timeScale = 0f;
         GameManager.myManager.im.Deactivate();
 
@@ -451,6 +451,18 @@ public class RhythmManager : MonoBehaviour
         }
     }
 
+
+    private IEnumerator SongFadeout() {
+        float time = 0f;
+        while (time < 2f) {
+            song.volume = GameManager.myManager.musicVolume * (1f - time / 2f);
+            time += Time.unscaledDeltaTime;
+            Debug.Log(song.volume);
+            yield return null;
+        }
+        song.Stop();
+        song.volume = GameManager.myManager.musicVolume;
+    }
     // 모든 플랫폼을 미리 스폰한다. 
     private void GenerateMap() {
         //스크롤 속도를 플레이어가 설정할 수 있게 바꿀 예정.
