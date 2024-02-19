@@ -317,11 +317,16 @@ public class SelectManager : MonoBehaviour
         GameManager.myManager.selectedSongName = selectedSong.SongName;
         GameManager.myManager.selectedDifficulty = _currentDifficulty;
 
-        foreach (var c in coroutines)
+
+        /*if (coroutines.Count > 0)
         {
-            StopCoroutine(c);
-        }
-        coroutines.Clear();
+            foreach (var c in coroutines)
+            {
+                Debug.Log(c);
+                StopCoroutine(c);
+            }
+            coroutines.Clear();
+        }*/
         GameManager.myManager.isTutorial = false;
         SceneManager.LoadScene("Scenes/LevelTest");
     }
