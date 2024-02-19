@@ -741,7 +741,7 @@ public class MainManager : MonoBehaviour
         GameManager.myManager.sm.PlaySFX("Button");
         StartCoroutine(EnterAudioSetting());
         
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
 
     public void OnClickSettingsInputButton()
@@ -861,37 +861,39 @@ public class MainManager : MonoBehaviour
 
     #region Audio Settings
 
-    private void UpdateAudioOffsetValueText()
+    private void UpdateAudioSettingsValues()
     {
         offsetValueText.text = GameManager.myManager.globalOffset.ToString("+##0ms;-##0ms;0ms");
+        musicVolumeSlider.value = GameManager.myManager.musicVolume;
+        sfxVolumeSlider.value = GameManager.myManager.sfxVolume;
     }
 
     public void OnClickAudioOffsetUpButton()
     {
         if (GameManager.myManager.globalOffset >= 999) return;
         GameManager.myManager.globalOffset += 1;
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
 
     public void OnClickAudioOffsetDownButton()
     {
         if (GameManager.myManager.globalOffset <= -999) return;
         GameManager.myManager.globalOffset -= 1;
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
     
     public void OnClickAudioOffsetUpMajorButton()
     {
         if (GameManager.myManager.globalOffset >= 990) return;
         GameManager.myManager.globalOffset += 10;
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
 
     public void OnClickAudioOffsetDownMajorButton()
     {
         if (GameManager.myManager.globalOffset <= -990) return;
         GameManager.myManager.globalOffset -= 10;
-        UpdateAudioOffsetValueText();
+        UpdateAudioSettingsValues();
     }
 
     private void UpdateMusicVolumeText()
@@ -903,6 +905,7 @@ public class MainManager : MonoBehaviour
     public void OnMusicVolumeSliderChanged(Slider slider)
     {
         GameManager.myManager.musicVolume = slider.value;
+        GameManager.myManager.sm.SetBgmVolume();
         UpdateMusicVolumeText();
     }
 
