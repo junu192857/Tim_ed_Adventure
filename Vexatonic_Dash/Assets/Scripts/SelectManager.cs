@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -66,6 +67,8 @@ public class SelectManager : MonoBehaviour
 
     private List<Coroutine> coroutines = new();
     
+    private readonly List<AudioClip> _audioClips = new();
+    
     private void Start()
     {
         _currentIndex = 0;
@@ -109,14 +112,41 @@ public class SelectManager : MonoBehaviour
         {
             _currentIndex = 0;
         }
+
+        StartCoroutine(SelectEnterCoroutine());
+    }
+
+    private IEnumerator SelectEnterCoroutine()
+    {
+        foreach (var song in _songList)
+        {
+            string fullPath = "file://" + song.AudioFilePath;
+            UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(fullPath, AudioType.MPEG);
+            yield return uwr.SendWebRequest();
+            
+            if (uwr.result == UnityWebRequest.Result.ConnectionError) Debug.LogError(uwr.error);
+            else
+            {
+                try
+                {
+                    _audioClips.Add(DownloadHandlerAudioClip.GetContent(uwr));
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError(e);
+                    _audioClips.Add(null);
+                }
+            }
+
+            yield return null;
+        }
         
         SetSongListText();
         SetCurrentSongUI();
         SetCurrentPatternUI();
 
         StartCoroutine(SelectShowAnimation());
-        coroutines.Add(StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex)));
-
+        GameManager.myManager.sm.PlaySelectedSong(_audioClips[_currentIndex]);
     }
 
     private IEnumerator SelectShowAnimation()
@@ -262,7 +292,7 @@ public class SelectManager : MonoBehaviour
         _currentIndex--;
         Debug.Log("current Index" + _currentIndex.ToString());
         coroutines.Add(StartCoroutine(MoveSongCoroutine(true)));
-        coroutines.Add(StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex)));
+        GameManager.myManager.sm.PlaySelectedSong(_audioClips[_currentIndex]);
     }
 
     private void MoveDown()
@@ -271,7 +301,7 @@ public class SelectManager : MonoBehaviour
         _currentIndex++;
         Debug.Log("current Index" + _currentIndex.ToString());
         coroutines.Add(StartCoroutine(MoveSongCoroutine(false)));
-        coroutines.Add(StartCoroutine(GameManager.myManager.sm.PlaySelectedSong(_currentIndex)));
+        GameManager.myManager.sm.PlaySelectedSong(_audioClips[_currentIndex]);
     }
 
     private IEnumerator MoveSongCoroutine(bool up)
