@@ -8452,6 +8452,7 @@ MonoBehaviour:
   - {fileID: 3571447935704100506, guid: bbace1c7e35672341bc9ab63daa10d98, type: 3}
   - {fileID: 262252564821091841, guid: efc2d9dc650ba0944b1a44a9baae7c87, type: 3}
   - {fileID: 6328499211537947147, guid: 7c36eede7bcabc34aaaa7c9c75bb4367, type: 3}
+  - {fileID: 7453775552426606691, guid: 156cab61a39cdcd43bd9a4664c09a9f0, type: 3}
   pause: {fileID: 1187415135}
   gameOver: {fileID: 55384509}
   gameOverTitleText: {fileID: 1045871446}
