@@ -919,7 +919,6 @@ public class EditorManager : MonoBehaviour
         foreach (NoteInfoPair pair in noteStorage) {
             sw.WriteLine(MakeNoteInfoString(pair.info));
         }
-        sw.WriteLine("END");
         sw.Close();
         mapSavePanel.SetActive(false);
         settingBackgroundPanel.SetActive(false);

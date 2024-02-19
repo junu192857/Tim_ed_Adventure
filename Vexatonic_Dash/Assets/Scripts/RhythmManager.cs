@@ -670,6 +670,8 @@ public class RhythmManager : MonoBehaviour
                 GameManager.myManager.sm.PlaySFX("Button");
                 Time.timeScale = 0f;
                 song.Pause();
+                if (pauseCoroutine != null) StopCoroutine(pauseCoroutine);
+                if (pauseUICoroutine != null) StopCoroutine(pauseUICoroutine);
                 state = RhythmState.Paused;
                 GameManager.myManager.im.Deactivate();
                 GameManager.myManager.um.OpenPauseUI();
