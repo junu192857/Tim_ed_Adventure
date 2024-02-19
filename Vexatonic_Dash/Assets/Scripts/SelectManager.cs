@@ -155,7 +155,12 @@ public class SelectManager : MonoBehaviour
         patternInfoAnim.SetTrigger(AnimHideHash);
         startButtonAnim.SetTrigger(AnimHideHash);
         backButtonAnim.SetTrigger(AnimHideHash);
-        eventInfoAnim.SetTrigger(AnimHideHash);
+        
+        if (eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Show") ||
+            eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        {
+            eventInfoAnim.SetTrigger(AnimHideHash);
+        }
         
         yield return new WaitUntil(() => titleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
         
