@@ -345,6 +345,9 @@ public class RhythmManager : MonoBehaviour
                 GameManager.myManager.um.SpawnHalo(note);
                 myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
+            }else if (note.lifetime < 0.1f)
+            {
+                GameManager.myManager.sm.PlaySFX("NoTouch");
             }
         }
         UpdateGravity();
@@ -353,6 +356,7 @@ public class RhythmManager : MonoBehaviour
             song.Stop();
             song.Play();
         }
+
     }
 
 
@@ -383,7 +387,7 @@ public class RhythmManager : MonoBehaviour
             }
         }else
         {
-            GameManager.myManager.sm.PlaySFX("Note");
+            GameManager.myManager.sm.PlayNote();
         }
 
         if (type == JudgementType.Miss) combo = 0;

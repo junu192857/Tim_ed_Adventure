@@ -34,6 +34,7 @@ public class SoundManager : MonoBehaviour
         if (GameManager.myManager.sm != null && GameManager.myManager.sm != this) {
             Destroy(gameObject);
         }
+
     }
 
     //For Main Scene
@@ -46,6 +47,11 @@ public class SoundManager : MonoBehaviour
             song.clip = mainBgm;
             song.loop = true;
             song.Play();
+        }
+
+        for (int i = 0; i < sfx.Length; i++)
+        {
+            sfxPlayer[i].clip = sfx[i].clip;
         }
     }
 
@@ -76,20 +82,30 @@ public class SoundManager : MonoBehaviour
         {
             if (p_sfxName == sfx[i].name)
             {
-                for (int j = 0; j < sfxPlayer.Length; j++)
-                {
-                    // SFXPlayer에서 재생 중이지 않은 Audio Source를 발견했다면 
-                    if (!sfxPlayer[j].isPlaying)
-                    {
-                        sfxPlayer[j].PlayOneShot(sfx[i].clip, SFXVolume);
-                        return;
-                    }
-                }
-                Debug.Log("모든 오디오 플레이어가 재생중입니다.");
+                sfxPlayer[i].time = 0f;
+                Debug.Log("sound " + i + "start"+p_sfxName);
+                double curDspTime = AudioSettings.dspTime;
+                sfxPlayer[i].volume = SFXVolume;
+                sfxPlayer[i].PlayScheduled(curDspTime);
                 return;
             }
         }
         Debug.Log(p_sfxName + " 이름의 효과음이 없습니다.");
         return;
+    }
+
+    public void PlayNote()
+    {//5가 notouch, 6이 touch
+        sfxPlayer[6].Stop();
+        sfxPlayer[5].volume = SFXVolume;
+        sfxPlayer[6].volume = SFXVolume;
+        if (!sfxPlayer[5].isPlaying)
+        {
+            sfxPlayer[6].Play();
+            return;
+        }
+
+        sfxPlayer[6].timeSamples = Math.Min(sfxPlayer[5].timeSamples + 300, 2000);
+        sfxPlayer[6].Play();
     }
 }
