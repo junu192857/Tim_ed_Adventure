@@ -150,6 +150,7 @@ public class RhythmManager : MonoBehaviour
         tutorialIndicatorIndex = 0;
 
         song.Stop();
+        song.volume = 0f;
 
        
         levelFilePath = GameManager.myManager.filepath;
@@ -614,6 +615,7 @@ public class RhythmManager : MonoBehaviour
     private IEnumerator LatelyStartSong() {
         double songStartTiming = -(double)(GameManager.myManager.globalOffset + levelOffset) / 1000;
         yield return new WaitForSeconds(1f);
+        song.volume = GameManager.myManager.musicVolume;
         song.PlayScheduled(AudioSettings.dspTime + songStartTiming - gameTime);
     }
 
