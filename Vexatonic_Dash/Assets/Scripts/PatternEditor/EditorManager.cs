@@ -1025,7 +1025,7 @@ public class EditorManager : MonoBehaviour
 
         Vector3 startPosition = Vector3.zero;
 
-        List<NoteSpawnInfo> noteInfos = lr.ParseFile(filepath, out gravityData, out cameraStorage, out musicOffset);
+        List<NoteSpawnInfo> noteInfos = lr.ParseFile(filepath, true, out gravityData, out cameraStorage, out musicOffset);
         offsetInputField.text = musicOffset.ToString();
 
         foreach (NoteSpawnInfo nsi in noteInfos) {
