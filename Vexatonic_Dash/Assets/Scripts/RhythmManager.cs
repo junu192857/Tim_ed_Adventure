@@ -119,7 +119,8 @@ public class RhythmManager : MonoBehaviour
     [SerializeField] private AudioClip tutorialBgm;
     public bool isTutorial => GameManager.myManager.isTutorial;
     private int tutorialIndicatorIndex;
-    private double[] startTimeForIndex = new double[] { 0, 28, 51, 52, 69, 70, 85, 86, 103, 104, 118, 119, 120, 126, 127, 128, 129, 147 };
+    private double[] startTimeForIndex = new double[] { 0, 28, 51, 52, 69, 70, 85, 86, 103, 104, 118, 119, 120, 126, 127, 128, 136, 137, 138, 158 };
+    int[] popIndexes = new int[] { 18, 15, 12, 9, 7, 5, 3, 0 };
 
 
     // 게임에 활용되는 리듬게임적 요소를 다룬다.
@@ -159,7 +160,7 @@ public class RhythmManager : MonoBehaviour
         levelOffset = 0;
         noteList = lr.ParseFile(levelFilePath, false,  out gravityDataList, out cameraInfoList, out levelOffset);
 
-        myNoteCount = isTutorial ? noteCount - 6 : noteCount;
+        myNoteCount = isTutorial ? noteCount - popIndexes.Length : noteCount;
 
 
         scorePerNotes = (double)1000000 / myNoteCount;
@@ -484,7 +485,7 @@ public class RhythmManager : MonoBehaviour
 
         if (isTutorial) {
             List<GameObject> list = preSpawnedNotes.ToList();
-            int[] popIndexes = new int[] { 12, 9, 7, 5, 3, 0 };
+            //int[] popIndexes = new int[] { 18, 15, 12, 9, 7, 5, 3, 0 };
             foreach(int index in popIndexes) {
                 GameObject deactivateNote = list[index];
                 deactivateNote.GetComponent<Note>().FixNote();
