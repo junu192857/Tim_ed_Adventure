@@ -125,10 +125,10 @@ public class UIManager : MonoBehaviour
         //원래는 레벨 폴더 안에 백그라운드 png 이미지도 있는 게 이상적
         backgroundUI.sprite = GameManager.myManager.selectedSongName switch
         {
-            "Savage_Terminal" => backgrounds[1],
+            "Savage Terminal" => backgrounds[1],
             "Reminiscence" => backgrounds[2],
-            "Union_Arena" => backgrounds[3],
-            "Inside_Honnouji" => backgrounds[4],
+            "Union Arena" => backgrounds[3],
+            "Inside Honnouji" => backgrounds[4],
             _ => backgrounds[0]
         };
 
