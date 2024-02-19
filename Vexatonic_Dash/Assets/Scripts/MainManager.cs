@@ -823,6 +823,8 @@ public class MainManager : MonoBehaviour
                          + Path.DirectorySeparatorChar + "Tutorial.txt";
         GameManager.myManager.selectedSongName = "Tutorial";
         GameManager.myManager.selectedComposerName = "Vexatonic Dash";
+        GameManager.myManager.selectedDifficulty = Difficulty.Easy;
+        GameManager.myManager.selectedLevel = 0;
 
         GameManager.myManager.isTutorial = true;
         SceneManager.LoadScene("Scenes/LevelTest");

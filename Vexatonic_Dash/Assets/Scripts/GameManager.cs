@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     public string selectedSongName;
     public string selectedComposerName;
     public Difficulty selectedDifficulty;
+    public int selectedLevel;
     
     public List<AudioClip> audioClips = new();
 
