@@ -408,6 +408,7 @@ public class RhythmManager : MonoBehaviour
         state = RhythmState.GameOver;
         song.Stop();
         Time.timeScale = 0f;
+        GameManager.myManager.im.Deactivate();
         GameManager.myManager.sm.PlaySFX("Game Over");
 
         if (progress > highProgress)
@@ -429,7 +430,8 @@ public class RhythmManager : MonoBehaviour
 
         state = RhythmState.GameClear;
         song.Stop();
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
+        GameManager.myManager.im.Deactivate();
         GameManager.myManager.sm.PlaySFX("Game Clear");
 
         if (score > highScore)
@@ -454,8 +456,18 @@ public class RhythmManager : MonoBehaviour
         //float scrollSpeed = GameManager.myManager.scrollSpeed;
 
         Vector3 AnchorPosition = Vector3.zero;
+        CharacterDirection endNoteDirection = CharacterDirection.Right;
 
-        foreach (var note in noteList) AnchorPosition = SpawnNote(note, AnchorPosition);
+        foreach (var note in noteList) { 
+            AnchorPosition = SpawnNote(note, AnchorPosition);
+            endNoteDirection = note.direction;
+        }
+
+        GameObject lastNote = Instantiate(notePrefabs[0], AnchorPosition, Quaternion.identity);
+        lastNote.GetComponent<Note>().destPos = AnchorPosition + (int)endNoteDirection * 0.32f * Vector3.left;
+        lastNote.transform.localScale = new Vector3((int)endNoteDirection, 1f, 1f);
+        lastNote.GetComponent<Note>().FixNote();
+        lastNote.GetComponentInChildren<SpriteRenderer>().size = new Vector3(170f, 2.5f, 1f);
 
         if (isTutorial) {
             List<GameObject> list = preSpawnedNotes.ToList();
@@ -557,6 +569,7 @@ public class RhythmManager : MonoBehaviour
             _ => throw new ArgumentException("Unknown or Unimplemented Note Type")
         };
         note.noteType = type;
+        note.noteSubType = subType;
         note.noteEndTime = info.spawnTime + info.noteLastingTime;
         // note.noteEndTime = noteList.IndexOf(note) == noteList.Count - 1 ? note.spawnTime + 1 : noteList[noteList.IndexOf(note) + 1].spawnTime;
 
