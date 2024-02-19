@@ -13317,7 +13317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d5f0b1cfdd5a749bec1fd83872c8f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainBgm: {fileID: 0}
+  mainBgm: {fileID: 8300000, guid: 1501d76ed15f4b44fa5236b31087dbfe, type: 3}
   sfx:
   - name: Button
     clip: {fileID: 8300000, guid: 732b7c27583645c48a3c4a4fb77f56ca, type: 3}
