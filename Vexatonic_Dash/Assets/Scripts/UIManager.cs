@@ -278,8 +278,6 @@ public class UIManager : MonoBehaviour
 
         gameOverProgressText.text = Progress + " %";
 
-        _isResultAnimationFinished = true;
-
         gameOver.SetActive(true);    // TODO: Add show animation
     }
 
@@ -362,8 +360,7 @@ public class UIManager : MonoBehaviour
 
     public void OnClickMusicSelectButton()
     {
-        Debug.Log("hello");
-        if (!_isResultAnimationFinished) return;
+        if (GameManager.myManager.rm.state == RhythmState.GameClear && !_isResultAnimationFinished) return;
 
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
@@ -375,12 +372,10 @@ public class UIManager : MonoBehaviour
 
 
     public void OpenPauseUI(){
-        _isResultAnimationFinished = true;
         pause.SetActive(true);
     }
 
     public void ClosePauseUI() {
-        _isResultAnimationFinished = false;
         pause.SetActive(false);
     }
 
