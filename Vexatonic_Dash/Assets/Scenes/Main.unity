@@ -4604,7 +4604,7 @@ MonoBehaviour:
   creditsScrollViewAnim: {fileID: 272889898}
   creditsBackButtonAnim: {fileID: 258494306}
   currentCursorIndexText: {fileID: 1554746216}
-  scrollRectPositionText: {fileID: 1496549944}
+  scrollRectPositionText: {fileID: 0}
   currentState: 0
   currentCursorIndex: 0
 --- !u!114 &621552135

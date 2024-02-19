@@ -1,0 +1,7 @@
+SONG RealTest
+COMPOSER FU
+AUDIO audio.mp3
+LEVEL 1 2 3
+EASY easy.txt
+HARD hard.txt
+VEX vex.txt

@@ -60,24 +60,37 @@ public class CharacterControl : MonoBehaviour
         float time = 0;
         float adjustedTime = 0;
 
-        if (note.noteSubType == NoteSubType.End) {
+        /*if (note.noteSubType == NoteSubType.End) {
             Destroy(gameObject);
             yield break;
-        }
+        }*/
         // 경사면 전용
         float forwardMovingTime;
         Vector3 stopoverPos;
+        
 
         if (note.angle == 0) {
-            Debug.Log("Note from angle 0");
+            Debug.Log(note.noteSubType);
             gameObject.transform.localEulerAngles = Vector3.zero;
-            while (adjustedTime < playerMovingTime + 0.166f)
+            if (note.noteSubType == NoteSubType.End)
             {
-                Vector3 targetPosition = platformNote.startPos * (playerMovingTime - adjustedTime) / playerMovingTime + platformNote.endPos * adjustedTime / playerMovingTime;
-                gameObject.transform.position = targetPosition;
-                time += Time.deltaTime;
-                adjustedTime = func(time, playerMovingTime);
-                yield return null;
+                gameObject.transform.position = note.startPos;
+                while (true)
+                {
+                    gameObject.transform.position += new Vector3((int)note.direction * GameManager.myManager.CalculateInputWidthFromTime(Time.deltaTime), 0f, 0f);
+                    yield return null;
+                }
+            }
+            else
+            {
+                while (adjustedTime < playerMovingTime + 0.166f)
+                {
+                    Vector3 targetPosition = platformNote.startPos * (playerMovingTime - adjustedTime) / playerMovingTime + platformNote.endPos * adjustedTime / playerMovingTime;
+                    gameObject.transform.position = targetPosition;
+                    time += Time.deltaTime;
+                    adjustedTime = func(time, playerMovingTime);
+                    yield return null;
+                }
             }
         }
         else {

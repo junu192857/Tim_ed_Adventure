@@ -191,16 +191,6 @@ public class SelectManager : MonoBehaviour
         {
             MoveDown();
         }
-        //only for 2/16 Ver
-        if (_currentIndex != 0)
-        {
-            patternSelectButton.interactable = false;
-            StartButton.interactable = false;
-        }
-        else {
-            patternSelectButton.interactable = true;
-            StartButton.interactable = true;
-        }
     }
 
     private void SetSongListText()
@@ -221,9 +211,6 @@ public class SelectManager : MonoBehaviour
         highlightedSongHardText.text = currentSong.Levels[1].ToString();
         highlightedSongVexText.text = currentSong.Levels[2].ToString();
         coroutines.Add(StartCoroutine(currentSong.IsEvent ? EventSongShowAnimation() : EventSongHideAnimation()));
-
-        //only for 2/16 ver
-        highlightedSongComposerText.fontSize = _currentIndex == 0 ? 64 : 48;
     }
 
     private void SetCurrentPatternUI()
@@ -330,11 +317,16 @@ public class SelectManager : MonoBehaviour
         GameManager.myManager.selectedSongName = selectedSong.SongName;
         GameManager.myManager.selectedDifficulty = _currentDifficulty;
 
-        foreach (var c in coroutines)
+
+        /*if (coroutines.Count > 0)
         {
-            StopCoroutine(c);
-        }
-        coroutines.Clear();
+            foreach (var c in coroutines)
+            {
+                Debug.Log(c);
+                StopCoroutine(c);
+            }
+            coroutines.Clear();
+        }*/
         GameManager.myManager.isTutorial = false;
         SceneManager.LoadScene("Scenes/LevelTest");
     }
@@ -353,16 +345,12 @@ public class SelectManager : MonoBehaviour
 
     public void OnSwitchDifficulty()
     {
-        //Only for 2/16 Ver
-        if (_currentIndex != 0) return;
         GameManager.myManager.sm.PlaySFX("Button");
         SwitchDifficulty();
     }
 
     public void OnStartGame()
     {
-        //Only for 2/16 Ver
-        if (_currentIndex != 0) return;
         GameManager.myManager.sm.PlaySFX("Button");
         StartGame();
     }
