@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public enum RankType
 {
@@ -35,6 +36,7 @@ public class GameManager : MonoBehaviour
     public List<KeyCode> keyList;
 
     [HideInInspector] public bool isMetaLoaded = false;
+    [HideInInspector] public bool isAudioClipLoaded;
 
     public string filepath; // 레벨의 맵 파일 위치를 의미한다.
     // 맵 하나 추가할 때마다 업데이트는 불가능 --> filepath도 외부에 있어야 한다.
@@ -47,6 +49,8 @@ public class GameManager : MonoBehaviour
     public string selectedSongName;
     public string selectedComposerName;
     public Difficulty selectedDifficulty;
+    
+    public List<AudioClip> audioClips = new();
 
     public void Awake()
     {
@@ -80,7 +84,39 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
+        isAudioClipLoaded = false;
         MetaReader.GetSongMeta();
+        StartCoroutine(LoadAudioClips());
+    }
+
+    private IEnumerator LoadAudioClips()
+    {
+        var songList = MetaReader.SongMetaList;
+        
+        foreach (var song in songList)
+        {
+            string fullPath = "file://" + song.AudioFilePath;
+            UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(fullPath, AudioType.MPEG);
+            yield return uwr.SendWebRequest();
+            
+            if (uwr.result == UnityWebRequest.Result.ConnectionError) Debug.LogError(uwr.error);
+            else
+            {
+                try
+                {
+                    audioClips.Add(DownloadHandlerAudioClip.GetContent(uwr));
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                    audioClips.Add(null);
+                }
+            }
+
+            yield return null;
+        }
+        
+        isAudioClipLoaded = true;
     }
 
     /// <summary>

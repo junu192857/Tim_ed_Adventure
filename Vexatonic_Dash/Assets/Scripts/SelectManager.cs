@@ -67,8 +67,6 @@ public class SelectManager : MonoBehaviour
 
     private List<Coroutine> coroutines = new();
     
-    private readonly List<AudioClip> _audioClips = new();
-    
     private void Start()
     {
         _currentIndex = 0;
@@ -112,41 +110,12 @@ public class SelectManager : MonoBehaviour
         {
             _currentIndex = 0;
         }
-
-        StartCoroutine(SelectEnterCoroutine());
-    }
-
-    private IEnumerator SelectEnterCoroutine()
-    {
-        foreach (var song in _songList)
-        {
-            string fullPath = "file://" + song.AudioFilePath;
-            UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(fullPath, AudioType.MPEG);
-            yield return uwr.SendWebRequest();
-            
-            if (uwr.result == UnityWebRequest.Result.ConnectionError) Debug.LogError(uwr.error);
-            else
-            {
-                try
-                {
-                    _audioClips.Add(DownloadHandlerAudioClip.GetContent(uwr));
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError(e);
-                    _audioClips.Add(null);
-                }
-            }
-
-            yield return null;
-        }
         
         SetSongListText();
         SetCurrentSongUI();
         SetCurrentPatternUI();
 
         StartCoroutine(SelectShowAnimation());
-        GameManager.myManager.sm.PlaySelectedSong(_audioClips[_currentIndex]);
     }
 
     private IEnumerator SelectShowAnimation()
@@ -154,6 +123,7 @@ public class SelectManager : MonoBehaviour
         _isAnimationPlaying = true;
         
         yield return new WaitForEndOfFrame();
+        yield return new WaitUntil(() => GameManager.myManager.isAudioClipLoaded);
         
         titleTextAnim.SetTrigger(AnimShowHash);
         songsParentAnim.SetTrigger(AnimShowHash);
@@ -165,6 +135,8 @@ public class SelectManager : MonoBehaviour
         backButtonAnim.SetTrigger(AnimShowHash);
         
         yield return new WaitUntil(() => titleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle"));
+        
+        GameManager.myManager.sm.PlaySelectedSong(GameManager.myManager.audioClips[_currentIndex]);
         
         _isAnimationPlaying = false;
     }
@@ -281,7 +253,7 @@ public class SelectManager : MonoBehaviour
         _currentIndex--;
         Debug.Log("current Index" + _currentIndex.ToString());
         coroutines.Add(StartCoroutine(MoveSongCoroutine(true)));
-        GameManager.myManager.sm.PlaySelectedSong(_audioClips[_currentIndex]);
+        GameManager.myManager.sm.PlaySelectedSong(GameManager.myManager.audioClips[_currentIndex]);
     }
 
     private void MoveDown()
@@ -290,7 +262,7 @@ public class SelectManager : MonoBehaviour
         _currentIndex++;
         Debug.Log("current Index" + _currentIndex.ToString());
         coroutines.Add(StartCoroutine(MoveSongCoroutine(false)));
-        GameManager.myManager.sm.PlaySelectedSong(_audioClips[_currentIndex]);
+        GameManager.myManager.sm.PlaySelectedSong(GameManager.myManager.audioClips[_currentIndex]);
     }
 
     private IEnumerator MoveSongCoroutine(bool up)
