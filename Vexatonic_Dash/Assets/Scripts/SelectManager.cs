@@ -192,7 +192,8 @@ public class SelectManager : MonoBehaviour
 
     private IEnumerator EventSongShowAnimation()
     {
-        if (!eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden")) yield break;
+        if (eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle") ||
+            eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Show")) yield break;
         
         yield return new WaitForEndOfFrame();
         
@@ -201,7 +202,8 @@ public class SelectManager : MonoBehaviour
     
     private IEnumerator EventSongHideAnimation()
     {
-        if (!eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle")) yield break;
+        if (eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden") ||
+            eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Hide")) yield break;
         
         yield return new WaitForEndOfFrame();
         
