@@ -2794,8 +2794,8 @@ MonoBehaviour:
   m_Text: "\n[Developers]\n\n\uC5C4\uC900\uC6B0, \uAE40\uB3D9\uC6B1, \uAE40\uC138\uD604,
     \uC815\uC2DC\uD6C8\n\n\n[Sounds]\n\nTitle\n\uC5B4\uB461\uACE0 \uBB35\uC9C1\uD55C
     bgm by SellBuyMusic\r\n\nTutorial\nUnder by SellBuyMusic\r\n\nIn-game\nSavage
-    Terminal by NEXON\nReminiscence by NEXON\nAwake by NEXON\nInside Honnouji by
-    NEXON\n\n\n[Design]\n\nFont\n\uD55C\uAD6D\uAE30\uACC4\uC5F0\uAD6C\uC6D0, kimm.re.kr\n"
+    Terminal by NEXON\nReminiscence by NEXON\nUnion Arena by NEXON\nInside Honnouji
+    by NEXON\n\n\n[Design]\n\nFont\n\uD55C\uAD6D\uAE30\uACC4\uC5F0\uAD6C\uC6D0, kimm.re.kr\n"
 --- !u!222 &286059592
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10736,6 +10736,7 @@ MonoBehaviour:
   selectedSongName: 
   selectedComposerName: 
   selectedDifficulty: 0
+  selectedLevel: 0
   audioClips: []
   gravity: 0
 --- !u!4 &1611857184
