@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [Header("Backgrounds")]
     [SerializeField] private List<Sprite> backgrounds;
     [SerializeField] private Image backgroundUI;
+    [SerializeField] private Image gradation;
 
     [Header("In-Game UI")]
     [SerializeField] private Text scoreText;
@@ -339,7 +340,7 @@ public class UIManager : MonoBehaviour
     }
 
     //only regards damage is 20, should be fixed later..? but there is no 'later'
-    public void HitAnimation(Vector3 transformPosition) {
+    public void HitAnimation(Vector3 transformPosition, int health) {
         GameObject myParent = Instantiate(judgeParent,
             transformPosition + Quaternion.AngleAxis(Camera.main.transform.rotation.z, Vector3.forward) * (0.7f * Vector3.up),
             Quaternion.identity);
@@ -357,6 +358,8 @@ public class UIManager : MonoBehaviour
         _1digit.transform.GetComponent<SpriteRenderer>().color = new Color(1, 0.3f, 0.3f);
 
         myParent.transform.localEulerAngles = Camera.main.transform.localEulerAngles;
+
+        gradation.GetComponent<Image>().color = new Color(0.66f, 0f, 0f, 0.5f - 0.005f * health);
     }
     private IEnumerator ShowFPSCoroutine() {
         float time = 0;
