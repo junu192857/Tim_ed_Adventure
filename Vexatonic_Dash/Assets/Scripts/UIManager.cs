@@ -41,14 +41,18 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultScoreText;
     [SerializeField] private Text resultSongNameText;
     [SerializeField] private Text resultComposerNameText;
-    [SerializeField] private Button musicSelectButton;
+    private bool _isResultAnimationFinished;
 
-    [Space(10)]
+    [Space(5)]
     [SerializeField] private Text resultPurePerfectText;
     [SerializeField] private Text resultPerfectText;
     [SerializeField] private Text resultGreatText;
     [SerializeField] private Text resultGoodText;
     [SerializeField] private Text resultMissText;
+
+    [Space(10)]
+    [SerializeField] private Animator resultPanelAnim;
+    [SerializeField] private Animator resultRankIconAnim;
 
     [Header("Judgement & Combo")]
     [SerializeField] private GameObject judgeParent;
@@ -110,6 +114,7 @@ public class UIManager : MonoBehaviour
         infos = new List<TutorialInfo>();
         tutorialText.gameObject.SetActive(false);
         InitializeUI();
+        _isResultAnimationFinished = false;
     }
     
     private void InitializeUI()
@@ -119,9 +124,9 @@ public class UIManager : MonoBehaviour
         //원래는 레벨 폴더 안에 백그라운드 png 이미지도 있는 게 이상적
         backgroundUI.sprite = GameManager.myManager.selectedSongName switch
         {
-            "Savage_Terminal" => backgrounds[0],
-            "Tutorial" => backgrounds[1],
+            "Savage_Terminal" => backgrounds[1],
             "Reminiscence" => backgrounds[2],
+            _ => backgrounds[0]
         };
 
         scoreText.text = "0";
@@ -239,6 +244,22 @@ public class UIManager : MonoBehaviour
         resultMissText.text = JudgementList[4].ToString();
 
         result.SetActive(true);    // TODO: Add show animation
+
+        StartCoroutine(ResultShowAnimation());
+    }
+
+    private IEnumerator ResultShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+        
+        resultPanelAnim.SetTrigger(AnimShowHash);
+
+        yield return new WaitForSecondsRealtime(1.8f);
+        
+        _isResultAnimationFinished = true;
+        resultRankIconAnim.SetTrigger(AnimShowHash);
+        GameManager.myManager.sm.PlaySFX("Game Clear");
+        Debug.Log("Result show animation finished");
     }
     
     public void ShowGameOverUI(bool isNewRecord)
@@ -335,6 +356,8 @@ public class UIManager : MonoBehaviour
 
     public void OnClickMusicSelectButton()
     {
+        if (!_isResultAnimationFinished) return;
+        
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
         GameManager.myManager.sm.PlaySFX("Button");

@@ -432,7 +432,6 @@ public class RhythmManager : MonoBehaviour
         song.Stop();
         //Time.timeScale = 0f;
         GameManager.myManager.im.Deactivate();
-        GameManager.myManager.sm.PlaySFX("Game Clear");
 
         if (score > highScore)
         {
@@ -711,7 +710,6 @@ public class RhythmManager : MonoBehaviour
     }
     public void OnReturnToMain() { // Pressed Enter Button
         if (state != RhythmState.Paused && state != RhythmState.GameClear && state != RhythmState.GameOver) return;
-        Time.timeScale = 1f;
         GameManager.myManager.um.OnClickMusicSelectButton();
     }
 
