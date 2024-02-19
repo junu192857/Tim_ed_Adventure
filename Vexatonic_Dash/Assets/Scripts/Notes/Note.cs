@@ -6,6 +6,7 @@ using System;
 public class Note : MonoBehaviour
 {
     public bool permanent = false;
+    public bool sound = false;
     public bool activated;
 
     //개별 노트의 게임오브젝트마다 달려 있는 스크립트.

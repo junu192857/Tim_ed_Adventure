@@ -115,6 +115,7 @@ public class RhythmManager : MonoBehaviour
         set => currentPlayingNote = value;
     }
 
+
     [Header ("Tutorial")]
     [SerializeField] private AudioClip tutorialBgm;
     public bool isTutorial => GameManager.myManager.isTutorial;
@@ -348,8 +349,9 @@ public class RhythmManager : MonoBehaviour
                 GameManager.myManager.um.SpawnHalo(note);
                 myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
-            }else if (note.lifetime < 0.012f)
+            }else if (note.lifetime < 0.07f && note.sound == false)
             {
+                note.sound = true;
                 GameManager.myManager.sm.PlayUTouch();
             }
         }

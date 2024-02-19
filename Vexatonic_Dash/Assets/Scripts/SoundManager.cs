@@ -16,11 +16,11 @@ public class SoundManager : MonoBehaviour
 {
 
     [SerializeField] private AudioClip mainBgm;
-    [SerializeField] private AudioClip _note, _unote;
+    [SerializeField] private AudioClip _note;
     [SerializeField] private Sound[] sfx;
 
-    [SerializeField] private AudioSource song, note, unote;
-    [SerializeField] private AudioSource[] sfxPlayer;
+    [SerializeField] private AudioSource song;
+    [SerializeField] private AudioSource[] sfxPlayer, note;
 
     private float MusicVolume => GameManager.myManager.musicVolume;
     private float SFXVolume => GameManager.myManager.sfxVolume;
@@ -36,11 +36,11 @@ public class SoundManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        note.clip = _note;
-        unote.clip = _unote;
+        for(int i = 0; i < note.Length; i++)
+        {
+            note[i].clip = _note;
+        }
 
-        note.volume = SFXVolume;
-        unote.volume = SFXVolume;
     }
 
     //For Main Scene
@@ -89,17 +89,38 @@ public class SoundManager : MonoBehaviour
 
     public void PlayUTouch()
     {
-        if (unote.isPlaying) return;
-        double curdspTime = AudioSettings.dspTime;
-        unote.PlayScheduled(curdspTime);
+        for(int i = 0; i < note.Length; i++)
+        {
+            if (note[i].isPlaying) continue;
+            note[i].volume = SFXVolume / 8;
+            note[i].PlayScheduled(AudioSettings.dspTime);
+            return;
+        }
     }
 
     public void PlayTouch()
     {
-        Debug.Log("touch!");
-        if (unote.isPlaying) note.timeSamples = Math.Min(unote.timeSamples + 300, 1400);
-        else note.timeSamples = 900;
-        note.Play();
+        int mx = -1, mx2 = -1;
+        for (int i = 0; i < note.Length; i++)
+        {
+            if (note[i].volume > SFXVolume/2) continue;
+            if (!note[i].isPlaying)
+            {
+                mx2 = i;
+                continue;
+            }
+            if (mx == -1) mx = i;
+            else if (note[i].timeSamples > note[mx].timeSamples) mx = i;
+        }
+        if (mx == -1 && mx2 == -1) return;
+        mx = Math.Max(mx, mx2);
+        note[mx].volume = SFXVolume;
+
+        if (!note[mx].isPlaying)
+        {
+            note[mx].timeSamples = 1000;
+            note[mx].Play();
+        }
     }
 
     public void SetBgmVolume() => song.volume = MusicVolume;
