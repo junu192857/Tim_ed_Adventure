@@ -731,7 +731,7 @@ public class RhythmManager : MonoBehaviour
 
     public void OnRestart() // Pressed Space Button 
     {
-        if (state != RhythmState.Paused) return;
+        if (state != RhythmState.Paused && state != RhythmState.GameOver) return;
         GameManager.myManager.sm.PlaySFX("Button");
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
