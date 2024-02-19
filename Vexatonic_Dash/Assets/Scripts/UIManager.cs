@@ -1,12 +1,10 @@
 using System;
 using System.Collections;
-using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using UnityEngine.Windows;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -23,6 +21,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text fpsText;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Image healthImage;
+    [SerializeField] private RectTransform healthAnimationRect;
     [SerializeField] private List<GameObject> halos;
 
     [Header("Level Info UI")]
@@ -173,6 +172,25 @@ public class UIManager : MonoBehaviour
             _ => new Color(0.5f, 1f, 0.5f)
         };
         progressText.text = Progress + " %";
+    }
+
+    public IEnumerator HealthBarAnimation(float dest)
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        var initialAnchorMax = healthAnimationRect.anchorMax.x;
+        var startTime = Time.time;
+        var progress = 0f;
+
+        while (progress < 1f)
+        {
+            progress = (Time.time - startTime) / 0.2f;
+
+            healthAnimationRect.anchorMax = new Vector2(Mathf.Lerp(initialAnchorMax, dest, progress), 1f);
+            yield return null;
+        }
+        
+        healthAnimationRect.anchorMax = new Vector2(dest, 1f);
     }
 
     public void ShowLevelInfoUI()
