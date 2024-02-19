@@ -15,7 +15,7 @@ public class LevelReader
     public static int noteCount; // 채보의 전체 노트수
 
 
-    public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList, out List<CameraControlInfo> cameraControlList, out int offset) {
+    public List<NoteSpawnInfo> ParseFile(string filepath, bool isEditor, out List<GravityData> gravityDataList, out List<CameraControlInfo> cameraControlList, out int offset) {
         noteCount = 0;
         offset = 0;
 
@@ -33,6 +33,8 @@ public class LevelReader
 
         reader = new FileStream(filepath, FileMode.Open);
         sr = new StreamReader(reader);
+
+        List<NoteSpawnInfo> returnList = new List<NoteSpawnInfo>();
         while (!sr.EndOfStream) { 
             line = sr.ReadLine();
             Debug.Log(line);
@@ -117,7 +119,7 @@ public class LevelReader
                 if (cur.noteSubType == NoteSubType.End)
                 {
                     cur.noteLastingTime = 1f;
-                    List<NoteSpawnInfo> returnList = list.ToList();
+                    returnList = list.ToList();
                     returnList.Reverse();
 
                     gravityDataList = gravityInfoStack.ToList();
@@ -131,7 +133,8 @@ public class LevelReader
                 }
             }
         }
-        Debug.LogError("This level does not have an END Note");
+        if (isEditor) return returnList;
+        else Debug.LogError("This level does not have an END Note");
         sr.Close();
         return null;
     }

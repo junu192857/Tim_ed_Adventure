@@ -156,7 +156,7 @@ public class RhythmManager : MonoBehaviour
         lr = new LevelReader();
         gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
         levelOffset = 0;
-        noteList = lr.ParseFile(levelFilePath, out gravityDataList, out cameraInfoList, out levelOffset);
+        noteList = lr.ParseFile(levelFilePath, false,  out gravityDataList, out cameraInfoList, out levelOffset);
 
         myNoteCount = isTutorial ? noteCount - 6 : noteCount;
 
