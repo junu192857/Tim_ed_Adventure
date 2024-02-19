@@ -15,8 +15,8 @@ public class AfterimageBehaviour : MonoBehaviour
 
     private IEnumerator CharacterFadeout() {
         float time = 0f;
-        while (time < 0.5f) {
-            c.a = Mathf.Max(0, 0.5f - time);
+        while (time < 1f) {
+            c.a = Mathf.Max(0, (1f - time)/2);
             sr.color = c;
             time += Time.deltaTime;
             yield return null;

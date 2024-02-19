@@ -14,15 +14,10 @@ public class LevelReader
 
     public static int noteCount; // 채보의 전체 노트수
 
-    //맵 파일을 읽어 노트 정보에 관한 Queue로 반환하는 함수.
-    [Obsolete("Gravity data added. Please use the newer one.")]
-    public List<NoteSpawnInfo> ParseFile(string filepath)
-    {
-        return ParseFile(filepath, out List<GravityData> dummy, out List<CameraControlInfo> dummy2);
-    }
-    
-    public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList, out List<CameraControlInfo> cameraControlList) {
+
+    public List<NoteSpawnInfo> ParseFile(string filepath, out List<GravityData> gravityDataList, out List<CameraControlInfo> cameraControlList, out int offset) {
         noteCount = 0;
+        offset = 0;
 
         NoteSpawnInfo cur;
         NoteSpawnInfo prev;
@@ -57,9 +52,10 @@ public class LevelReader
                 _1bitTime = 240 / double.Parse(line.Split(' ')[2]);
             }
             */
-            if (line.StartsWith("OFFSET")) // OFFSET (시간)
+            if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+            else if (line.StartsWith("OFFSET")) // OFFSET (시간)
             {
-                GameManager.myManager.levelOffset = double.Parse(myList[1]);
+                offset = int.Parse(myList[1]);
             }
             else if (line.StartsWith("GRAVITY")) // GRAVITY (시간) (중력 방향: 0이 아래, 90이 오른쪽)
             {
@@ -87,18 +83,20 @@ public class LevelReader
 
                 cameraInfoStack.Push(camInfo);
             }
-            else {
-                if (myList[0].Length != 1) {
+            else
+            {
+                if (myList[0].Length != 1)
+                {
                     Debug.LogError("Parse Error: Length of Note type letter is not 1");
                     sr.Close();
                     return null;
                 }
-                        
+
                 // A (스폰시간) 0 (종류) (경사도) (진행방향)
                 // B (스폰시간) (대쉬 계수) (종류) (경사도) (진행방향)
                 // C (스폰시간) (높이변화) (종류) (경사도) (진행방향)
                 cur = GenerateNoteSpawnInfo(myList);
-                
+
                 if (list.TryPeek(out prev))
                 {
                     prev.noteLastingTime = cur.spawnTime - prev.spawnTime;
@@ -113,9 +111,11 @@ public class LevelReader
                         }
                     }
                 }
+
                 list.Push(cur);
 
-                if (cur.noteSubType == NoteSubType.End) {
+                if (cur.noteSubType == NoteSubType.End)
+                {
                     cur.noteLastingTime = 1f;
                     List<NoteSpawnInfo> returnList = list.ToList();
                     returnList.Reverse();

@@ -71,6 +71,7 @@ public class RhythmManager : MonoBehaviour
     public List<KeyCode> keyList => GameManager.myManager.keyList;
 
     //맵 시작과 동시에 노트들에 관한 정보를 전부 가져온다.
+    private int levelOffset;
     private List<NoteSpawnInfo> noteList;
     private List<GravityData> gravityDataList;
     private List<CameraControlInfo> cameraInfoList;
@@ -135,14 +136,14 @@ public class RhythmManager : MonoBehaviour
 
     private void Awake()
     {
-
         GameManager.myManager.rm = this;
     }
     // Start is called before the first frame update
     void Start()
     {
+      
         song = GameManager.myManager.sm.GetComponent<AudioSource>();
-
+        song.loop = false;
         if (isTutorial) song.clip = tutorialBgm;
 
         overtime = isTutorial ? 0.3f : 0.166f;
@@ -154,7 +155,8 @@ public class RhythmManager : MonoBehaviour
         levelFilePath = GameManager.myManager.filepath;
         lr = new LevelReader();
         gravityDataList = new List<GravityData>(); // 임시로 빈 리스트를 만들어놓음.
-        noteList = lr.ParseFile(levelFilePath, out gravityDataList, out cameraInfoList);
+        levelOffset = 0;
+        noteList = lr.ParseFile(levelFilePath, out gravityDataList, out cameraInfoList, out levelOffset);
 
         myNoteCount = isTutorial ? noteCount - 6 : noteCount;
 
@@ -169,7 +171,7 @@ public class RhythmManager : MonoBehaviour
         GameManager.myManager.um.ShowLevelInfoUI();
 
         state = RhythmState.BeforeGameStart;
-        gameTime = -5;
+        gameTime = -4;
         score = 0;
         realScore = 0;
         minusScore = 1010000;
@@ -194,7 +196,7 @@ public class RhythmManager : MonoBehaviour
         StartCoroutine(nameof(StartReceivingInput));
 
         myPlayer.InitialCharacterMove();
-        StartCoroutine(StartSong());
+        StartCoroutine(LatelyStartSong());
         if (isTutorial) {
             GameManager.myManager.um.ReadTutorial();
             StartCoroutine(GameManager.myManager.um.TutorialCoroutine());     
@@ -604,10 +606,10 @@ public class RhythmManager : MonoBehaviour
         GameManager.myManager.im.Activate();
     }
 
-    private IEnumerator StartSong() {
-        double songStartTiming = -(GameManager.myManager.globalOffset + GameManager.myManager.levelOffset) / 1000;
-        yield return new WaitUntil(() => gameTime >= songStartTiming);
-        //song.time = (float)(gameTime - songStartTiming);
+    private IEnumerator LatelyStartSong() {
+        double songStartTiming = -(double)(GameManager.myManager.globalOffset + levelOffset) / 1000;
+        yield return new WaitForSeconds(1f);
+        song.PlayScheduled(AudioSettings.dspTime + songStartTiming - gameTime);
         song.Play();
     }
 
