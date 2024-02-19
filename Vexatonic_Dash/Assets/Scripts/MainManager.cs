@@ -24,6 +24,9 @@ public class MainManager : MonoBehaviour
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
 
+    [Header("Loading")]
+    [SerializeField] private GameObject loadingParent;
+    
     [Header("Main")]
     [SerializeField] private GameObject mainParent;
     [SerializeField] private Button mainPlayButton;
@@ -124,7 +127,8 @@ public class MainManager : MonoBehaviour
     {
         GameManager.myManager.sm.StartMainBgm();
 
-        mainParent.SetActive(true);
+        loadingParent.SetActive(true);
+        mainParent.SetActive(false);
         settingsParent.SetActive(false);
         videoSettingsParent.SetActive(false);
         audioSettingsParent.SetActive(false);
@@ -398,6 +402,10 @@ public class MainManager : MonoBehaviour
     private IEnumerator MainShowAnimation()
     {
         yield return new WaitForEndOfFrame();
+        yield return new WaitUntil(() => GameManager.myManager.isAudioClipLoaded);
+        
+        loadingParent.SetActive(false);
+        mainParent.SetActive(true);
 
         mainTitleTextAnim.SetTrigger(AnimShowHash);
         mainPlayButtonAnim.SetTrigger(AnimShowHash);
