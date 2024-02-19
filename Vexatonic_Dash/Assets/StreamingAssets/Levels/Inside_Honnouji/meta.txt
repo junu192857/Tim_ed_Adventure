@@ -1,6 +1,6 @@
-﻿SONG Inside_Honnouji
+﻿SONG Inside Honnouji
 COMPOSER NEXON
-LEVEL 0 0 0
+LEVEL 2 5 8
 AUDIO audio.mp3
 EASY Easy.txt
 HARD Hard.txt
