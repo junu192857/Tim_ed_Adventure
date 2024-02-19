@@ -48,26 +48,13 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    // Not Implemented. play song for selected music in select scene.
-    public IEnumerator PlaySelectedSong(int songIndex) {
+    public void PlaySelectedSong(AudioClip clip)
+    {
         song.Stop();
-        string fullpath = "file://" + MetaReader.SongMetaList[songIndex].AudioFilePath;
-        UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(fullpath, AudioType.MPEG);
-        yield return uwr.SendWebRequest();
-
-        if (uwr.result == UnityWebRequest.Result.ConnectionError)
-        {
-            Debug.Log(uwr.error);
-        }
-        else
-        {
-            AudioClip myClip = DownloadHandlerAudioClip.GetContent(uwr);
-            song.clip = myClip;
-            song.volume = MusicVolume;
-            song.Play();
-        }
+        song.clip = clip;
+        song.volume = MusicVolume;
+        song.Play();
     }
-
 
     public void PlaySFX(string p_sfxName)
     {
