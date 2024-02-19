@@ -1,0 +1,7 @@
+SONG Savage_Terminal
+COMPOSER NEXON
+LEVEL 2 5 8
+AUDIO audio.mp3
+EASY Easy.txt
+HARD Hard.txt
+VEX Vex.txt
