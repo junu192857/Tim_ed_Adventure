@@ -824,7 +824,7 @@ public class MainManager : MonoBehaviour
         GameManager.myManager.selectedSongName = "Tutorial";
         GameManager.myManager.selectedComposerName = "Vexatonic Dash";
         GameManager.myManager.selectedDifficulty = Difficulty.Easy;
-        GameManager.myManager.selectedLevel = 0;
+        GameManager.myManager.selectedLevel = 1;
 
         GameManager.myManager.isTutorial = true;
         SceneManager.LoadScene("Scenes/LevelTest");
