@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [Header("Backgrounds")]
     [SerializeField] private List<Sprite> backgrounds;
     [SerializeField] private Image backgroundUI;
+    [SerializeField] private Image gradation;
 
     [Header("In-Game UI")]
     [SerializeField] private Text scoreText;
@@ -62,17 +63,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject resultGood;
     [SerializeField] private GameObject resultMiss;
     [SerializeField] private List<GameObject> numbers;
-    private readonly Vector3 distFromParent =  Vector3.up * 0.1f;
+    private readonly Vector3 distFromParent = Vector3.up * 0.1f;
 
     [Header("Pause UI")]
     [SerializeField] private GameObject pause;
 
-    [Header ("Game Over UI")]
+    [Header("Game Over UI")]
     [SerializeField] private GameObject gameOver;
     [SerializeField] private Text gameOverTitleText;
     [SerializeField] private Text gameOverProgressText;
 
-    [Header ("Song Info")]
+    [Header("Song Info")]
     public string songName;
     public string composerName;
     public Difficulty difficulty;
@@ -88,11 +89,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private List<GameObject> TutorialIndicators;
     [SerializeField] private GameObject keyboard;
     [SerializeField] private List<GameObject> keyboardArrows;
-    private List<int> fjArrowTimings = new List<int> { 18, 29, 45, 53, 121, 130};
+    private List<int> fjArrowTimings = new List<int> { 18, 29, 45, 53, 121, 130 };
     private List<int> dkArrowTimings = new List<int> { 59, 70, 79, 86, 121, 130 };
     private List<int> spaceArrowTimings = new List<int> { 93, 104, 114, 118, 121, 130 };
     private bool IsTutorial => GameManager.myManager.rm.isTutorial;
-    
+
     private static int Score => GameManager.myManager.rm.score;
     private static int Progress => GameManager.myManager.rm.progress;
     private static int[] JudgementList => GameManager.myManager.rm.judgementList;
@@ -100,7 +101,7 @@ public class UIManager : MonoBehaviour
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
 
     private static int Health => GameManager.myManager.rm.health;
-    
+
     private void Awake()
     {
         GameManager.myManager.um = this;
@@ -108,7 +109,7 @@ public class UIManager : MonoBehaviour
         composerName = GameManager.myManager.selectedComposerName;
         difficulty = GameManager.myManager.selectedDifficulty;
     }
-    
+
     private void Start()
     {
         infos = new List<TutorialInfo>();
@@ -116,7 +117,7 @@ public class UIManager : MonoBehaviour
         InitializeUI();
         _isResultAnimationFinished = false;
     }
-    
+
     private void InitializeUI()
     {
         Debug.Log(GameManager.myManager.selectedSongName);
@@ -139,18 +140,18 @@ public class UIManager : MonoBehaviour
     private IEnumerator LevelInfoUICoroutine()
     {
         levelInfo.SetActive(true);
-        
+
         // Show animation
         levelInfoSongNameAnim.SetTrigger(AnimShowHash);
         yield return new WaitForSeconds(0.2f);
         levelInfoComposerNameAnim.SetTrigger(AnimShowHash);
         yield return new WaitForSeconds(1.8f);
-        
+
         // Hide animation
         levelInfoComposerNameAnim.SetTrigger(AnimHideHash);
         levelInfoSongNameAnim.SetTrigger(AnimHideHash);
         yield return new WaitForSeconds(1f);
-        
+
         levelInfo.SetActive(false);
         //ShowCountdownUI();
     }
@@ -158,7 +159,7 @@ public class UIManager : MonoBehaviour
     private IEnumerator CountdownUICoroutine()
     {
         countdown.SetActive(true);
-        
+
         while (GameTime < 0)
         {
             countdownText.text = $"{-GameTime:0.0}";
@@ -196,7 +197,7 @@ public class UIManager : MonoBehaviour
             healthAnimationRect.anchorMax = new Vector2(Mathf.Lerp(initialAnchorMax, dest, progress), 1f);
             yield return null;
         }
-        
+
         healthAnimationRect.anchorMax = new Vector2(dest, 1f);
     }
 
@@ -231,11 +232,11 @@ public class UIManager : MonoBehaviour
     public void ShowResultUI(bool isNewRecord)
     {
         rankIcon.SetRank(GameManager.GetRank(Score));
-        
+
         resultScoreText.text = Score.ToString();
         resultSongNameText.text = songName;
         resultComposerNameText.text = composerName;
-        
+
         // Set Judgement texts
         resultPurePerfectText.text = JudgementList[0].ToString();
         resultPerfectText.text = JudgementList[1].ToString();
@@ -251,17 +252,17 @@ public class UIManager : MonoBehaviour
     private IEnumerator ResultShowAnimation()
     {
         yield return new WaitForEndOfFrame();
-        
+
         resultPanelAnim.SetTrigger(AnimShowHash);
 
         yield return new WaitForSecondsRealtime(1.8f);
-        
+
         _isResultAnimationFinished = true;
         resultRankIconAnim.SetTrigger(AnimShowHash);
         GameManager.myManager.sm.PlaySFX("Game Clear");
         Debug.Log("Result show animation finished");
     }
-    
+
     public void ShowGameOverUI(bool isNewRecord)
     {
         if (isNewRecord)
@@ -274,9 +275,9 @@ public class UIManager : MonoBehaviour
             gameOverTitleText.text = "GAME OVER";
             gameOverTitleText.color = new Color(1f, 0.5f, 0.5f);
         }
-        
+
         gameOverProgressText.text = Progress + " %";
-        
+
         gameOver.SetActive(true);    // TODO: Add show animation
     }
 
@@ -284,7 +285,7 @@ public class UIManager : MonoBehaviour
     public void DisplayJudge(Vector3 transformPosition, int combo)
     {
 
-        GameObject myParent = Instantiate(judgeParent, 
+        GameObject myParent = Instantiate(judgeParent,
             transformPosition + Quaternion.AngleAxis(Camera.main.transform.rotation.z, Vector3.forward) * (0.7f * Vector3.up),
             Quaternion.identity);
 
@@ -326,7 +327,7 @@ public class UIManager : MonoBehaviour
                 Instantiate(numbers[combo % 10], myParent.transform).transform.localPosition = distFromParent + 0.2f * Vector3.right;
                 break;
             case >= 1000 and < 10000:
-                Instantiate(numbers[combo / 1000],  myParent.transform).transform.localPosition = distFromParent - 0.3f * Vector3.right;
+                Instantiate(numbers[combo / 1000], myParent.transform).transform.localPosition = distFromParent - 0.3f * Vector3.right;
                 Instantiate(numbers[combo / 100 % 10], myParent.transform).transform.localPosition = distFromParent - 0.1f * Vector3.right;
                 Instantiate(numbers[combo / 10 % 10], myParent.transform).transform.localPosition = distFromParent + 0.1f * Vector3.right;
                 Instantiate(numbers[combo % 10], myParent.transform).transform.localPosition = distFromParent + 0.3f * Vector3.right;
@@ -337,6 +338,9 @@ public class UIManager : MonoBehaviour
 
         myParent.transform.localEulerAngles = Camera.main.transform.localEulerAngles;
     }
+
+    //only regards damage is 20, should be fixed later..? but there is no 'later'
+    public void HitAnimation(int health) => gradation.GetComponent<Image>().color = new Color(0.66f, 0f, 0f, 0.5f - 0.005f * health);
 
     private IEnumerator ShowFPSCoroutine() {
         float time = 0;
@@ -357,19 +361,23 @@ public class UIManager : MonoBehaviour
     public void OnClickMusicSelectButton()
     {
         if (GameManager.myManager.rm.state == RhythmState.GameClear && !_isResultAnimationFinished) return;
-        
+
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
         GameManager.myManager.sm.PlaySFX("Button");
-        
+
         if (IsTutorial) SceneManager.LoadScene("Scenes/Main");
         else SceneManager.LoadScene("Scenes/Select");
     }
 
 
-    public void OpenPauseUI() => pause.SetActive(true);
+    public void OpenPauseUI(){
+        pause.SetActive(true);
+    }
 
-    public void ClosePauseUI() => pause.SetActive(false);
+    public void ClosePauseUI() {
+        pause.SetActive(false);
+    }
 
     public IEnumerator TutorialCoroutine() {
         while (infos.Count > 0) {
