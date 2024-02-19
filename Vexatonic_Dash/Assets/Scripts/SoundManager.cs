@@ -118,7 +118,7 @@ public class SoundManager : MonoBehaviour
 
         if (!note[mx].isPlaying)
         {
-            note[mx].timeSamples = 1000;
+            note[mx].timeSamples = 2000;
             note[mx].Play();
         }
     }

@@ -349,7 +349,7 @@ public class RhythmManager : MonoBehaviour
                 GameManager.myManager.um.SpawnHalo(note);
                 myPlayer.MoveCharacter(note, gameTime);
                 AddJudgement(JudgementType.Miss);
-            }else if (note.lifetime < 0.07f && note.sound == false)
+            }else if (note.lifetime < 0.18f && note.sound == false)
             {
                 note.sound = true;
                 GameManager.myManager.sm.PlayUTouch();
