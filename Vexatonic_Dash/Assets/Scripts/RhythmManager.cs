@@ -17,7 +17,7 @@ public enum RhythmState {
 public class RhythmManager : MonoBehaviour
 {
 
-    private RhythmState state;
+    public RhythmState state;
     // 레벨 텍스트 파일이 저장될 위치.
     [SerializeField]private string levelFilePath;
 

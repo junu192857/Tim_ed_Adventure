@@ -356,7 +356,7 @@ public class UIManager : MonoBehaviour
 
     public void OnClickMusicSelectButton()
     {
-        if (!_isResultAnimationFinished) return;
+        if (GameManager.myManager.rm.state == RhythmState.GameClear && !_isResultAnimationFinished) return;
         
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
