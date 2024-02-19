@@ -382,7 +382,7 @@ public class RhythmManager : MonoBehaviour
                 lastHit = gameTime;
                 if (!isTutorial)
                 {
-                    health -= 20;
+                    health -= 10;
                     StartCoroutine(GameManager.myManager.um.HealthBarAnimation(health / 100f));
                     GameManager.myManager.um.HitAnimation(health);
                 }
