@@ -1,7 +1,7 @@
-SONG^Union_Arena
-COMPOSER^NEXON
-LEVEL^4^7^9
-AUDIO^audio.mp3
-EASY^Easy.txt
-HARD^Hard.txt
-VEX^Vex.txt
+SONG Union Arena
+COMPOSER NEXON
+LEVEL 4 7 9
+AUDIO audio.mp3
+EASY Easy.txt
+HARD Hard.txt
+VEX Vex.txt

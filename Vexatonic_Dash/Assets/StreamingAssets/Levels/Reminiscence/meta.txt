@@ -1,8 +1,8 @@
-﻿SONG^Reminiscence
-COMPOSER^NEXON
-LEVEL^0^0^0
-AUDIO^audio.mp3
-EASY^Easy.txt
-HARD^Hard.txt
-VEX^Vex.txt
+﻿SONG Reminiscence
+COMPOSER NEXON
+LEVEL 0 0 0
+AUDIO audio.mp3
+EASY Easy.txt
+HARD Hard.txt
+VEX Vex.txt
 EVENT

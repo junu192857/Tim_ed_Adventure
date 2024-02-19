@@ -68,7 +68,7 @@ public static class MetaReader
 
             while (!streamReader.EndOfStream)
             {
-                var lineSplit = streamReader.ReadLine()?.Split('^', 2);
+                var lineSplit = streamReader.ReadLine()?.Split(' ', 2);
 
                 if (lineSplit is null) continue;
 
@@ -83,7 +83,7 @@ public static class MetaReader
                         Debug.Log("Composer name: " + lineSplit[1]);
                         break;
                     case "LEVEL":
-                        currentSongData.Levels = lineSplit[1].Split('^').Select(int.Parse).ToArray();
+                        currentSongData.Levels = lineSplit[1].Split(' ').Select(int.Parse).ToArray();
                         Debug.Log("Levels: " + lineSplit[1]);
                         break;
                     case "AUDIO":
