@@ -191,16 +191,6 @@ public class SelectManager : MonoBehaviour
         {
             MoveDown();
         }
-        //only for 2/16 Ver
-        if (_currentIndex != 0)
-        {
-            patternSelectButton.interactable = false;
-            StartButton.interactable = false;
-        }
-        else {
-            patternSelectButton.interactable = true;
-            StartButton.interactable = true;
-        }
     }
 
     private void SetSongListText()
@@ -330,10 +320,12 @@ public class SelectManager : MonoBehaviour
         GameManager.myManager.selectedSongName = selectedSong.SongName;
         GameManager.myManager.selectedDifficulty = _currentDifficulty;
 
+        /*
         foreach (var c in coroutines)
         {
             StopCoroutine(c);
         }
+        */
         coroutines.Clear();
         GameManager.myManager.isTutorial = false;
         SceneManager.LoadScene("Scenes/LevelTest");
@@ -353,16 +345,12 @@ public class SelectManager : MonoBehaviour
 
     public void OnSwitchDifficulty()
     {
-        //Only for 2/16 Ver
-        if (_currentIndex != 0) return;
         GameManager.myManager.sm.PlaySFX("Button");
         SwitchDifficulty();
     }
 
     public void OnStartGame()
     {
-        //Only for 2/16 Ver
-        if (_currentIndex != 0) return;
         GameManager.myManager.sm.PlaySFX("Button");
         StartGame();
     }

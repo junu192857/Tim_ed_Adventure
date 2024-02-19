@@ -41,14 +41,26 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultScoreText;
     [SerializeField] private Text resultSongNameText;
     [SerializeField] private Text resultComposerNameText;
-    [SerializeField] private Button musicSelectButton;
 
-    [Space(10)]
+    [Space(5)]
     [SerializeField] private Text resultPurePerfectText;
     [SerializeField] private Text resultPerfectText;
     [SerializeField] private Text resultGreatText;
     [SerializeField] private Text resultGoodText;
     [SerializeField] private Text resultMissText;
+
+    [Space(10)]
+    [SerializeField] private Animator resultPanelAnim;
+    [SerializeField] private Animator resultSongNameAnim;
+    [SerializeField] private Animator resultComposerNameAnim;
+    [SerializeField] private Animator resultPurePerfectAnim;
+    [SerializeField] private Animator resultPerfectAnim;
+    [SerializeField] private Animator resultGreatAnim;
+    [SerializeField] private Animator resultGoodAnim;
+    [SerializeField] private Animator resultMissAnim;
+    [SerializeField] private Animator resultRankIconAnim;
+    [SerializeField] private Animator resultScoreAnim;
+    [SerializeField] private Animator resultBackButtonAnim;
 
     [Header("Judgement & Combo")]
     [SerializeField] private GameObject judgeParent;
@@ -117,9 +129,9 @@ public class UIManager : MonoBehaviour
         //Background part trash-like coded to submit game file as soon as possible. should must be fixed
         backgroundUI.sprite = GameManager.myManager.selectedSongName switch
         {
-            "Savage_Terminal" => backgrounds[0],
-            "Tutorial" => backgrounds[1],
+            "Savage_Terminal" => backgrounds[1],
             "Reminiscence" => backgrounds[2],
+            _ => backgrounds[0]
         };
 
         scoreText.text = "0";
@@ -237,6 +249,8 @@ public class UIManager : MonoBehaviour
         resultMissText.text = JudgementList[4].ToString();
 
         result.SetActive(true);    // TODO: Add show animation
+        
+        resultPanelAnim.SetTrigger(AnimShowHash);
     }
     
     public void ShowGameOverUI(bool isNewRecord)

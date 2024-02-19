@@ -1,0 +1,8 @@
+﻿SONG A
+COMPOSER None
+LEVEL 0 0 0
+AUDIO Silence.mp3
+EASY A.txt
+HARD A.txt
+VEX A.txt
+EVENT
