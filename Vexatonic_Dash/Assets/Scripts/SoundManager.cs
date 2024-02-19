@@ -78,4 +78,6 @@ public class SoundManager : MonoBehaviour
         Debug.Log(p_sfxName + " 이름의 효과음이 없습니다.");
         return;
     }
+
+    public void SetBgmVolume() => song.volume = MusicVolume;
 }
