@@ -19,6 +19,7 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private Text highlightedSongEasyText;
     [SerializeField] private Text highlightedSongHardText;
     [SerializeField] private Text highlightedSongVexText;
+    [SerializeField] private GameObject eventInfo;
 
     [Header("Song List")]
     [SerializeField] private RectTransform currentSongRect;
@@ -47,6 +48,7 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private Animator titleTextAnim;
     [SerializeField] private Animator songsParentAnim;
     [SerializeField] private Animator highlightedSongAnim;
+    [SerializeField] private Animator eventInfoAnim;
     [SerializeField] private Animator rankIconAnim;
     [SerializeField] private Animator highScoreAnim;
     [SerializeField] private Animator patternInfoAnim;
@@ -152,10 +154,29 @@ public class SelectManager : MonoBehaviour
         patternInfoAnim.SetTrigger(AnimHideHash);
         startButtonAnim.SetTrigger(AnimHideHash);
         backButtonAnim.SetTrigger(AnimHideHash);
+        eventInfoAnim.SetTrigger(AnimHideHash);
         
         yield return new WaitUntil(() => titleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
         
         _isAnimationPlaying = false;
+    }
+
+    private IEnumerator EventSongShowAnimation()
+    {
+        if (!eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden")) yield break;
+        
+        yield return new WaitForEndOfFrame();
+        
+        eventInfoAnim.SetTrigger(AnimShowHash);
+    }
+    
+    private IEnumerator EventSongHideAnimation()
+    {
+        if (!eventInfoAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle")) yield break;
+        
+        yield return new WaitForEndOfFrame();
+        
+        eventInfoAnim.SetTrigger(AnimHideHash);
     }
 
     public void OnChangeSong(InputValue inputValue)
@@ -200,6 +221,8 @@ public class SelectManager : MonoBehaviour
         highlightedSongEasyText.text = currentSong.Levels[0].ToString();
         highlightedSongHardText.text = currentSong.Levels[1].ToString();
         highlightedSongVexText.text = currentSong.Levels[2].ToString();
+        coroutines.Add(StartCoroutine(currentSong.IsEvent ? EventSongShowAnimation() : EventSongHideAnimation()));
+
         //only for 2/16 ver
         highlightedSongComposerText.fontSize = _currentIndex == 0 ? 64 : 48;
     }
