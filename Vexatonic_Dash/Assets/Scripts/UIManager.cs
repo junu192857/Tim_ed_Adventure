@@ -116,6 +116,7 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log(GameManager.myManager.selectedSongName);
         //Background part trash-like coded to submit game file as soon as possible. should must be fixed
+        //원래는 레벨 폴더 안에 백그라운드 png 이미지도 있는 게 이상적
         backgroundUI.sprite = GameManager.myManager.selectedSongName switch
         {
             "Savage_Terminal" => backgrounds[0],
