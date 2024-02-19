@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
@@ -14,12 +13,13 @@ public enum MainState
     VideoSettings = 2,
     AudioSettings = 3,
     InputSettings = 4,
-    PlaySettings  = 5
+    PlaySettings  = 5,
+    Credits       = 6
 }
 
 public class MainManager : MonoBehaviour
 {
-    private static readonly int[] CursorMaxIndex = {5, 3, 1, 3, 4, 1};
+    private static readonly int[] CursorMaxIndex = {5, 3, 1, 3, 4, 1, 1};
     
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
@@ -103,8 +103,19 @@ public class MainManager : MonoBehaviour
     [Header("Play Settings")]
     [SerializeField] private GameObject playSettingsParent;
 
+    [Header("Credits")]
+    [SerializeField] private GameObject creditsParent;
+    [SerializeField] private RectTransform creditsContentRect;
+    [SerializeField] private ScrollRect creditsScrollRect;
+    
+    [Space(5)]
+    [SerializeField] private Animator creditsTitleTextAnim;
+    [SerializeField] private Animator creditsScrollViewAnim;
+    [SerializeField] private Animator creditsBackButtonAnim;
+
     [Header("Debug")]
     [SerializeField] private Text currentCursorIndexText;
+    [SerializeField] private Text scrollRectPositionText;
 
     public MainState currentState;
     public int currentCursorIndex;
@@ -119,6 +130,7 @@ public class MainManager : MonoBehaviour
         audioSettingsParent.SetActive(false);
         inputSettingsParent.SetActive(false);
         playSettingsParent.SetActive(false);
+        creditsParent.SetActive(false);
 
         // Keyboard control values
         currentState = MainState.Main;
@@ -133,6 +145,7 @@ public class MainManager : MonoBehaviour
     private void Update()
     {
         currentCursorIndexText.text = $"Current Cursor Index: {currentCursorIndex}";
+        scrollRectPositionText.text = $"Scroll Rect Position: {creditsScrollRect.verticalNormalizedPosition}";
     }
 
     private void UpdateCursor()
@@ -226,6 +239,7 @@ public class MainManager : MonoBehaviour
                 break;
             
             case MainState.PlaySettings:
+            case MainState.Credits:
                 break;
             
             default:
@@ -241,6 +255,12 @@ public class MainManager : MonoBehaviour
 
         if (input == 0) return;
 
+        if (currentState == MainState.Credits)
+        {
+            creditsContentRect.anchoredPosition += new Vector2(0, 180 * input);
+            return;
+        }
+        
         currentCursorIndex = (currentCursorIndex + input);
         
         if (currentCursorIndex < 0) currentCursorIndex = CursorMaxIndex[(int)currentState] - 1;
@@ -291,7 +311,7 @@ public class MainManager : MonoBehaviour
                         OnClickMainQuitButton();
                         break;
                     case 3:
-                        OnClickTutorialButton();
+                        OnClickMainCreditsButton();
                         break;
                     case 4:
                         OnClickTutorialButton();
@@ -360,6 +380,10 @@ public class MainManager : MonoBehaviour
             
             case MainState.PlaySettings:
                 OnClickPlaySettingsBackButton();
+                break;
+            
+            case MainState.Credits:
+                OnClickCreditsBackButton();
                 break;
             
             default:
@@ -630,6 +654,59 @@ public class MainManager : MonoBehaviour
     
     #endregion
     
+    #region Credits Animation
+
+    private IEnumerator CreditsShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        creditsTitleTextAnim.SetTrigger(AnimShowHash);
+        creditsScrollViewAnim.SetTrigger(AnimShowHash);
+        creditsBackButtonAnim.SetTrigger(AnimShowHash);
+    }
+    
+    private IEnumerator CreditsHideAnimation()
+    {
+        yield return new WaitForEndOfFrame();
+
+        creditsTitleTextAnim.SetTrigger(AnimHideHash);
+        creditsScrollViewAnim.SetTrigger(AnimHideHash);
+        creditsBackButtonAnim.SetTrigger(AnimHideHash);
+
+        yield return new WaitUntil(() => creditsTitleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
+    }
+
+    private IEnumerator EnterCredits()
+    {
+        creditsParent.SetActive(true);
+        
+        yield return StartCoroutine(MainHideAnimation());
+        
+        currentState = MainState.Credits;
+        currentCursorIndex = 0;
+        creditsScrollRect.verticalNormalizedPosition = 1;
+        
+        yield return StartCoroutine(CreditsShowAnimation());
+
+        mainParent.SetActive(false);
+    }
+
+    private IEnumerator ExitCredits()
+    {
+        mainParent.SetActive(true);
+
+        yield return StartCoroutine(CreditsHideAnimation());
+        
+        currentState = MainState.Main;
+        currentCursorIndex = 3;
+        
+        yield return StartCoroutine(MainShowAnimation());
+
+        creditsParent.SetActive(false);
+    }
+    
+    #endregion
+    
     public void OnClickMainPlayButton()
     {
         GameManager.myManager.sm.PlaySFX("Button");
@@ -717,8 +794,20 @@ public class MainManager : MonoBehaviour
         // TODO: Add animations
     }
 
-    public void OnClickTutorialButton() {
+    public void OnClickMainCreditsButton()
+    {
+        GameManager.myManager.sm.PlaySFX("Button");
+        StartCoroutine(EnterCredits());
+    }
+    
+    public void OnClickCreditsBackButton()
+    {
+        GameManager.myManager.sm.PlaySFX("Button");
+        StartCoroutine(ExitCredits());
+    }
 
+    public void OnClickTutorialButton()
+    {
         GameManager.myManager.sm.PlaySFX("Button");
         GameManager.myManager.filepath = Application.streamingAssetsPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                          + Path.DirectorySeparatorChar + "Tutorial.txt";
