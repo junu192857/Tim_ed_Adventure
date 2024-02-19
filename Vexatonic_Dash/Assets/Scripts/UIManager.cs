@@ -86,12 +86,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text tutorialText;
     private bool fadeinRunning = false;
     private bool fadeoutRunning = false;
-    [SerializeField] private List<GameObject> TutorialIndicators;
+    [SerializeField] private GameObject tutorialIndicator;
     [SerializeField] private GameObject keyboard;
     [SerializeField] private List<GameObject> keyboardArrows;
-    private List<int> fjArrowTimings = new List<int> { 18, 29, 45, 53, 121, 130 };
-    private List<int> dkArrowTimings = new List<int> { 59, 70, 79, 86, 121, 130 };
-    private List<int> spaceArrowTimings = new List<int> { 93, 104, 114, 118, 121, 130 };
+    [SerializeField] private Image leftTutorialImage;
+    [SerializeField] private Image middleTutorialImage;
+    [SerializeField] private Image rightTutorialImage;
+    [SerializeField] private List<Sprite> tutorialImageSprites;
+    private List<int> fjArrowTimings = new List<int> { 18, 29, 45, 51, 148, 158 };
+    private List<int> dkArrowTimings = new List<int> { 59, 69, 79, 85, 121, 127 };
+    private List<int> spaceArrowTimings = new List<int> { 93, 103, 114, 119, 121, 126, 131, 137 };
+    private List<int> leftImageTimings = new List<int> { 5114, 5117, 5121, 5125, 5131, 5135 }; // 1000의 자리는 그림 인덱스, 노말일반, 노말경사, 대쉬일반, 대쉬경사, 에어대쉬, 점프일반, 에어점프, 벽점프, 종료노트
+    private List<int> middleImageTimings = new List<int> { 14, 17, 2055, 2058, 5089, 5092, 8143, 8147 };
+    private List<int> rightImageTimings = new List<int> { 6114, 6117, 4121, 4125, 7131, 7135 };
     private bool IsTutorial => GameManager.myManager.rm.isTutorial;
 
     private static int Score => GameManager.myManager.rm.score;
@@ -406,10 +413,37 @@ public class UIManager : MonoBehaviour
                 keyboardArrows[2].SetActive(!keyboardArrows[2].activeSelf);
                 spaceArrowTimings.RemoveAt(0);
             }
+            if (leftImageTimings.Count > 0 && GameTime > leftImageTimings[0] % 1000) {
+                leftTutorialImage.sprite = tutorialImageSprites[leftImageTimings[0] / 1000];
+                leftTutorialImage.gameObject.SetActive(!leftTutorialImage.gameObject.activeSelf);
+                leftImageTimings.RemoveAt(0);
+            }
+            if (middleImageTimings.Count > 0 && GameTime > middleImageTimings[0] % 1000)
+            {
+                middleTutorialImage.sprite = tutorialImageSprites[middleImageTimings[0] / 1000];
+                middleTutorialImage.gameObject.SetActive(!middleTutorialImage.gameObject.activeSelf);
+                middleImageTimings.RemoveAt(0);
+            }
+            if (rightImageTimings.Count > 0 && GameTime > rightImageTimings[0] % 1000)
+            {
+                rightTutorialImage.sprite = tutorialImageSprites[rightImageTimings[0] / 1000];
+                rightTutorialImage.gameObject.SetActive(!rightTutorialImage.gameObject.activeSelf);
+                rightImageTimings.RemoveAt(0);
+            }
 
             yield return null;
         }
     }
+    private IEnumerator FadeIn(GameObject obj) {
+        float time = 0f;
+        while (time < 0.4f)
+        {
+            obj.transform.localScale = new Vector3(time * 2.5f, time * 2.5f, 1f);
+            time += Time.deltaTime;
+            yield return null;
+        }
+    }
+
 
     private IEnumerator TextFadeIn() {
         float time = 0f;
@@ -436,7 +470,7 @@ public class UIManager : MonoBehaviour
 
     public void ReadTutorial() {
         tutorialText.gameObject.SetActive(true);
-        foreach (var obj in TutorialIndicators) obj.SetActive(true);
+        tutorialIndicator.SetActive(true);
         keyboard.SetActive(true);
         fs = new FileStream(Application.streamingAssetsPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                          + Path.DirectorySeparatorChar + "TutorialInfo.txt", FileMode.Open);
