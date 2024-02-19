@@ -51,16 +51,7 @@ public class UIManager : MonoBehaviour
 
     [Space(10)]
     [SerializeField] private Animator resultPanelAnim;
-    [SerializeField] private Animator resultSongNameAnim;
-    [SerializeField] private Animator resultComposerNameAnim;
-    [SerializeField] private Animator resultPurePerfectAnim;
-    [SerializeField] private Animator resultPerfectAnim;
-    [SerializeField] private Animator resultGreatAnim;
-    [SerializeField] private Animator resultGoodAnim;
-    [SerializeField] private Animator resultMissAnim;
     [SerializeField] private Animator resultRankIconAnim;
-    [SerializeField] private Animator resultScoreAnim;
-    [SerializeField] private Animator resultBackButtonAnim;
 
     [Header("Judgement & Combo")]
     [SerializeField] private GameObject judgeParent;
@@ -249,8 +240,21 @@ public class UIManager : MonoBehaviour
         resultMissText.text = JudgementList[4].ToString();
 
         result.SetActive(true);    // TODO: Add show animation
+
+        StartCoroutine(ResultShowAnimation());
+    }
+
+    private IEnumerator ResultShowAnimation()
+    {
+        yield return new WaitForEndOfFrame();
         
         resultPanelAnim.SetTrigger(AnimShowHash);
+
+        yield return new WaitForSecondsRealtime(1.8f);
+        
+        resultRankIconAnim.SetTrigger(AnimShowHash);
+        GameManager.myManager.sm.PlaySFX("Game Clear");
+        Debug.Log("Result show animation finished");
     }
     
     public void ShowGameOverUI(bool isNewRecord)

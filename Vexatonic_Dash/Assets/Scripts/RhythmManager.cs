@@ -430,7 +430,6 @@ public class RhythmManager : MonoBehaviour
         state = RhythmState.GameClear;
         song.Stop();
         Time.timeScale = 0f;
-        GameManager.myManager.sm.PlaySFX("Game Clear");
 
         if (score > highScore)
         {
