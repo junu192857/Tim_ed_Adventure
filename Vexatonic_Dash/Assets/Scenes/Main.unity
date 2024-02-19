@@ -3500,8 +3500,8 @@ RectTransform:
   - {fileID: 874165159}
   - {fileID: 446698055}
   - {fileID: 1951927961}
-  - {fileID: 763218624}
   - {fileID: 661945030}
+  - {fileID: 763218624}
   m_Father: {fileID: 559177085}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4845,7 +4845,7 @@ GameObject:
   - component: {fileID: 661945032}
   - component: {fileID: 661945031}
   m_Layer: 5
-  m_Name: CreditButton
+  m_Name: CreditsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4865,11 +4865,11 @@ RectTransform:
   m_Children:
   - {fileID: 2021384722}
   m_Father: {fileID: 416315824}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 1991, y: -215}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 40, y: -210}
   m_SizeDelta: {x: 480, y: 80}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &661945031
@@ -4983,7 +4983,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 71714b44044fd604994524cd89abca04, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e2039ebaa044c7c4d8eb0bbbacdc7973, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5373,11 +5373,11 @@ RectTransform:
   m_Children:
   - {fileID: 402586382}
   m_Father: {fileID: 416315824}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 1991, y: -358}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 40, y: -360}
   m_SizeDelta: {x: 720, y: 120}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &763218625
@@ -5491,7 +5491,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 71714b44044fd604994524cd89abca04, type: 3}
+  m_Sprite: {fileID: 21300000, guid: eec76208ad9a11048862ffe35adaf457, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
