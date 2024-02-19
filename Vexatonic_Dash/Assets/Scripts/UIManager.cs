@@ -114,6 +114,7 @@ public class UIManager : MonoBehaviour
     
     private void InitializeUI()
     {
+        Debug.Log(GameManager.myManager.selectedSongName);
         //Background part trash-like coded to submit game file as soon as possible. should must be fixed
         backgroundUI.sprite = GameManager.myManager.selectedSongName switch
         {
