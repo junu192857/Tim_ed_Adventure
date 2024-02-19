@@ -378,7 +378,11 @@ public class RhythmManager : MonoBehaviour
         if (type == JudgementType.Miss) { 
             if (gameTime - lastHit >= unbeatTime) {
                 lastHit = gameTime;
-                if (!isTutorial) health -= 20;
+                if (!isTutorial)
+                {
+                    health -= 20;
+                    StartCoroutine(GameManager.myManager.um.HealthBarAnimation(health / 100f));
+                }
                 myPlayer.HurtPlayer(health);
             }
         }
