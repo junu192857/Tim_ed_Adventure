@@ -41,6 +41,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text resultScoreText;
     [SerializeField] private Text resultSongNameText;
     [SerializeField] private Text resultComposerNameText;
+    private bool _isResultAnimationFinished;
 
     [Space(5)]
     [SerializeField] private Text resultPurePerfectText;
@@ -113,6 +114,7 @@ public class UIManager : MonoBehaviour
         infos = new List<TutorialInfo>();
         tutorialText.gameObject.SetActive(false);
         InitializeUI();
+        _isResultAnimationFinished = false;
     }
     
     private void InitializeUI()
@@ -252,6 +254,7 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(1.8f);
         
+        _isResultAnimationFinished = true;
         resultRankIconAnim.SetTrigger(AnimShowHash);
         GameManager.myManager.sm.PlaySFX("Game Clear");
         Debug.Log("Result show animation finished");
@@ -351,6 +354,8 @@ public class UIManager : MonoBehaviour
 
     public void OnClickMusicSelectButton()
     {
+        if (!_isResultAnimationFinished) return;
+        
         GameManager.myManager.im.Deactivate();
         Time.timeScale = 1f;
         GameManager.myManager.sm.PlaySFX("Button");

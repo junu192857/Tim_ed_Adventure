@@ -696,7 +696,6 @@ public class RhythmManager : MonoBehaviour
     }
     public void OnReturnToMain() { // Pressed Enter Button
         if (state != RhythmState.Paused && state != RhythmState.GameClear && state != RhythmState.GameOver) return;
-        Time.timeScale = 1f;
         GameManager.myManager.um.OnClickMusicSelectButton();
     }
 
