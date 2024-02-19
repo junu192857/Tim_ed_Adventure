@@ -19,7 +19,6 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private Text highlightedSongEasyText;
     [SerializeField] private Text highlightedSongHardText;
     [SerializeField] private Text highlightedSongVexText;
-    [SerializeField] private GameObject eventInfo;
 
     [Header("Song List")]
     [SerializeField] private RectTransform currentSongRect;
