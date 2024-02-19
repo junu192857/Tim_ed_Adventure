@@ -12,13 +12,14 @@ public enum Difficulty
 
 public struct SongData
 {
-    public SongData(string songName, string composerName, IEnumerable<int> levels, string audioFilePath, IEnumerable<string> patternFilePath)
+    public SongData(string songName, string composerName, IEnumerable<int> levels, string audioFilePath, IEnumerable<string> patternFilePath, bool isEvent = false)
     {
         SongName = songName;
         ComposerName = composerName;
         Levels = levels as int[] ?? levels.ToArray();
         AudioFilePath = audioFilePath;
         PatternFilePath = patternFilePath as string[] ?? patternFilePath.ToArray();
+        IsEvent = isEvent;
     }
 
     public string SongName;
@@ -26,6 +27,7 @@ public struct SongData
     public int[] Levels;
     public string AudioFilePath;
     public string[] PatternFilePath;
+    public bool IsEvent;
 }
 
 public static class MetaReader
@@ -100,6 +102,9 @@ public static class MetaReader
                     case "VEX":
                         currentSongData.PatternFilePath[2] = dir + Path.DirectorySeparatorChar + lineSplit[1];
                         Debug.Log("Vex level: " + lineSplit[1]);
+                        break;
+                    case "EVENT":
+                        currentSongData.IsEvent = true;
                         break;
                 }
             }
