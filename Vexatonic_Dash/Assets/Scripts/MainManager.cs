@@ -144,8 +144,8 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
-        currentCursorIndexText.text = $"Current Cursor Index: {currentCursorIndex}";
-        scrollRectPositionText.text = $"Scroll Rect Position: {creditsScrollRect.verticalNormalizedPosition}";
+        //currentCursorIndexText.text = $"Current Cursor Index: {currentCursorIndex}";
+        //scrollRectPositionText.text = $"Scroll Rect Position: {creditsScrollRect.verticalNormalizedPosition}";
     }
 
     private void UpdateCursor()

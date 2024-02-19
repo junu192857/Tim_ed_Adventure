@@ -118,7 +118,7 @@ public class LevelReader
 
                 if (cur.noteSubType == NoteSubType.End)
                 {
-                    cur.noteLastingTime = 1f;
+                    cur.noteLastingTime = GameManager.myManager.CalculateTimeFromInputWidth(0.32f);
                     returnList = list.ToList();
                     returnList.Reverse();
 
@@ -209,7 +209,7 @@ public class LevelReader
             "R" => CharacterDirection.Right,
             _ => throw new ArgumentException("Invalid character direction provided")
         };
-
+        Debug.Log(generated.noteSubType);
         return generated;
     }
 

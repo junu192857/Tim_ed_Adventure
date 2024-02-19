@@ -211,9 +211,6 @@ public class SelectManager : MonoBehaviour
         highlightedSongHardText.text = currentSong.Levels[1].ToString();
         highlightedSongVexText.text = currentSong.Levels[2].ToString();
         coroutines.Add(StartCoroutine(currentSong.IsEvent ? EventSongShowAnimation() : EventSongHideAnimation()));
-
-        //only for 2/16 ver
-        highlightedSongComposerText.fontSize = _currentIndex == 0 ? 64 : 48;
     }
 
     private void SetCurrentPatternUI()
