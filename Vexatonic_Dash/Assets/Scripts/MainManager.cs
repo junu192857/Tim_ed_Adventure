@@ -130,6 +130,7 @@ public class MainManager : MonoBehaviour
         audioSettingsParent.SetActive(false);
         inputSettingsParent.SetActive(false);
         playSettingsParent.SetActive(false);
+        creditsParent.SetActive(false);
 
         // Keyboard control values
         currentState = MainState.Main;
@@ -256,7 +257,7 @@ public class MainManager : MonoBehaviour
 
         if (currentState == MainState.Credits)
         {
-            creditsContentRect.anchoredPosition += new Vector2(0, 360 * input);
+            creditsContentRect.anchoredPosition += new Vector2(0, 180 * input);
             return;
         }
         
