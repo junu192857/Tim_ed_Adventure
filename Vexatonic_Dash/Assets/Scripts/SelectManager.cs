@@ -16,6 +16,9 @@ public class SelectManager : MonoBehaviour
     [Header("Highlighted Song")]
     [SerializeField] private Text highlightedSongNameText;
     [SerializeField] private Text highlightedSongComposerText;
+    [SerializeField] private Text highlightedSongEasyText;
+    [SerializeField] private Text highlightedSongHardText;
+    [SerializeField] private Text highlightedSongVexText;
 
     [Header("Song List")]
     [SerializeField] private RectTransform currentSongRect;
@@ -191,8 +194,12 @@ public class SelectManager : MonoBehaviour
 
     private void SetCurrentSongUI()
     {
-        highlightedSongNameText.text = _songList[_currentIndex].SongName;
-        highlightedSongComposerText.text = _songList[_currentIndex].ComposerName;
+        var currentSong = _songList[_currentIndex];
+        highlightedSongNameText.text = currentSong.SongName;
+        highlightedSongComposerText.text = currentSong.ComposerName;
+        highlightedSongEasyText.text = currentSong.Levels[0].ToString();
+        highlightedSongHardText.text = currentSong.Levels[1].ToString();
+        highlightedSongVexText.text = currentSong.Levels[2].ToString();
         //only for 2/16 ver
         highlightedSongComposerText.fontSize = _currentIndex == 0 ? 64 : 48;
     }
