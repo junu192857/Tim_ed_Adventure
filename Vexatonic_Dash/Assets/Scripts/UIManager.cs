@@ -71,6 +71,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject resultSlow;
     [SerializeField] private List<GameObject> numbers;
     private readonly Vector3 distFromParent = Vector3.up * 0.1f;
+    private readonly Vector3 distFromParentFastSlow = Vector3.up * 0.3f;
 
     [Header("Pause UI")]
     [SerializeField] private GameObject pause;
@@ -359,10 +360,10 @@ public class UIManager : MonoBehaviour
                 // This does nothing
                 break;
             case TimingType.Fast:
-                // TODO: do something
+                Instantiate(resultFast, myParent.transform).transform.localPosition = -distFromParentFastSlow;
                 break;
             case TimingType.Slow:
-                // TODO: do something
+                Instantiate(resultSlow, myParent.transform).transform.localPosition = -distFromParentFastSlow;
                 break;
             default:
                 throw new ArgumentException("Invalid Fast/Slow state");

@@ -352,7 +352,7 @@ public class RhythmManager : MonoBehaviour
                 note.FixNote();
                 GameManager.myManager.um.SpawnHalo(note);
                 myPlayer.MoveCharacter(note, gameTime);
-                AddJudgement(JudgementType.Miss);
+                AddJudgement(JudgementType.Miss, TimingType.Slow);
             }
         }
         UpdateGravity();

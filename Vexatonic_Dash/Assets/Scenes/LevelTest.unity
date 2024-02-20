@@ -8613,6 +8613,8 @@ MonoBehaviour:
   resultGreat: {fileID: 1125051480700811945, guid: 377277229138f514da19a8321bf24d72, type: 3}
   resultGood: {fileID: 245403302770030032, guid: df4e18336ca0d6940a6487ed6ddecd80, type: 3}
   resultMiss: {fileID: 4037350851928357874, guid: f589672c5f4f17543a33cf6466b46339, type: 3}
+  resultFast: {fileID: 1317855382619565912, guid: a95c6c8c8149a39479bc60f0df25e062, type: 3}
+  resultSlow: {fileID: 8784988380117822542, guid: a4bc9a73a0dbf53468b189f181e4a80b, type: 3}
   numbers:
   - {fileID: 7453775552426606691, guid: 6fa20b30974424940bfd3d985c8390c3, type: 3}
   - {fileID: 9149304294726941115, guid: 57c0e6ff937719c48a245a30421787d6, type: 3}
@@ -8868,6 +8870,7 @@ MonoBehaviour:
   highProgress: 0
   highScore: 0
   lastJudge: 0
+  lastFastSlow: 0
   notePrefabs:
   - {fileID: 583682281927100959, guid: 912cc5a44e0bf4e49ab659bc50ec4a64, type: 3}
   - {fileID: 4780835758759157808, guid: 5f37f44c20cb4dd4ea68d214dfc0d603, type: 3}
