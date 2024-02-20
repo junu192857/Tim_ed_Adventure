@@ -290,7 +290,7 @@ public class RhythmManager : MonoBehaviour
             {
                 // 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
                 JudgementType judgement;
-                TimingType fastSlowJudge;
+                TimingType fastSlowJudge = TimingType.Just;
                 double timingOffset = note.lifetime - list[0].inputLifeTime + 0.166;
 
                 if (!isTutorial)
@@ -314,10 +314,9 @@ public class RhythmManager : MonoBehaviour
                     };
                 }
 
-                if (judgement == JudgementType.PurePerfect)
-                    fastSlowJudge = TimingType.Just;
-                else fastSlowJudge = (timingOffset > 0) ? TimingType.Fast : TimingType.Slow;
-                
+                if (GameManager.myManager.fastSlow && judgement != JudgementType.PurePerfect)
+                    fastSlowJudge = (timingOffset > 0) ? TimingType.Fast : TimingType.Slow;
+
                 if (judgement != JudgementType.Invalid) 
                 {
                     // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.

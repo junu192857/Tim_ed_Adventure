@@ -68,6 +68,7 @@ public class MainManager : MonoBehaviour
     [Space(5)]
     [SerializeField] private Animator videoTitleTextAnim;
     [SerializeField] private Animator noteSpeedSettingAnim;
+    [SerializeField] private Animator fastSlowSettingAnim;
     [SerializeField] private Animator videoBackButtonAnim;
 
     [Header("Audio Settings")]
@@ -516,6 +517,7 @@ public class MainManager : MonoBehaviour
 
         videoTitleTextAnim.SetTrigger(AnimShowHash);
         noteSpeedSettingAnim.SetTrigger(AnimShowHash);
+        fastSlowSettingAnim.SetTrigger(AnimShowHash);
         videoBackButtonAnim.SetTrigger(AnimShowHash);
     }
 
@@ -525,6 +527,7 @@ public class MainManager : MonoBehaviour
 
         videoTitleTextAnim.SetTrigger(AnimHideHash);
         noteSpeedSettingAnim.SetTrigger(AnimHideHash);
+        fastSlowSettingAnim.SetTrigger(AnimHideHash);
         videoBackButtonAnim.SetTrigger(AnimHideHash);
 
         yield return new WaitUntil(() => videoTitleTextAnim.GetCurrentAnimatorStateInfo(0).IsName("Hidden"));
@@ -753,8 +756,8 @@ public class MainManager : MonoBehaviour
     {
         GameManager.myManager.sm.PlaySFX("Button");
         StartCoroutine(EnterVideoSetting());
-        
-        UpdateNoteSpeedValue();
+    
+        InitializeVideoSettingTexts();
     }
 
     public void OnClickSettingsAudioButton()
@@ -843,6 +846,12 @@ public class MainManager : MonoBehaviour
 
     #region Game Settings
 
+    private void InitializeVideoSettingTexts()
+    {
+        UpdateNoteSpeedValue();
+        UpdateFastSlowValue();
+    }
+    
     private void UpdateNoteSpeedValue()
     {
         speedValueText.text = GameManager.myManager.noteSpeed.ToString("#0.0");
