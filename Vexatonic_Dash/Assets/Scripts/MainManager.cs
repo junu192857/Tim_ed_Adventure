@@ -19,7 +19,7 @@ public enum MainState
 
 public class MainManager : MonoBehaviour
 {
-    private static readonly int[] CursorMaxIndex = {5, 3, 1, 3, 4, 1, 1};
+    private static readonly int[] CursorMaxIndex = {5, 3, 2, 3, 4, 1, 1};
     
     private static readonly int AnimShowHash = Animator.StringToHash("Show");
     private static readonly int AnimHideHash = Animator.StringToHash("Hide");
@@ -58,10 +58,12 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Animator playButtonAnim;
     [SerializeField] private Animator settingsBackButtonAnim;
 
-    [Header("Video Settings")]
+    [Header("Game Settings")]
     [SerializeField] private GameObject videoSettingsParent;
     [SerializeField] private Button noteSpeedSettingButton;
+    [SerializeField] private Button fastSlowSettingButton;
     [SerializeField] private Text speedValueText;
+    [SerializeField] private Text fastSlowToggleText;
 
     [Space(5)]
     [SerializeField] private Animator videoTitleTextAnim;
@@ -205,6 +207,9 @@ public class MainManager : MonoBehaviour
                     case 0:
                         noteSpeedSettingButton.Select();
                         break;
+                    case 1:
+                        fastSlowSettingButton.Select();
+                        break;
                 }
 
                 break;
@@ -344,6 +349,12 @@ public class MainManager : MonoBehaviour
                 break;
 
             case MainState.VideoSettings:
+                switch (currentCursorIndex)
+                {
+                    case 1:
+                        OnClickFastSlowButton();
+                        break;
+                }
                 break;
             
             case MainState.AudioSettings:
@@ -497,7 +508,7 @@ public class MainManager : MonoBehaviour
     
     #endregion
     
-    #region Video Setting Animation
+    #region Game Setting Animation
 
     private IEnumerator VideoSettingShowAnimation()
     {
@@ -830,7 +841,7 @@ public class MainManager : MonoBehaviour
         SceneManager.LoadScene("Scenes/LevelTest");
     }
 
-    #region Video Settings
+    #region Game Settings
 
     private void UpdateNoteSpeedValue()
     {
@@ -868,6 +879,18 @@ public class MainManager : MonoBehaviour
         GameManager.myManager.noteSpeed = Mathf.Clamp(newNoteSpeed, GameManager.MinNoteSpeed, GameManager.MaxNoteSpeed);
         
         UpdateNoteSpeedValue();
+    }
+
+    private void UpdateFastSlowValue()
+    {
+        fastSlowToggleText.text = GameManager.myManager.fastSlow ? "On" : "Off";
+        GameManager.myManager.SaveSettings();
+    }
+
+    public void OnClickFastSlowButton()
+    {
+        GameManager.myManager.fastSlow = !GameManager.myManager.fastSlow;
+        UpdateFastSlowValue();
     }
     
     #endregion
