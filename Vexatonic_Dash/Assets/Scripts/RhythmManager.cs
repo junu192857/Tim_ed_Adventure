@@ -65,6 +65,7 @@ public class RhythmManager : MonoBehaviour
     private int noteCount => LevelReader.noteCount;
     private int myNoteCount;
     public JudgementType lastJudge;
+    public TimingType lastFastSlow;
 
     [SerializeField] private List<GameObject> notePrefabs;
 
@@ -209,8 +210,6 @@ public class RhythmManager : MonoBehaviour
     {
         gameTime += Time.deltaTime;
 
-
-
         if (state == RhythmState.BeforeGameStart && gameTime > -1f) { 
             state = RhythmState.Ingame;
             StartCoroutine(StartParticle());
@@ -291,6 +290,7 @@ public class RhythmManager : MonoBehaviour
             {
                 // 판정을 처리한다. 어떤 판정이 나왔는지 계산해서 judgementList에 넣는다
                 JudgementType judgement;
+                TimingType fastSlowJudge;
                 double timingOffset = note.lifetime - list[0].inputLifeTime + 0.166;
 
                 if (!isTutorial)
@@ -314,6 +314,10 @@ public class RhythmManager : MonoBehaviour
                     };
                 }
 
+                if (judgement == JudgementType.PurePerfect)
+                    fastSlowJudge = TimingType.Just;
+                else fastSlowJudge = (timingOffset > 0) ? TimingType.Fast : TimingType.Slow;
+                
                 if (judgement != JudgementType.Invalid) 
                 {
                     // 노트 게임오브젝트를 spanwedNotes에서 빼내고 삭제한다.
@@ -324,7 +328,7 @@ public class RhythmManager : MonoBehaviour
                     note.FixNote();
                     GameManager.myManager.um.SpawnHalo(note);
                     myPlayer.MoveCharacter(note, gameTime);
-                    AddJudgement(judgement);
+                    AddJudgement(judgement, fastSlowJudge);
                 }
                 else
                 {
@@ -361,7 +365,7 @@ public class RhythmManager : MonoBehaviour
 
 
     // Judgement Function.
-    private void AddJudgement(JudgementType type)
+    private void AddJudgement(JudgementType type, TimingType fastSlowType = TimingType.Just)
     {
         int judgementIndex = type switch
         {
@@ -376,6 +380,7 @@ public class RhythmManager : MonoBehaviour
         judgementList[judgementIndex] += 1;
         
         lastJudge = type;
+        lastFastSlow = fastSlowType;
 
         if (type == JudgementType.Miss) { 
             if (gameTime - lastHit >= unbeatTime) {
@@ -786,4 +791,11 @@ public enum JudgementType
     Good,
     Miss,
     Invalid,
+}
+
+public enum TimingType
+{
+    Fast = -1,
+    Just = 0,
+    Slow = 1,
 }
