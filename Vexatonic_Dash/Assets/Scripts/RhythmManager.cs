@@ -314,7 +314,7 @@ public class RhythmManager : MonoBehaviour
                     };
                 }
 
-                if (GameManager.myManager.fastSlow && judgement != JudgementType.PurePerfect)
+                if (GameManager.myManager.fastSlow && judgement != JudgementType.PurePerfect && judgement != JudgementType.Miss)
                     fastSlowJudge = (timingOffset > 0) ? TimingType.Fast : TimingType.Slow;
 
                 if (judgement != JudgementType.Invalid) 
@@ -351,7 +351,7 @@ public class RhythmManager : MonoBehaviour
                 note.FixNote();
                 GameManager.myManager.um.SpawnHalo(note);
                 myPlayer.MoveCharacter(note, gameTime);
-                AddJudgement(JudgementType.Miss, TimingType.Slow);
+                AddJudgement(JudgementType.Miss);
             }
         }
         UpdateGravity();
