@@ -67,8 +67,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject resultGreat;
     [SerializeField] private GameObject resultGood;
     [SerializeField] private GameObject resultMiss;
+    [SerializeField] private GameObject resultFast;
+    [SerializeField] private GameObject resultSlow;
     [SerializeField] private List<GameObject> numbers;
     private readonly Vector3 distFromParent = Vector3.up * 0.1f;
+    private readonly Vector3 distFromParentFastSlow = Vector3.up * 0.3f;
 
     [Header("Pause UI")]
     [SerializeField] private GameObject pause;
@@ -111,6 +114,7 @@ public class UIManager : MonoBehaviour
     private static int[] JudgementList => GameManager.myManager.rm.judgementList;
     private static double GameTime => GameManager.myManager.rm.GameTime;
     private static JudgementType LastJudge => GameManager.myManager.rm.lastJudge;
+    private static TimingType LastFastSlow => GameManager.myManager.rm.lastFastSlow;
 
     private static int Health => GameManager.myManager.rm.health;
 
@@ -321,7 +325,8 @@ public class UIManager : MonoBehaviour
     {
 
         GameObject myParent = Instantiate(judgeParent,
-            transformPosition + Quaternion.AngleAxis(Camera.main.transform.rotation.z, Vector3.forward) * (0.7f * Vector3.up),
+            transformPosition + Quaternion.AngleAxis(Camera.main.transform.rotation.z, Vector3.forward) *
+            (0.7f * Vector3.up),
             Quaternion.identity);
 
         switch (LastJudge)
@@ -348,7 +353,23 @@ public class UIManager : MonoBehaviour
                 throw new ArgumentException();
         }
 
-        switch (combo) {
+        // TODO: Show Fast/Slow
+        switch (LastFastSlow)
+        {
+            case TimingType.Just:
+                // This does nothing
+                break;
+            case TimingType.Fast:
+                Instantiate(resultFast, myParent.transform).transform.localPosition = -distFromParentFastSlow;
+                break;
+            case TimingType.Slow:
+                Instantiate(resultSlow, myParent.transform).transform.localPosition = -distFromParentFastSlow;
+                break;
+            default:
+                throw new ArgumentException("Invalid Fast/Slow state");
+        }
+
+    switch (combo) {
             case > 0 and < 10:
                 Instantiate(numbers[combo], myParent.transform).transform.localPosition = distFromParent;
                 break;

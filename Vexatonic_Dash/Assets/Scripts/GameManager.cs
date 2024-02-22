@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     public float musicVolume; // 음악 크기를 의미한다. (0 ~ 1)
     public float sfxVolume; // 효과음 크기를 의미한다. (0 ~ 1)
 
+    public bool fastSlow;
+
     public List<KeyCode> keyList;
 
     [HideInInspector] public bool isMetaLoaded = false;
@@ -126,6 +128,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("globalOffset", globalOffset);
         PlayerPrefs.SetFloat("musicVolume", musicVolume);
         PlayerPrefs.SetFloat("sfxVolume", sfxVolume);
+        PlayerPrefs.SetInt("fastSlow", fastSlow ? 1 : 0);
     }
 
     public void LoadSettings()
@@ -134,6 +137,7 @@ public class GameManager : MonoBehaviour
         globalOffset = PlayerPrefs.GetInt("globalOffset", 0);
         musicVolume = PlayerPrefs.GetFloat("musicVolume", 1f);
         sfxVolume = PlayerPrefs.GetFloat("sfxVolume", 1f);
+        fastSlow = PlayerPrefs.GetInt("fastSlow", 1) != 0;
     }
 
     /// <summary>
